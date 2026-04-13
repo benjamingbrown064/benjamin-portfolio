@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Generates labelled placeholder images for all image slots.
- * Each placeholder is a dark grey rectangle with the filename as a label.
+ * Generates clearly visible labelled placeholder images.
+ * Light grey background with dark text — easy to see while building.
  */
 
 const sharp = require("sharp");
@@ -14,7 +14,6 @@ const BLOG = path.join(PUBLIC, "blog");
 fs.mkdirSync(PUBLIC, { recursive: true });
 fs.mkdirSync(BLOG, { recursive: true });
 
-// App slugs
 const APP_SLUGS = [
   "love-warranty",
   "wilbolaw",
@@ -32,7 +31,6 @@ const APP_SLUGS = [
   "claims-scanner",
 ];
 
-// Blog slugs
 const BLOG_SLUGS = [
   { file: "build-in-public", label: "Why I Build In Public" },
   { file: "ai-builders", label: "AI Won't Replace Builders" },
@@ -44,106 +42,113 @@ const BLOG_SLUGS = [
   { file: "co-founder", label: "Technical Co-Founder" },
 ];
 
-/**
- * Generate a placeholder SVG with a label, then convert to JPEG via Sharp.
- */
-async function makePlaceholder({ outputPath, width, height, label, bgHex = "#1A1A1A", textHex = "#555555", tagHex = "#333333" }) {
-  const shortLabel = label.length > 30 ? label.substring(0, 27) + "..." : label;
+async function makePlaceholder({ outputPath, width, height, label, category = "" }) {
   const filename = path.basename(outputPath);
+  const shortLabel = label.length > 36 ? label.substring(0, 33) + "..." : label;
+  const fontSize = width > 1000 ? 28 : 20;
+  const catSize = width > 1000 ? 16 : 12;
+  const dimSize = width > 1000 ? 14 : 11;
 
   const svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-  <rect width="${width}" height="${height}" fill="${bgHex}"/>
-  <!-- Grid lines -->
-  <line x1="${width * 0.5}" y1="0" x2="${width * 0.5}" y2="${height}" stroke="${tagHex}" stroke-width="1" opacity="0.4"/>
-  <line x1="0" y1="${height * 0.5}" x2="${width}" y2="${height * 0.5}" stroke="${tagHex}" stroke-width="1" opacity="0.4"/>
-  <!-- Corner marks -->
-  <rect x="20" y="20" width="30" height="2" fill="${tagHex}"/>
-  <rect x="20" y="20" width="2" height="30" fill="${tagHex}"/>
-  <rect x="${width - 50}" y="20" width="30" height="2" fill="${tagHex}"/>
-  <rect x="${width - 22}" y="20" width="2" height="30" fill="${tagHex}"/>
-  <rect x="20" y="${height - 22}" width="30" height="2" fill="${tagHex}"/>
-  <rect x="20" y="${height - 50}" width="2" height="30" fill="${tagHex}"/>
-  <rect x="${width - 50}" y="${height - 22}" width="30" height="2" fill="${tagHex}"/>
-  <rect x="${width - 22}" y="${height - 50}" width="2" height="30" fill="${tagHex}"/>
-  <!-- Dimensions label -->
-  <text x="${width / 2}" y="${height / 2 - 32}" 
-    font-family="monospace" font-size="13" fill="${textHex}" 
-    text-anchor="middle" letter-spacing="2">${width} × ${height}</text>
+  <!-- Background — light warm grey, highly visible -->
+  <rect width="${width}" height="${height}" fill="#D8D8D3"/>
+
+  <!-- Subtle checkerboard-style grid to indicate it's a placeholder -->
+  <rect x="0" y="0" width="${width}" height="${height}" fill="url(#grid)" opacity="0.18"/>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="20" height="20" fill="#BFBFBA"/>
+      <rect x="20" y="20" width="20" height="20" fill="#BFBFBA"/>
+    </pattern>
+  </defs>
+
+  <!-- Center white card -->
+  <rect x="${width / 2 - 200}" y="${height / 2 - 70}" width="400" height="140" rx="4" fill="white" opacity="0.85"/>
+
+  <!-- Category pill -->
+  <rect x="${width / 2 - 70}" y="${height / 2 - 62}" width="140" height="24" rx="3" fill="#333333"/>
+  <text x="${width / 2}" y="${height / 2 - 46}"
+    font-family="monospace" font-size="${catSize}" fill="white"
+    text-anchor="middle" letter-spacing="3" font-weight="bold">${category || "PLACEHOLDER"}</text>
+
   <!-- Main label -->
-  <text x="${width / 2}" y="${height / 2 + 4}" 
-    font-family="monospace" font-size="15" fill="#888888" 
+  <text x="${width / 2}" y="${height / 2 + 4}"
+    font-family="monospace" font-size="${fontSize}" fill="#111111"
     font-weight="bold" text-anchor="middle">${shortLabel}</text>
+
   <!-- Filename -->
-  <text x="${width / 2}" y="${height / 2 + 32}" 
-    font-family="monospace" font-size="11" fill="${textHex}" 
-    text-anchor="middle" opacity="0.7">${filename}</text>
-  <!-- PLACEHOLDER badge -->
-  <rect x="${width / 2 - 55}" y="${height - 46}" width="110" height="22" fill="${tagHex}" rx="2"/>
-  <text x="${width / 2}" y="${height - 31}" 
-    font-family="monospace" font-size="10" fill="#666666" 
-    text-anchor="middle" letter-spacing="3">PLACEHOLDER</text>
+  <text x="${width / 2}" y="${height / 2 + 34}"
+    font-family="monospace" font-size="${dimSize}" fill="#666666"
+    text-anchor="middle">${filename}</text>
+
+  <!-- Dimensions badge -->
+  <rect x="${width / 2 - 55}" y="${height / 2 + 48}" width="110" height="20" rx="2" fill="#E8E8E3"/>
+  <text x="${width / 2}" y="${height / 2 + 62}"
+    font-family="monospace" font-size="11" fill="#666666"
+    text-anchor="middle">${width}×${height}</text>
+
+  <!-- Corner markers -->
+  <line x1="0" y1="0" x2="60" y2="0" stroke="#999999" stroke-width="2"/>
+  <line x1="0" y1="0" x2="0" y2="60" stroke="#999999" stroke-width="2"/>
+  <line x1="${width}" y1="0" x2="${width - 60}" y2="0" stroke="#999999" stroke-width="2"/>
+  <line x1="${width}" y1="0" x2="${width}" y2="60" stroke="#999999" stroke-width="2"/>
+  <line x1="0" y1="${height}" x2="60" y2="${height}" stroke="#999999" stroke-width="2"/>
+  <line x1="0" y1="${height}" x2="0" y2="${height - 60}" stroke="#999999" stroke-width="2"/>
+  <line x1="${width}" y1="${height}" x2="${width - 60}" y2="${height}" stroke="#999999" stroke-width="2"/>
+  <line x1="${width}" y1="${height}" x2="${width}" y2="${height - 60}" stroke="#999999" stroke-width="2"/>
 </svg>`;
 
   await sharp(Buffer.from(svg))
-    .jpeg({ quality: 85 })
+    .jpeg({ quality: 90 })
     .toFile(outputPath);
 
   console.log(`✓ ${path.relative(process.cwd(), outputPath)}`);
 }
 
 async function main() {
-  console.log("Generating placeholder images...\n");
+  console.log("Generating placeholder images (light, clearly visible)...\n");
 
-  // Hero image — wide banner
   await makePlaceholder({
     outputPath: path.join(PUBLIC, "hero-placeholder.jpg"),
     width: 1600,
     height: 640,
-    label: "Hero — Benjamin Brown portrait or workspace",
+    label: "Hero Portrait / Workspace Photo",
+    category: "HERO IMAGE",
   });
 
-  // App card thumbnails (homepage grid) — 800×500
   for (const slug of APP_SLUGS) {
+    const name = slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
     await makePlaceholder({
       outputPath: path.join(PUBLIC, `app-${slug}-placeholder.jpg`),
       width: 800,
       height: 500,
-      label: `${slug} — homepage card`,
+      label: name,
+      category: "APP CARD",
     });
   }
 
-  // App case study heroes — 1600×800
   for (const slug of APP_SLUGS) {
+    const name = slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
     await makePlaceholder({
       outputPath: path.join(PUBLIC, `app-${slug}-hero.jpg`),
       width: 1600,
       height: 800,
-      label: `${slug} — case study hero`,
-      bgHex: "#111111",
-      tagHex: "#2A2A2A",
-      textHex: "#444444",
+      label: name,
+      category: "CASE STUDY HERO",
     });
   }
 
-  // Blog featured images — 1200×630 (OG ratio)
   for (const { file, label } of BLOG_SLUGS) {
     await makePlaceholder({
       outputPath: path.join(BLOG, `${file}.jpg`),
       width: 1200,
       height: 630,
       label,
-      bgHex: "#161616",
-      tagHex: "#252525",
-      textHex: "#444444",
+      category: "BLOG IMAGE",
     });
   }
 
-  console.log("\nDone. Replace these files with real images when ready.");
-  console.log("\nImage specs:");
-  console.log("  hero-placeholder.jpg          — 1600×640  (hero banner)");
-  console.log("  app-[slug]-placeholder.jpg    — 800×500   (homepage cards)");
-  console.log("  app-[slug]-hero.jpg           — 1600×800  (case study heroes)");
-  console.log("  blog/[name].jpg               — 1200×630  (blog featured, OG ratio)");
+  console.log("\nDone — all placeholders are light grey, clearly labelled.");
 }
 
 main().catch(console.error);

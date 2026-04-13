@@ -57,52 +57,31 @@ export function Navigation() {
               ))}
             </ul>
 
-            {/* CTA */}
-            <div className="hidden md:block">
-              <Link
-                href="/#contact"
-                className="group relative font-sans text-xs font-medium tracking-[0.1em] uppercase bg-black text-white px-5 py-2.5 overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Get in Touch
-                  <motion.span
-                    initial={{ x: -4, opacity: 0 }}
-                    whileHover={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    →
-                  </motion.span>
-                </span>
-                <motion.span
-                  className="absolute inset-0 bg-[#333333]"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ transformOrigin: "left" }}
-                />
-              </Link>
-            </div>
+            {/* CTA — desktop only */}
+            <Link
+              href="/#contact"
+              className="hidden md:inline-flex items-center gap-2 font-sans text-xs font-medium tracking-[0.1em] uppercase bg-black text-white px-5 py-2.5 hover:bg-[#333333] transition-colors duration-200"
+            >
+              Get in Touch →
+            </Link>
 
-            {/* Mobile toggle */}
+            {/* Mobile toggle — hidden on desktop */}
             <button
-              className="md:hidden flex flex-col gap-1.5 p-2"
+              className="flex flex-col gap-1.5 p-2 md:hidden"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
-              <motion.span
-                className="block w-6 h-px bg-black"
-                animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 10 : 0 }}
-                transition={{ duration: 0.25 }}
+              <span
+                className="block w-6 h-px bg-black transition-transform duration-300"
+                style={{ transform: menuOpen ? "translateY(10px) rotate(45deg)" : "none" }}
               />
-              <motion.span
-                className="block w-6 h-px bg-black"
-                animate={{ opacity: menuOpen ? 0 : 1 }}
-                transition={{ duration: 0.2 }}
+              <span
+                className="block w-6 h-px bg-black transition-opacity duration-200"
+                style={{ opacity: menuOpen ? 0 : 1 }}
               />
-              <motion.span
-                className="block w-6 h-px bg-black"
-                animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -10 : 0 }}
-                transition={{ duration: 0.25 }}
+              <span
+                className="block w-6 h-px bg-black transition-transform duration-300"
+                style={{ transform: menuOpen ? "translateY(-10px) rotate(-45deg)" : "none" }}
               />
             </button>
           </nav>
