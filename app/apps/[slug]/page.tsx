@@ -8,7 +8,7 @@ import { getAppBySlug, getAdjacentApps, ALL_SLUGS } from "@/content/apps/index";
 import { SITE } from "@/lib/constants";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -16,7 +16,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const app = getAppBySlug(params.slug);
+  const { slug } = await params;
+  const app = getAppBySlug(slug);
   if (!app) return {};
   return {
     title: `${app.name} — App Case Study`,
@@ -29,11 +30,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function AppPage({ params }: PageProps) {
-  const app = getAppBySlug(params.slug);
+export default async function AppPage({ params }: PageProps) {
+  const { slug } = await params;
+  const app = getAppBySlug(slug);
   if (!app) notFound();
 
-  const { prev, next } = getAdjacentApps(params.slug);
+  const { prev, next } = getAdjacentApps(slug);
 
   return (
     <>
@@ -90,7 +92,7 @@ export default function AppPage({ params }: PageProps) {
                 className="object-cover"
                 priority
                 sizes="100vw"
-                onError={() => {}}
+    
               />
               {/* Fallback */}
               <div className="absolute inset-0 flex items-center justify-center">
