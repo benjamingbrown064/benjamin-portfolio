@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { FadeInUp, StaggerContainer, StaggerItem } from "@/components/ui/MotionWrapper";
 
-// Seed post data — full MDX system built in Phase 5
 const SEED_POSTS = [
   {
     slug: "why-i-build-in-public",
@@ -33,48 +34,56 @@ const SEED_POSTS = [
 
 export function BlogSection() {
   return (
-    <section
-      id="blog"
-      className="py-20 md:py-28 border-t border-[#E8E8E3]"
-    >
+    <section id="blog" className="py-20 md:py-28 border-t border-[#E8E8E3]">
       <div className="site-container">
-        <SectionHeader number="007" tag="/BLOG" />
+        <FadeInUp>
+          <SectionHeader number="007" tag="/BLOG" />
+        </FadeInUp>
 
-        <div className="flex items-end justify-between mb-12">
-          <h2 className="font-serif font-black text-4xl md:text-5xl uppercase tracking-[-0.03em] text-black leading-none">
-            The Build Log
-          </h2>
-          <Link
-            href="/blog"
-            className="font-sans text-xs font-medium tracking-[0.1em] uppercase text-[#666666] hover:text-black transition-colors duration-200 border-b border-[#E8E8E3] hover:border-black pb-1"
-          >
-            All Posts →
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {SEED_POSTS.map((post) => (
+        <FadeInUp delay={0.1}>
+          <div className="flex items-end justify-between mb-12">
+            <h2 className="font-serif font-black text-4xl md:text-5xl uppercase tracking-[-0.03em] text-black leading-none">
+              The Build Log
+            </h2>
             <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="group block border-t border-[#E8E8E3] pt-6 hover:border-black transition-colors duration-300"
+              href="/blog"
+              className="font-sans text-xs font-medium tracking-[0.1em] uppercase text-[#666666] hover:text-black transition-colors duration-200 border-b border-[#E8E8E3] hover:border-black pb-1"
             >
-              <span className="tag-label block mb-3">/{post.category}</span>
-              <h3 className="font-serif font-bold text-xl uppercase tracking-[-0.02em] text-black mb-3 group-hover:text-[#333333] transition-colors duration-200 leading-snug">
-                {post.title}
-              </h3>
-              <p className="font-sans text-sm text-[#666666] leading-relaxed line-clamp-3 mb-4">
-                {post.excerpt}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="font-sans text-xs text-[#999999]">{post.date}</span>
-                <span className="font-sans text-xs font-medium tracking-[0.08em] uppercase text-black group-hover:text-[#666666] transition-colors duration-200">
-                  Read →
-                </span>
-              </div>
+              All Posts →
             </Link>
+          </div>
+        </FadeInUp>
+
+        <StaggerContainer stagger={0.1} delay={0.2} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {SEED_POSTS.map((post) => (
+            <StaggerItem key={post.slug}>
+              <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}>
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="group block border-t border-[#E8E8E3] pt-6 hover:border-black transition-colors duration-300"
+                >
+                  <span className="tag-label block mb-3">/{post.category}</span>
+                  <h3 className="font-serif font-bold text-xl uppercase tracking-[-0.02em] text-black mb-3 group-hover:text-[#333333] transition-colors duration-200 leading-snug">
+                    {post.title}
+                  </h3>
+                  <p className="font-sans text-sm text-[#666666] leading-relaxed line-clamp-3 mb-4">
+                    {post.excerpt}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="font-sans text-xs text-[#999999]">{post.date}</span>
+                    <motion.span
+                      className="font-sans text-xs font-medium tracking-[0.08em] uppercase text-black"
+                      whileHover={{ x: 4 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      Read →
+                    </motion.span>
+                  </div>
+                </Link>
+              </motion.div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );

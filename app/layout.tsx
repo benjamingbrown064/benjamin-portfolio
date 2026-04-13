@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/constants";
+import { PageTransition } from "@/components/ui/PageTransition";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -64,7 +65,9 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable}`}
       suppressHydrationWarning
     >
-      <body className="bg-white text-black antialiased">{children}</body>
+      <body className="bg-white text-black antialiased">
+        <PageTransition>{children}</PageTransition>
+      </body>
     </html>
   );
 }
