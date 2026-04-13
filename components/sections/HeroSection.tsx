@@ -120,7 +120,7 @@ export function HeroSection() {
 
       {/* Full-width hero image — clip reveal */}
       <div className="mt-16 md:mt-20 overflow-hidden">
-        <ClipReveal className="relative w-full h-[400px] md:h-[560px] lg:h-[640px] bg-[#F5F5F0]">
+        <ClipReveal className="relative w-full h-[400px] md:h-[560px] lg:h-[640px]">
           <Image
             src="/images/hero-placeholder.jpg"
             alt="Benjamin Brown — Founder, One Beyond"
@@ -128,14 +128,7 @@ export function HeroSection() {
             className="object-cover object-center"
             priority
             sizes="100vw"
-            onError={() => {}}
           />
-          {/* Fallback */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="font-serif font-black text-8xl md:text-[180px] text-[#E8E8E3] uppercase tracking-[-0.04em] select-none">
-              BB
-            </p>
-          </div>
         </ClipReveal>
       </div>
     </section>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/constants";
 import { PageTransition } from "@/components/ui/PageTransition";
@@ -9,6 +9,14 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
   weight: ["300", "400", "500", "600"],
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  variable: "--font-dm-serif",
+  display: "swap",
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 const playfair = Playfair_Display({
@@ -63,7 +71,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable}`}
+      className={`${inter.variable} ${playfair.variable} ${dmSerif.variable}`}
       suppressHydrationWarning
     >
       <body className="bg-white text-black antialiased">

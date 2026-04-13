@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { NAV_LINKS } from "@/lib/constants";
@@ -36,14 +35,18 @@ export function Navigation() {
           <nav className="flex items-center justify-between h-16 md:h-20">
             {/* Brand mark */}
             <Link href="/" className="flex items-center">
-              <Image
-                src="/images/logo-black.png"
-                alt="Benjamin"
-                width={120}
-                height={40}
-                className="h-8 w-auto object-contain"
-                priority
-              />
+              <span
+                style={{
+                  fontFamily: "var(--font-dm-serif), 'Playfair Display', Georgia, serif",
+                  fontSize: "18px",
+                  letterSpacing: "0.26em",
+                  textTransform: "uppercase",
+                  color: "#000",
+                  fontWeight: 400,
+                }}
+              >
+                Benjamin
+              </span>
             </Link>
 
             {/* Desktop nav */}

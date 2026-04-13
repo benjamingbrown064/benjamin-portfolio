@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { FOOTER_NAV, SOCIAL_LINKS, SITE } from "@/lib/constants";
 
 export function Footer() {
@@ -13,13 +12,18 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           {/* Brand */}
           <div>
-            <Image
-              src="/images/logo-white.png"
-              alt="Benjamin"
-              width={140}
-              height={48}
-              className="h-10 w-auto object-contain"
-            />
+            <span
+              style={{
+                fontFamily: "var(--font-dm-serif), 'Playfair Display', Georgia, serif",
+                fontSize: "18px",
+                letterSpacing: "0.26em",
+                textTransform: "uppercase",
+                color: "#fff",
+                fontWeight: 400,
+              }}
+            >
+              Benjamin
+            </span>
             <p className="mt-5 font-sans text-sm text-[#666666] max-w-[260px] leading-relaxed">
               Building technology businesses that generate real revenue in real markets.
             </p>
