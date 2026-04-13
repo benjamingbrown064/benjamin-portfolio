@@ -97,14 +97,7 @@ export function AllAppsGrid() {
             fill
             className="object-cover"
             sizes="160px"
-            onError={() => {}}
           />
-          {/* Fallback */}
-          <div className="absolute inset-0 flex items-center justify-center bg-[#F5F5F0]">
-            <span className="font-serif font-black text-3xl text-[#E8E8E3] uppercase">
-              {ALL_APPS.find((a) => a.slug === hoveredSlug)?.name.charAt(0)}
-            </span>
-          </div>
         </div>
       )}
     </section>

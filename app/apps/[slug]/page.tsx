@@ -94,12 +94,7 @@ export default async function AppPage({ params }: PageProps) {
                 sizes="100vw"
     
               />
-              {/* Fallback */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-serif font-black text-[120px] md:text-[200px] text-white uppercase tracking-[-0.04em] select-none opacity-40">
-                  {app.name.charAt(0)}
-                </span>
-              </div>
+
             </div>
           </div>
         </section>

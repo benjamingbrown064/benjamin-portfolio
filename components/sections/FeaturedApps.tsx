@@ -74,14 +74,7 @@ function AppCard({ app }: { app: (typeof FEATURED_APPS)[0] }) {
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
-              onError={() => {}}
             />
-            {/* Fallback */}
-            <div className="absolute inset-0 flex items-center justify-center bg-[#F5F5F0]">
-              <span className="font-serif font-black text-5xl text-[#E8E8E3] uppercase tracking-[-0.03em]">
-                {app.name.charAt(0)}
-              </span>
-            </div>
           </motion.div>
 
           {/* Hover overlay */}

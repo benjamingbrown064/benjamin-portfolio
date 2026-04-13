@@ -120,7 +120,7 @@ export function HeroSection() {
 
       {/* Full-width hero image — clip reveal */}
       <div className="mt-16 md:mt-20 overflow-hidden">
-        <ClipReveal className="relative w-full h-[400px] md:h-[560px] lg:h-[640px]">
+        <ClipReveal className="relative w-full h-[400px] md:h-[560px] lg:h-[640px] bg-[#D8D8D3]">
           <Image
             src="/images/hero-placeholder.jpg"
             alt="Benjamin Brown — Founder, One Beyond"
