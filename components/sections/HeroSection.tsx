@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { FadeInUp, ClipReveal } from "@/components/ui/MotionWrapper";
+import { FadeInUp } from "@/components/ui/MotionWrapper";
 import { easeExpoOut } from "@/lib/animations";
 
 const HEADLINE_LINES = ["Building", "in the", "Open.", "Shipping", "for Real."];
@@ -118,19 +118,22 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Full-width hero image — clip reveal */}
-      <div className="mt-16 md:mt-20 overflow-hidden">
-        <ClipReveal className="relative w-full h-[400px] md:h-[560px] lg:h-[640px] bg-[#D8D8D3]">
-          <Image
-            src="/images/hero-placeholder.jpg"
-            alt="Benjamin Brown — Founder, One Beyond"
-            fill
-            className="object-cover object-top"
-            priority
-            sizes="100vw"
-          />
-        </ClipReveal>
-      </div>
+      {/* Full-width hero image */}
+      <motion.div
+        className="mt-16 md:mt-20 overflow-hidden relative w-full h-[400px] md:h-[560px] lg:h-[640px] bg-[#D8D8D3]"
+        initial={shouldReduce ? false : { opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <Image
+          src="/images/hero-placeholder.jpg"
+          alt="Benjamin Brown — Founder, One Beyond"
+          fill
+          className="object-cover object-top"
+          priority
+          sizes="100vw"
+        />
+      </motion.div>
     </section>
   );
 }
