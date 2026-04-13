@@ -1,0 +1,67 @@
+---
+title: "The Stack That Ships"
+date: "2025-02-05"
+category: "AI"
+excerpt: "After 26 products, I've stopped experimenting with my technology stack. Here's what I use and why, and the real reason most startups make bad stack decisions."
+featuredImage: "/images/blog/tech-stack.jpg"
+tags: ["tech stack", "Next.js", "Supabase", "building"]
+readTime: 6
+---
+
+After 26 products, I've stopped experimenting with my technology stack.
+
+That might sound like intellectual laziness. It isn't. It's the most important productivity decision I've made as a builder.
+
+## What I Use
+
+**Next.js with App Router and TypeScript.** Full-stack, type-safe, server-side rendering where it matters, static generation where it doesn't. The ecosystem is mature, the deployment story with Vercel is trivial, and the mental model is consistent enough to move fast.
+
+**Supabase for the database.** PostgreSQL with a good dashboard, Row Level Security that actually works, real-time subscriptions when you need them, built-in storage, and Edge Functions for when you need server-side logic outside the Next.js API layer. The DX is good and it scales to production without a painful migration.
+
+**Tailwind CSS.** Not because I think utility-first is philosophically superior. Because it's fast to write, the output is predictable, and the bundle size stays controlled.
+
+**Framer Motion for animation.** Clean API, great documentation, the performance is solid. Not worth trying to roll this yourself.
+
+**Stripe for payments.** Nothing to debate here. Stripe is the right answer.
+
+**Anthropic Claude for AI.** When the task requires intelligence. When it requires brute data processing, OpenAI's APIs. Never both in the same product unless they're doing different things.
+
+**Vercel for deployment.** Zero configuration, global CDN, branch previews, environment variable management, and the deployment logs are actually useful.
+
+## Why Standardisation Matters
+
+Every time I consider adopting a new technology, I ask: is the benefit of this specific tool worth the cost of the context switch, the unfamiliar debugging, the team knowledge gap?
+
+The answer is almost always no.
+
+The tools I've listed above I can configure from memory. I know exactly what their failure modes look like. I know what the error messages mean. I know which third-party libraries work well with them and which ones cause subtle problems.
+
+That knowledge compounds. Each project I build on this stack makes me marginally faster on the next one. The alternative — trying the new ORM, the new deployment platform, the new edge runtime — resets that clock.
+
+## The Real Reason Startups Make Bad Stack Decisions
+
+There are two real drivers of bad stack decisions in early-stage companies.
+
+The first is CV building. Developers who want to learn a new technology will advocate for it whether or not it's the right choice. This is a legitimate personal incentive that is almost never aligned with the product's interests.
+
+The second is technology tribalism. Strong opinions about tools that are functionally equivalent. I've sat in architectural discussions where the choice between two identical-in-practice options consumed four hours and produced no useful output.
+
+The right question isn't "which is better?" It's "which can we move fastest with, given what we already know?"
+
+## When to Deviate
+
+I deviate from this stack when there's a specific technical requirement that it genuinely can't serve.
+
+Python for data processing pipelines where the ecosystem advantage is real. React Native when mobile-native is actually required (not just preferred). Redis for specific caching requirements that Supabase can't handle.
+
+Not because something is newer, not because someone made a compelling argument at a conference, not because a blog post described the benefits persuasively.
+
+Because the specific job requires it and nothing in my standard stack can do it adequately.
+
+## The Hidden Advantage
+
+When your stack is stable and familiar, you can spend your cognitive budget on the actual problem: the product, the customer, the business logic.
+
+The technology is infrastructure. Infrastructure should be boring. The interesting work is everything that runs on top of it.
+
+Stop making infrastructure decisions interesting. Build the product.

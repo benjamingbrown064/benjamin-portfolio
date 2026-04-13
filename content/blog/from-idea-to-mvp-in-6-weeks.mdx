@@ -1,0 +1,69 @@
+---
+title: "From Idea to MVP in 6 Weeks"
+date: "2025-02-20"
+category: "BUILDING"
+excerpt: "Six weeks is not a long time. But it's long enough to build something real if you start with brutal clarity about what you're not building."
+featuredImage: "/images/blog/mvp-6-weeks.jpg"
+tags: ["building", "mvp", "process", "speed"]
+readTime: 8
+---
+
+Six weeks is not a long time.
+
+It is, however, long enough to build something real — something customers pay for, something that works in production, something you can learn from. I've done it repeatedly. Here's how.
+
+## Start With the Anti-Scope
+
+Most founders start by defining what they want to build. The right start is defining what you're not building.
+
+Before writing a line of code on any new product, I write an anti-scope. Everything that sounds useful but doesn't belong in week one. Every feature that you could build but shouldn't yet. Every integration that will be important but isn't necessary to validate the core.
+
+The anti-scope is usually twice as long as the scope. That's how you know it's working.
+
+A useful rule: if a feature can be done manually for the first ten customers without them noticing, it's not in the MVP.
+
+## The 6-Week Structure
+
+Here's how I actually structure it:
+
+**Week 1: Architecture and data model.** No UI. Just the database schema, the API shape, and the core business logic. Everything else is built on this. If the data model is wrong, you'll feel it every week for the next five.
+
+**Week 2: Core loop, server-side.** The primary workflow that makes the product useful. Rough, ugly, no polish. Just working.
+
+**Week 3: UI that works, doesn't dazzle.** Build the interface to support the core loop. It should be functional and clear. Not beautiful. Beautiful comes later.
+
+**Week 4: Auth, permissions, and the boring infrastructure.** This is usually where projects get stuck. Build it now, correctly, and don't skip it.
+
+**Week 5: First real user.** Put it in front of someone who isn't you. Watch them use it. Don't explain. Don't help. Just watch.
+
+**Week 6: Fix the three things that are clearly wrong.** Not the twenty things that could be better. The three things that will stop real people from using it.
+
+## What Kills 6-Week Builds
+
+The most common failure mode isn't technical. It's scope creep disguised as customer feedback.
+
+You show someone the product in week three and they say "it would be great if it also did X." X sounds reasonable. You add X. Then someone else says Y. You add Y. By week six you have a half-built version of three different products, none of which work well enough to ship.
+
+The discipline is to hear the feedback, log it, and decide whether it belongs in the MVP or the backlog. Most of it belongs in the backlog.
+
+The second failure mode is premature quality. Spending week four polishing the UI when the data model is still wrong. The order matters.
+
+## The Technology Choices That Make It Possible
+
+I ship on the same stack every time because context-switching between unfamiliar tools is a week-one productivity killer.
+
+Next.js, TypeScript, Supabase, Tailwind. I know exactly what to reach for and when. The time saved on stack decisions and environmental setup is significant.
+
+For payments, Stripe. For email, Resend. For file storage, Supabase Storage. None of these require research.
+
+## What You're Actually Building in 6 Weeks
+
+You're not building a product. You're building a learning tool.
+
+The goal of an MVP isn't to have something polished. It's to have something real enough that real customers will tell you real things about whether your core assumption is correct.
+
+If your core assumption is correct, you'll know what to build next. If it's wrong, you'll have found out in six weeks instead of six months.
+
+Both outcomes are good. The worst outcome is shipping nothing, learning nothing, and spending a year building toward an assumption you never tested.
+
+Six weeks. Ship it.
