@@ -120,7 +120,7 @@ export function HeroSection() {
 
       {/* Full-width hero image */}
       <motion.div
-        className="mt-16 md:mt-20 overflow-hidden relative w-full h-[400px] md:h-[560px] lg:h-[640px] bg-[#D8D8D3]"
+        className="mt-16 md:mt-20 overflow-hidden relative w-full h-[500px] md:h-[700px] lg:h-[860px] bg-[#D8D8D3]"
         initial={shouldReduce ? false : { opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -129,7 +129,7 @@ export function HeroSection() {
           src="/images/hero-placeholder.jpg"
           alt="Benjamin Brown — Founder, One Beyond"
           fill
-          className="object-cover object-top"
+          className="object-cover" style={{ objectPosition: "center 15%" }}
           priority
           sizes="100vw"
         />
