@@ -120,7 +120,7 @@ function AppCard({ app }: { app: (typeof FEATURED_APPS)[0] }) {
             {app.name}
           </motion.h3>
           <p className="font-sans text-sm text-[#666666] leading-relaxed line-clamp-2">
-            {app.description}
+            {app.tagline}
           </p>
           <div className="mt-4 flex items-center gap-2 font-sans text-xs font-medium tracking-[0.08em] uppercase text-black overflow-hidden">
             <span>View Case Study</span>
