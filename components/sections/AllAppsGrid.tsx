@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { ALL_APPS } from "@/content/apps";
+import { ALL_APPS } from "@/content/apps-compat";
 
 export function AllAppsGrid() {
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);

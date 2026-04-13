@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { FadeInUp, StaggerContainer, StaggerItem } from "@/components/ui/MotionWrapper";
-import { FEATURED_APPS } from "@/content/apps";
+import { FEATURED_APPS } from "@/content/apps-compat";
 
 export function FeaturedApps() {
   return (
