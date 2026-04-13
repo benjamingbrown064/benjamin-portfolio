@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
+import { PersonJsonLd } from "@/components/ui/JsonLd";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { TrustStrip } from "@/components/sections/TrustStrip";
 import { FeaturedApps } from "@/components/sections/FeaturedApps";
@@ -15,8 +16,9 @@ import { ContactSection } from "@/components/sections/ContactSection";
 export default function HomePage() {
   return (
     <>
+      <PersonJsonLd />
       <Navigation />
-      <main>
+      <main id="main-content">
         <HeroSection />
         <TrustStrip />
         <FeaturedApps />
