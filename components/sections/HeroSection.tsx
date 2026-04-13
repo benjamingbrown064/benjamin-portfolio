@@ -125,7 +125,7 @@ export function HeroSection() {
             src="/images/hero-placeholder.jpg"
             alt="Benjamin Brown — Founder, One Beyond"
             fill
-            className="object-cover object-center"
+            className="object-cover object-top"
             priority
             sizes="100vw"
           />
