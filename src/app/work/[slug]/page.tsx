@@ -1,0 +1,286 @@
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { Nav } from "@/components/Nav";
+import { Footer } from "@/components/Footer";
+import { Reveal } from "@/components/Reveal";
+import { PROJECTS, PROJECT_ORDER } from "@/lib/projects";
+
+export function generateStaticParams() {
+  return PROJECT_ORDER.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const p = PROJECTS[slug];
+  if (!p) return {};
+  return {
+    title: `${p.title} — Benjamin Brown`,
+    description: p.descriptor,
+  };
+}
+
+export default async function CaseStudyPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const p = PROJECTS[slug];
+  if (!p) notFound();
+
+  const currentIdx = PROJECT_ORDER.indexOf(slug);
+  const nextSlug = PROJECT_ORDER[(currentIdx + 1) % PROJECT_ORDER.length];
+  const next = PROJECTS[nextSlug];
+
+  return (
+    <>
+      <Nav variant="case-study" />
+      <main>
+        {/* Page header */}
+        <header className="cs-page-header">
+          <div className="container-x">
+            <Reveal>
+              <div className="cs-ph-top">
+                <span className="pill ghost">{p.statusLabel}</span>
+                <span className="micro">{p.meta}</span>
+              </div>
+              <h1 className="cs-ph-title">{p.title}</h1>
+              <p className="cs-ph-desc">{p.descriptor}</p>
+            </Reveal>
+            <Reveal delay={0.04}>
+              <div className="cs-ph-meta">
+                <div className="cs-ph-meta-item">
+                  <span className="k">Scope</span>
+                  <span className="v">{p.pageMeta.scope}</span>
+                </div>
+                <div className="cs-ph-meta-item">
+                  <span className="k">Client</span>
+                  <span className="v">{p.pageMeta.client}</span>
+                </div>
+                <div className="cs-ph-meta-item">
+                  <span className="k">Duration</span>
+                  <span className="v">{p.pageMeta.duration}</span>
+                </div>
+                <div className="cs-ph-meta-item">
+                  <span className="k">Year</span>
+                  <span className="v">{p.pageMeta.year}</span>
+                </div>
+                <div className="cs-ph-meta-item">
+                  <span className="k">Role</span>
+                  <span className="v">{p.pageMeta.role}</span>
+                </div>
+              </div>
+              <a className="pill dark" href={p.cta.href} target="_blank" rel="noopener noreferrer">
+                {p.cta.label} <span className="arr">→</span>
+              </a>
+            </Reveal>
+          </div>
+        </header>
+
+        {/* Hero image */}
+        <div className="container-x">
+          <Reveal delay={0.02}>
+            <div className="cs-hero-img">
+              <div className="frame">
+                <Image
+                  src={p.cover}
+                  alt={p.coverAlt}
+                  fill
+                  sizes="(min-width: 1280px) 1200px, 100vw"
+                  style={{ objectFit: "cover", objectPosition: "center 35%" }}
+                  priority
+                />
+              </div>
+              <div className="cap">
+                <span>{p.heroCaption[0]}</span>
+                <span>{p.heroCaption[1]}</span>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* Challenge */}
+        <section className="cs-blk">
+          <div className="container-x">
+            <Reveal>
+              <div className="sec-head">
+                <span className="micro">Challenge</span>
+                <span className="num">01</span>
+              </div>
+              <div className="cs-two-col">
+                <h2 className="cs-statement">{p.challenge.h}</h2>
+                <p className="cs-body-copy" style={{ marginTop: 0 }}>
+                  {p.challenge.p}
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Solution */}
+        <section className="cs-blk">
+          <div className="container-x">
+            <Reveal>
+              <div className="sec-head">
+                <span className="micro">Solution</span>
+                <span className="num">02</span>
+              </div>
+              <div className="cs-two-col">
+                <h2 className="cs-statement">{p.solution.h}</h2>
+                <p className="cs-body-copy" style={{ marginTop: 0 }}>
+                  {p.solution.p}
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Stack */}
+        <section className="cs-blk">
+          <div className="container-x">
+            <Reveal>
+              <div className="sec-head">
+                <span className="micro">Stack</span>
+                <span className="num">03</span>
+              </div>
+              <div className="cs-stack-grid">
+                {p.stack.map((cell, i) => (
+                  <div className="cs-stack-cell" key={i}>
+                    <p className="k">{cell.k}</p>
+                    <ul>
+                      {cell.v.map((item, j) => (
+                        <li key={j}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Process */}
+        <section className="cs-blk">
+          <div className="container-x">
+            <Reveal>
+              <div className="sec-head">
+                <span className="micro">Process</span>
+                <span className="num">04</span>
+              </div>
+              <div className="cs-proc-list">
+                {p.process.map((step, i) => (
+                  <div className="cs-proc-row" key={i}>
+                    <span className="n">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="pname">{step.n}</span>
+                    <p className="desc">{step.d}</p>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Result */}
+        <section className="cs-blk">
+          <div className="container-x">
+            <Reveal>
+              <div className="sec-head">
+                <span className="micro">Result</span>
+                <span className="num">05</span>
+              </div>
+              <div className="cs-two-col">
+                <h2 className="cs-statement">{p.result.h}</h2>
+                <p className="cs-body-copy" style={{ marginTop: 0 }}>
+                  {p.result.p}
+                </p>
+              </div>
+              <div className="cs-metrics">
+                {p.metrics.map((m, i) => (
+                  <div className="cs-metric" key={i}>
+                    <div className="n">{m.n}</div>
+                    <div className="lbl">{m.l}</div>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Commercials */}
+        <section className="cs-blk">
+          <div className="container-x">
+            <Reveal>
+              <div className="sec-head">
+                <span className="micro">Commercials</span>
+                <span className="num">06</span>
+              </div>
+              <div className="cs-comm">
+                <p className="copy">{p.commercialsCopy}</p>
+                <div className="card">
+                  <p className="k">Commercial breakdown</p>
+                  <dl>
+                    <div className="row">
+                      <dt>Model</dt>
+                      <dd>{p.comm.model}</dd>
+                    </div>
+                    <div className="row">
+                      <dt>Status</dt>
+                      <dd>{p.comm.status}</dd>
+                    </div>
+                    <div className="row">
+                      <dt>Revenue</dt>
+                      <dd>{p.comm.revenue}</dd>
+                    </div>
+                    <div className="row">
+                      <dt>Ownership</dt>
+                      <dd>{p.comm.ownership}</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Pull quote */}
+        <div className="cs-pull">
+          <div className="container-x">
+            <Reveal>
+              <blockquote>{p.quote}</blockquote>
+              <p className="attr">
+                <strong>{p.attr.name}</strong> · {p.attr.role}
+              </p>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* Next project */}
+        <div className="cs-next">
+          <div className="container-x">
+            <Reveal>
+              <Link href={`/work/${next.slug}`}>
+                <div className="lead">
+                  <span className="micro">Next project</span>
+                  <span style={{ fontSize: 13, color: "var(--mute)" }}>
+                    {next.meta}
+                  </span>
+                </div>
+                <div className="big">
+                  <span className="pname">{next.title}</span>
+                  <span className="arrow">→</span>
+                </div>
+                <p className="descriptor">{next.desc}</p>
+              </Link>
+            </Reveal>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}
