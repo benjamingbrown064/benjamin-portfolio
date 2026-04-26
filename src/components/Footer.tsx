@@ -5,7 +5,25 @@ export function Footer() {
     <footer className="foot-wrap">
       <div className="container-x">
         <div className="wordmark-big">
-          <span className="row">BENJAMIN&nbsp;BROWN</span>
+          <svg
+            className="row"
+            viewBox="0 0 1000 110"
+            preserveAspectRatio="xMidYMid meet"
+            role="img"
+            aria-label="Benjamin Brown"
+          >
+            <text
+              x="0"
+              y="92"
+              fontWeight={700}
+              fontSize={110}
+              textLength={1000}
+              lengthAdjust="spacingAndGlyphs"
+              fill="currentColor"
+            >
+              BENJAMIN BROWN
+            </text>
+          </svg>
         </div>
         <div className="foot-meta">
           <div className="fm-col">
