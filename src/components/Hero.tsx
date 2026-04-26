@@ -41,10 +41,10 @@ export function Hero() {
           />
           <span className="cap">Portrait — London, UK · 2026</span>
         </div>
-        <div className="scroll-ind">
+        <a className="scroll-ind" href="#about" aria-label="Scroll to next section">
           <span>Scroll</span>
           <span className="arr">↓</span>
-        </div>
+        </a>
       </div>
     </section>
   );

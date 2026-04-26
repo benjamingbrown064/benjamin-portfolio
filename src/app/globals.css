@@ -36,7 +36,7 @@ html[data-theme="dark"] {
 
 /* ── base ── */
 *, *::before, *::after { box-sizing: border-box; }
-html { transition: background .25s, color .25s; }
+html { transition: background .25s, color .25s; scroll-behavior: smooth; }
 html, body {
   margin: 0; padding: 0;
   background: var(--bg); color: var(--ink);
@@ -155,7 +155,8 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .hero-photo { margin-top: 24px; width: 100%; aspect-ratio: 16/8.4; background: #141414; position: relative; overflow: hidden; border-radius: 7px; }
 .hero-photo .portrait { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 45%; display: block; }
 .hero-photo .cap { position: absolute; left: 24px; bottom: 20px; color: rgba(255,255,255,.55); font-size: 12px; letter-spacing: 0; }
-.scroll-ind { display: flex; align-items: center; gap: 8px; margin-top: 18px; color: var(--mute); font-size: 12.5px; justify-content: flex-end; }
+.scroll-ind { display: flex; align-items: center; gap: 8px; margin: 18px 0; color: var(--mute); font-size: 12.5px; justify-content: flex-end; cursor: pointer; transition: color .15s ease; }
+.scroll-ind:hover { color: var(--ink); }
 @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
 .scroll-ind .arr { animation: bob 2s ease-in-out infinite; }
 
