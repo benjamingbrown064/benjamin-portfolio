@@ -42,6 +42,8 @@ export const PROJECT_ORDER: string[] = [
   "hatsafe",
   "dealer-engine",
   "wilbolaw",
+  "love-warranty",
+  "the-dms",
 ];
 
 export const PROJECTS: Record<string, ProjectCaseStudy> = {
@@ -436,6 +438,138 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     quote:
       "Ben rebuilt how our firm runs, not just the software it runs on. We have capacity we didn't have and a client experience the firm is proud of.",
     attr: { name: "William Wilbourne", role: "Managing Partner, WilboLaw" },
+  },
+
+  "love-warranty": {
+    slug: "love-warranty",
+    title: "Love Warranty",
+    cover: "/assets/love-warranty.jpg",
+    coverAlt: "Love Warranty — claims and dealer console",
+    coverCap: "Love Warranty · claims operations console",
+    status: "live",
+    statusLabel: "Live",
+    desc: "Technology-led vehicle warranty platform — products, claims engine, dealer analytics, and direct-to-consumer.",
+    meta: "Automotive · Warranty",
+    descriptor:
+      "A transparent, technology-driven vehicle warranty platform — entry-level cover, comprehensive True Love protection, and an AI-assisted claims engine that pays fairly and predictably.",
+    cta: { label: "Live preview", href: "https://lovewarranty.co.uk" },
+    pageMeta: {
+      scope: "Warranty Platform · Claims Engine",
+      client: "Love Warranty",
+      duration: "Live · 2024 →",
+      year: "2026",
+      role: "Founder · Design & Build",
+    },
+    heroCaption: ["Love Warranty — claims operations, 2026", "Product · automotive warranty"],
+    challenge: {
+      h: "Vehicle warranty is an industry built on opaque underwriting, sales-led commissions, and rejected claims — and dealers and customers were paying for it.",
+      p: "Most warranty providers focus on distributing policies and outsource claims, underwriting, and fund management to people the dealer never sees. The result is inconsistent claim outcomes, brittle pricing, and a relationship that quietly damages the dealer's reputation every time a claim is denied. Dealers had no visibility on warranty performance, no transparency on fund health, and no way to defend the customer experience attached to their forecourt.",
+    },
+    solution: {
+      h: "A technology-led warranty platform built on transparent fund management, AI-assisted claims, and dealer-grade reporting.",
+      p: "Two warranty products — an entry-level cover bundled with vehicle sales and the comprehensive True Love Cover for upsell — sit on top of an internal platform that handles registrations, claims processing, fund forecasting, and dealer performance analytics. The claims engine ingests inbound claims from email, telephony, and a public form, uses Claude to extract structured facts from unstructured claim packs, applies policy logic, and drafts handler-ready outcomes. Dealers see exactly how their fund is performing in real time.",
+    },
+    stack: [
+      { k: "Frontend", v: ["Next.js", "React", "Tailwind"] },
+      { k: "Backend", v: ["Next.js API", "Node", "TypeScript"] },
+      { k: "Database", v: ["Supabase", "Postgres", "Prisma"] },
+      { k: "AI", v: ["Claude (Anthropic)", "OpenAI Whisper"] },
+      { k: "Integrations", v: ["Aircall", "Gmail API", "Resend", "DVLA VES"] },
+    ],
+    process: [
+      { n: "Fund-first design", d: "Re-architected the commercial model around long-term fund sustainability rather than sales-volume incentives. Every product, claim policy, and reporting surface ties back to fund health." },
+      { n: "Two-product line", d: "Shipped the entry-level warranty bundled with vehicle sales and the upgraded True Love Cover for upsell — designed so dealers can include cover with every car and grow margin without extra admin." },
+      { n: "AI-assisted claims engine", d: "Built the Love Warranty Claims Scanner: inbound claims from email, Aircall, and a public form flow into a Claude-powered extraction layer, get assessed against policy, and arrive on a handler's desk with a provisional payout and drafted comms." },
+      { n: "Dealer reporting layer", d: "Per-dealer dashboards on warranty performance, claim exposure, and fund forecasting — so dealers can manage warranty as a business line, not a black box." },
+      { n: "Direct-to-consumer expansion", d: "Layered a D2C channel on top of the dealer platform so vehicle owners can buy and renew protection directly — with the same fund discipline behind it." },
+    ],
+    result: {
+      h: "Love Warranty operates as a technology-enabled warranty provider with structured fund management, AI-assisted claims, and dealer analytics — covering a £1.5–2bn UK market.",
+      p: "The claims platform is in production at claims.lovewarranty.com, processing claims with full audit trails, telephony integration, and AI-extracted fact packs. Dealers get the transparency the industry historically refused to provide; customers get a claim experience that pays out when it should.",
+    },
+    metrics: [
+      { n: "£1.5–2bn", l: "UK market" },
+      { n: "2", l: "Warranty products" },
+      { n: "Live", l: "Claims engine" },
+      { n: "AI-led", l: "Claims assessment" },
+    ],
+    commercialsCopy:
+      "Love Warranty earns through warranty product margin, claim handling, and the dealer platform. Recurring premium income, a structured fund-management model, and the dealer technology layer combine to give the business the durability that traditional warranty providers lack.",
+    comm: {
+      model: "Warranty + platform + claims",
+      status: "Live · scaling",
+      revenue: "Premium income + dealer platform",
+      ownership: "Founder",
+    },
+    quote:
+      "We needed a warranty partner who would actually pay claims and tell us how the fund was performing. Love Warranty was the first one that did both.",
+    attr: { name: "Independent dealer", role: "Group operator, southern England" },
+  },
+
+  "the-dms": {
+    slug: "the-dms",
+    title: "The DMS",
+    cover: "/assets/the-dms.jpg",
+    coverAlt: "The DMS — AI dealer management platform",
+    coverCap: "The DMS · dealer operating system",
+    status: "live",
+    statusLabel: "Live",
+    desc: "An AI-powered dealer management system built specifically for UK independent car dealers.",
+    meta: "Automotive · SaaS",
+    descriptor:
+      "A modern, AI-powered operating system for independent car dealers — stock, leads, deals, prep, team and reporting in one place, with an AI layer that tells you what to do next.",
+    cta: { label: "Live preview", href: "https://www.thedms.app" },
+    pageMeta: {
+      scope: "Dealer Management Platform",
+      client: "The DMS",
+      duration: "Live · 2026 →",
+      year: "2026",
+      role: "Founder · Design & Build",
+    },
+    heroCaption: ["The DMS — dealer operating system, 2026", "Product · automotive SaaS"],
+    challenge: {
+      h: "13,000+ UK independent dealerships are running a multi-million-pound business on spreadsheets, WhatsApp, a stock tool, an accounts package, and a legacy DMS that was designed for franchised groups in 2008.",
+      p: "Enterprise dealer management systems are expensive, slow to implement, and built for franchised networks. Independent dealers are stuck stitching together inventory tools, messaging apps, finance systems, and manual processes — losing leads, mispricing stock, and burning hours on admin that nobody actually owns. The independent market has been waiting for a system designed for the way they actually run a forecourt.",
+    },
+    solution: {
+      h: "A modern, AI-powered operating system for independent dealerships — purpose-built for the way they run, not retro-fitted from a franchised playbook.",
+      p: "One platform for stock, leads, deals, customers, documents, team activity, and reporting — with an AI layer that highlights what needs attention now, drafts comms, and answers operational questions in plain English. Designed for fast onboarding, low-friction migration, and a 30-day pilot that gets a dealer from sign-up to visible ROI in days, not quarters.",
+    },
+    stack: [
+      { k: "Frontend", v: ["Next.js", "React", "Tailwind"] },
+      { k: "Backend", v: ["Next.js API", "Node", "TypeScript"] },
+      { k: "Database", v: ["Supabase", "Postgres"] },
+      { k: "AI Layer", v: ["Claude", "OpenAI", "Operational reasoning"] },
+      { k: "Integrations", v: ["DVLA VES", "Autotrader", "Vercel"] },
+    ],
+    process: [
+      { n: "Independent-first scope", d: "Wrote the spec around the operational reality of 5–200 vehicle/month independents — not a watered-down version of a franchised DMS. Every feature earned its place by reducing admin or surfacing decisions." },
+      { n: "Operating backbone", d: "Built the unified platform: stock, leads, customers, deals, documents, team activity, and reporting. One interface, one dataset, one place where the dealership actually lives." },
+      { n: "AI operating layer", d: "Wired AI in as an operational assistant — surfacing what needs attention today, drafting documents and notes, suggesting next-best actions, and letting the team chat with the system to create and update work." },
+      { n: "Pilot-ready package", d: "Designed a 30-day pilot path: sign-up, data import (or demo data), AI analysis, and an ROI dashboard a dealer can read in under a minute. The product proves itself in the first session." },
+      { n: "Production deployment", d: "Live at thedms.app on Vercel, integrated with DVLA for vehicle lookups and Autotrader for stock advertising. GitHub-driven deploys, Supabase-backed data layer, and a clear path from pilot to paid." },
+    ],
+    result: {
+      h: "The DMS is live at thedms.app — a working independent-first dealer operating system replacing the legacy + spreadsheet stack with one platform, one dataset, and an AI assistant.",
+      p: "The core platform is in production and pilot-ready: dealer workspace, stock, deals, AI analysis, and the 30-day onboarding flow. Aimed at the 13,000–15,000 UK independent dealerships the legacy DMS market has structurally underserved.",
+    },
+    metrics: [
+      { n: "13K+", l: "UK independent dealers" },
+      { n: "30 days", l: "Pilot to ROI" },
+      { n: "AI-native", l: "Operating layer" },
+      { n: "Live", l: "Production status" },
+    ],
+    commercialsCopy:
+      "The DMS is sold as a per-dealership SaaS subscription with a structured 30-day pilot path. The pilot is the sales motion — the product has to deliver visible operational ROI in the first session, then scale across the dealership team.",
+    comm: {
+      model: "SaaS subscription",
+      status: "Live · pilots running",
+      revenue: "Per-dealership monthly",
+      ownership: "Founder",
+    },
+    quote:
+      "It's the first dealer system that fits how we actually work. Less admin, more selling, and a clear view of what's slipping.",
+    attr: { name: "Independent dealer", role: "Owner-operator, pilot dealership" },
   },
 };
 
