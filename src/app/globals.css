@@ -336,11 +336,43 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 
 /* ── testimonials ── */
 .test-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.test-stage { display: flex; flex-direction: column; gap: 24px; }
 .test-card {
   border: 1px solid var(--hair); border-radius: 7px; padding: 28px;
   background: var(--bg); display: flex; flex-direction: column; gap: 20px;
   transition: border-color .2s, box-shadow .2s; position: relative;
 }
+.test-card.single {
+  padding: 40px;
+  gap: 32px;
+  min-height: 320px;
+  animation: testFade .4s ease-out;
+}
+@keyframes testFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.test-card .logo-slot { display: flex; align-items: center; min-height: 40px; }
+.test-card .logo-img { object-fit: contain; height: 40px; width: auto; }
+.test-card .logo-placeholder {
+  font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--mute); border: 1px dashed var(--hair);
+  padding: 6px 12px; border-radius: 7px;
+}
+.test-card.single .quote {
+  font-size: clamp(20px, 2.4vw, 30px);
+  line-height: 1.4; letter-spacing: -.02em;
+  font-weight: 500; flex: 1;
+}
+.test-controls {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 0 4px;
+}
+.test-controls .counter {
+  font-size: 13px; color: var(--mute); letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+.test-buttons { display: inline-flex; gap: 8px; }
 .test-card:hover { border-color: var(--ink); box-shadow: 0 4px 20px rgba(0,0,0,.04); }
 .test-card .quote { font-size: 16px; line-height: 1.5; letter-spacing: -.01em; color: var(--ink); margin: 0; text-wrap: pretty; flex: 1; }
 .test-person { display: flex; align-items: center; gap: 12px; }
