@@ -14,7 +14,7 @@ export function Hero() {
           </p>
           <div className="meta-right">
             Based in Costa Mesa, CA
-            <strong>Available Q2 / Q3 2026</strong>
+            <strong>Available Q3 2026</strong>
           </div>
         </div>
 
