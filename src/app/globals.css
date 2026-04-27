@@ -185,7 +185,8 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
   gap: 24px;
   overflow-x: auto;
   overflow-y: visible;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline-start: 40px;
   scroll-behavior: smooth;
   padding: 8px 40px 16px;
   cursor: grab;
@@ -197,6 +198,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
   .work-rail-track {
     padding-left: calc((100vw - 1280px) / 2 + 40px);
     padding-right: calc((100vw - 1280px) / 2 + 40px);
+    scroll-padding-inline-start: calc((100vw - 1280px) / 2 + 40px);
   }
 }
 .work-rail-track.dragging { cursor: grabbing; user-select: none; scroll-behavior: auto; scroll-snap-type: none; }
@@ -519,7 +521,7 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
   .hero h1 { padding-left: 0; }
   .hero-sub, .why-grid, .pricing-grid, .test-grid, .blog-grid, .two-col, .stat-strip { grid-template-columns: 1fr; }
   .work-card { flex: 0 0 78vw; }
-  .work-rail-track { padding-left: 20px; padding-right: 20px; }
+  .work-rail-track { padding-left: 20px; padding-right: 20px; scroll-padding-inline-start: 20px; }
   .stat-strip { grid-template-columns: 1fr 1fr; }
   .services { margin: 32px 20px 0; padding: 40px 28px; }
   .nav-center { display: none; }
