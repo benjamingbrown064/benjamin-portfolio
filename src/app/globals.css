@@ -124,9 +124,9 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .theme-toggle .i-sun { display: none; }
 
 /* ── hero ── */
-.hero { padding: 88px 0 0; position: relative; }
+.hero { padding: 36px 0 0; position: relative; }
 .hero .container-x { position: relative; }
-.hero-label { position: absolute; top: -52px; left: 0; }
+.hero-label { display: inline-flex; margin-bottom: 32px; }
 .hero h1 {
   font-size: clamp(48px, 7.5vw, 108px);
   max-width: 1080px; font-weight: 500;
