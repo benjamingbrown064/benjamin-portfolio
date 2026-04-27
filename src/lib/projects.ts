@@ -36,13 +36,13 @@ export type ProjectCaseStudy = ProjectCard & {
 };
 
 export const PROJECT_ORDER: string[] = [
-  "warrantyos",
-  "taskbox",
-  "govscape",
-  "hatsafe",
-  "dealer-engine",
   "wilbolaw",
+  "warrantyos",
+  "govscape",
+  "dealer-engine",
+  "taskbox",
   "love-warranty",
+  "hatsafe",
   "the-dms",
 ];
 
