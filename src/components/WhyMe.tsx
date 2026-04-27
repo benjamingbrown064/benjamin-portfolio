@@ -18,8 +18,8 @@ export function WhyMe() {
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="why-head">
-            A team of one that ships like a team of five, obsessed with the
-            craft.
+            A team of one that ships like a team of five, obsessed with the{" "}
+            <span className="accent-word">craft.</span>
           </h2>
         </Reveal>
         <div className="why-grid">

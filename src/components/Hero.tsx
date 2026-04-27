@@ -5,7 +5,7 @@ export function Hero() {
     <section className="hero" id="top">
       <div className="container-x">
         <span className="micro hero-label">Portfolio · 2026</span>
-        <h1>Building in the open, shipping for real.</h1>
+        <h1>Building in the open, <span className="accent-word">shipping</span> for real.</h1>
         <div className="hero-sub">
           <p>
             Benjamin Brown — founder, operator and full-stack builder behind five
