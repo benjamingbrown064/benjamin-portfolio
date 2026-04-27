@@ -101,8 +101,8 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 40px;
 }
-.wordmark { font-weight: 600; letter-spacing: -.02em; font-size: 18px; display: inline-flex; align-items: baseline; gap: 2px; }
-.wordmark sup { font-size: 9px; color: var(--mute); font-weight: 500; letter-spacing: 0; margin-left: 2px; }
+.wordmark { font-weight: 600; letter-spacing: -.02em; font-size: 18px; display: inline-flex; align-items: flex-start; gap: 5px; }
+.wordmark-dot { width: 6px; height: 6px; border-radius: 50%; background: #e49352; display: inline-block; flex-shrink: 0; margin-top: 2px; }
 .nav-center {
   display: flex; gap: 28px; align-items: center;
   background: var(--card); border: 1px solid var(--hair);

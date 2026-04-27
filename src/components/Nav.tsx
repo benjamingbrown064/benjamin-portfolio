@@ -11,7 +11,7 @@ export function Nav({ variant = "home" }: NavProps) {
     <nav className="topnav">
       <div className="nav-inner">
         <Link className="wordmark" href="/">
-          BENJAMIN BROWN<sup>®</sup>
+          BENJAMIN BROWN<span className="wordmark-dot" aria-hidden="true" />
         </Link>
         <div className="nav-center">
           <a href={home ? "#about" : "/#about"}>About</a>
