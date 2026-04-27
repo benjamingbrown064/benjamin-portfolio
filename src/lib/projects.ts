@@ -226,7 +226,7 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     metrics: [
       { n: "6", l: "Assessment modules" },
       { n: "4", l: "Cost engine pillars" },
-      { n: "7bn+", l: "Addressable market" },
+      { n: "$7bn", l: "Addressable market" },
       { n: "Live", l: "Production status" },
     ],
     commercialsCopy:
