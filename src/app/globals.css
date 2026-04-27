@@ -187,11 +187,17 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
   overflow-y: visible;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  padding: 8px max(40px, calc((100vw - 1200px) / 2)) 16px;
+  padding: 8px 40px 16px;
   cursor: grab;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: var(--hair) transparent;
+}
+@media (min-width: 1320px) {
+  .work-rail-track {
+    padding-left: calc((100vw - 1280px) / 2 + 40px);
+    padding-right: calc((100vw - 1280px) / 2 + 40px);
+  }
 }
 .work-rail-track.dragging { cursor: grabbing; user-select: none; scroll-behavior: auto; scroll-snap-type: none; }
 .work-rail-track::-webkit-scrollbar { height: 6px; }
