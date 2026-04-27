@@ -29,7 +29,7 @@ export function Testimonials() {
           <Reveal>
             <div>
               <span className="micro">Testimonials</span>
-              <h2 style={{ marginTop: 20 }}>
+              <h2 className="why-head">
                 Success stories from operators I&apos;ve worked with.
               </h2>
               <p className="col-lead">

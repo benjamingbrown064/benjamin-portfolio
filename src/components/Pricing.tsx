@@ -8,7 +8,7 @@ export function Pricing() {
           <Reveal>
             <div>
               <span className="micro">Pricing</span>
-              <h2 style={{ marginTop: 20 }}>Two ways to&nbsp;work together.</h2>
+              <h2 className="why-head">Two ways to&nbsp;work together.</h2>
               <p className="col-lead">
                 Retainer for ongoing build and operate work, fixed-scope for
                 defined projects. Every engagement starts with a one-week

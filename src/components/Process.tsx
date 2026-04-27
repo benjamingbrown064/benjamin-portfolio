@@ -20,7 +20,7 @@ export function Process() {
           <Reveal>
             <div>
               <span className="micro">Process</span>
-              <h2 style={{ marginTop: 20 }}>
+              <h2 className="why-head">
                 Our process is simple, purposeful, and adaptable.
               </h2>
               <p className="col-lead">

@@ -24,7 +24,7 @@ export function FAQ() {
           <Reveal>
             <div>
               <span className="micro">FAQ</span>
-              <h2 style={{ marginTop: 20 }}>Wondering how we work?</h2>
+              <h2 className="why-head">Wondering how we work?</h2>
               <p className="col-lead">
                 Short answers to the questions I get most often. For anything
                 else, just email.

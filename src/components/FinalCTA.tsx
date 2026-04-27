@@ -20,10 +20,10 @@ export function FinalCTA() {
       <div className="container-x">
         <Reveal>
           <span className="micro">Let&apos;s work together</span>
-          <p className="line">
+          <h2 className="why-head">
             Whether you&apos;re building a brand, designing a product, or simply
             want to explore an idea — I&apos;d love to hear from you.
-          </p>
+          </h2>
         </Reveal>
         <Reveal delay={0.05}>
           <div className="cta-bits">

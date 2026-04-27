@@ -33,7 +33,7 @@ export function Blog() {
           <Reveal>
             <div>
               <span className="micro">Blog</span>
-              <h2 style={{ marginTop: 20 }}>Latest insights from the build.</h2>
+              <h2 className="why-head">Latest insights from the build.</h2>
             </div>
           </Reveal>
           <Reveal delay={0.05}>
