@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
-import { Space_Mono, Public_Sans } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-const publicSans = Public_Sans({
-  variable: "--font-public-sans",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -37,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${publicSans.variable} ${spaceMono.variable}`}>
+    <html lang="en" className={interTight.variable}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeFlashScript }} />
       </head>
