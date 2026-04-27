@@ -9,6 +9,7 @@
   --dark: #0a0a0a;
   --dark-text: #fafafa;
   --dark-mute: #7a7a7a;
+  --accent: #e49352;
 }
 
 html[data-theme="dark"] {
@@ -61,7 +62,7 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: -.03em; line-height: 1.05; ma
 }
 .micro::before {
   content: ""; display: inline-block; width: 6px; height: 6px;
-  border-radius: 50%; background: var(--mute);
+  border-radius: 50%; background: var(--accent);
 }
 
 /* ── pill ── */
@@ -77,6 +78,8 @@ html[data-theme="dark"] .pill.dark { background: #f5f5f5; color: #0a0a0a; border
 html[data-theme="dark"] .pill.dark:hover { background: #fff; border-color: #fff; }
 .pill.ghost { background: transparent; color: var(--ink); border-color: var(--hair); }
 .pill.ghost:hover { border-color: var(--ink); }
+.pill.accent { background: transparent; color: var(--accent); border-color: var(--accent); }
+.pill.accent:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 .pill.light { background: var(--bg); color: var(--ink); border-color: var(--bg); }
 .pill.light:hover { background: transparent; color: var(--bg); border-color: var(--bg); }
 .pill .arr { display: inline-block; transition: transform .2s; }
@@ -102,7 +105,7 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
   padding: 14px 40px;
 }
 .wordmark { font-weight: 600; letter-spacing: -.02em; font-size: 18px; line-height: 1; display: inline-flex; align-items: flex-start; gap: 5px; }
-.wordmark-dot { width: 6px; height: 6px; border-radius: 50%; background: #e49352; display: inline-block; flex-shrink: 0; margin-top: 4px; }
+.wordmark-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; flex-shrink: 0; margin-top: 4px; }
 .nav-center {
   display: flex; gap: 28px; align-items: center;
   background: var(--card); border: 1px solid var(--hair);
@@ -135,7 +138,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .hero-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 48px; align-items: end; }
 .hero-sub p { color: var(--mute); font-size: 16.5px; line-height: 1.55; margin: 0; max-width: 480px; }
 .hero-sub .meta-right { text-align: right; color: var(--mute); font-size: 13px; }
-.hero-sub .meta-right strong { color: var(--ink); font-weight: 500; display: block; margin-top: 4px; }
+.hero-sub .meta-right strong { color: var(--accent); font-weight: 500; display: block; margin-top: 4px; }
 
 /* ── logo strip ── */
 .logos {
@@ -158,6 +161,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .hero-photo .cap { position: absolute; left: 24px; bottom: 20px; color: rgba(255,255,255,.55); font-size: 12px; letter-spacing: 0; }
 .scroll-ind { display: flex; align-items: center; gap: 8px; margin: 18px 0; color: var(--mute); font-size: 12.5px; justify-content: flex-end; cursor: pointer; transition: color .15s ease; }
 .scroll-ind:hover { color: var(--ink); }
+.scroll-ind .arr { color: var(--accent); }
 @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
 .scroll-ind .arr { animation: bob 2s ease-in-out infinite; }
 

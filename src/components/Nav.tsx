@@ -22,7 +22,7 @@ export function Nav({ variant = "home" }: NavProps) {
         </div>
         <div className="nav-right">
           {home ? (
-            <a className="pill ghost" href="#work">
+            <a className="pill accent" href="#work">
               Work
               <svg
                 className="nav-icon"
