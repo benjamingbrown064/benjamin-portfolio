@@ -269,7 +269,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .services-wrap { border-top: 1px solid var(--hair); padding-top: 40px; }
 .services {
   background: var(--dark); color: var(--dark-text);
-  border-radius: 7px; margin: 0 40px; padding: 64px 56px;
+  border-radius: 7px; padding: 64px 56px;
 }
 .services .micro { color: var(--dark-mute); }
 .services .micro::before { background: var(--dark-mute); }
@@ -523,7 +523,7 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
   .work-card { flex: 0 0 78vw; }
   .work-rail-track { padding-left: 20px; padding-right: 20px; scroll-padding-inline-start: 20px; }
   .stat-strip { grid-template-columns: 1fr 1fr; }
-  .services { margin: 32px 20px 0; padding: 40px 28px; }
+  .services { margin-top: 32px; padding: 40px 28px; }
   .nav-center { display: none; }
   .nav-right .pill.ghost { display: none; }
   .newsletter { min-width: 0; width: 100%; }
