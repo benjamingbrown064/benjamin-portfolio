@@ -89,7 +89,7 @@ export function SelectedWork() {
           <Reveal>
             <div>
               <span className="micro">Selected work</span>
-              <h2 style={{ marginTop: 20 }}>
+              <h2 className="why-head">
                 Recent projects
                 <br />
                 from the studio.
