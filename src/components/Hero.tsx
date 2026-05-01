@@ -1,11 +1,17 @@
 import Image from "next/image";
+import { AutoTypeText } from "./AutoTypeText";
 
 export function Hero() {
   return (
     <section className="hero" id="top">
       <div className="container-x">
         <span className="micro hero-label">Portfolio · 2026</span>
-        <h1>Building in the open, shipping for real.</h1>
+        <AutoTypeText
+          as="h1"
+          text="Building in the open, shipping for real."
+          initialDelayMs={180}
+          charMs={38}
+        />
         <div className="hero-sub">
           <p>
             Benjamin Brown — founder, operator and full-stack builder behind five
