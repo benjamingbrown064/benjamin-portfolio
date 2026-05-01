@@ -203,7 +203,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 }
 .stat-cell { padding: 28px 24px; position: relative; }
 .stat-cell + .stat-cell::before { content: ""; position: absolute; left: 0; top: 12%; bottom: 12%; width: 1px; background: var(--hair); }
-.stat-cell .n { font-size: 32px; font-weight: 500; letter-spacing: -.03em; line-height: 1; }
+.stat-cell .n { font-size: 64px; font-weight: 500; letter-spacing: -.03em; line-height: 1; }
 .stat-cell .lbl { font-size: 13px; color: var(--mute); margin-top: 10px; }
 
 /* ── selected work ── */
