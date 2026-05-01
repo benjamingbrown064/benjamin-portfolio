@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Reveal } from "./Reveal";
+import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 const STEPS = [
   { step: "Step 01", name: "Discover", body: "A short, intense scoping week. We lock the problem, the user, the metric and the hard constraints. No proposal bingo — we end with a one-pager and a decision." },
@@ -20,9 +21,11 @@ export function Process() {
           <Reveal>
             <div>
               <span className="micro">Process</span>
-              <h2 className="why-head">
-                Our process is simple, purposeful, and adaptable.
-              </h2>
+              <ScrollTypeOnView
+                as="h2"
+                className="why-head"
+                text="Our process is simple, purposeful, and adaptable."
+              />
               <p className="col-lead">
                 Four steps, two to sixteen weeks, one person accountable. I run
                 the whole thing and stay on after launch.

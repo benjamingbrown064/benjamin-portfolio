@@ -1,4 +1,5 @@
 import { Reveal } from "./Reveal";
+import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 const SERVICES = [
   "Discovery & Strategy",
@@ -16,9 +17,10 @@ export function Services() {
           <Reveal>
             <span className="micro">Services</span>
           </Reveal>
-          <Reveal delay={0.05}>
-            <h2>Design, build, and&nbsp;operate the thing.</h2>
-          </Reveal>
+          <ScrollTypeOnView
+            as="h2"
+            text="Design, build, and operate the thing."
+          />
           <div className="svc-list">
             {SERVICES.map((name, i) => (
               <Reveal key={name} delay={i * 0.04}>

@@ -1,4 +1,5 @@
 import { Reveal } from "./Reveal";
+import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 const CELLS = [
   { n: "01", title: "Full-stack delivery", body: "Discovery, design, engineering and operation in one head. No relay race, no broken handoffs." },
@@ -16,12 +17,11 @@ export function WhyMe() {
         <Reveal>
           <span className="micro">Why me</span>
         </Reveal>
-        <Reveal delay={0.05}>
-          <h2 className="why-head">
-            A team of one that ships like a team of five, obsessed with the
-            craft.
-          </h2>
-        </Reveal>
+        <ScrollTypeOnView
+          as="h2"
+          className="why-head"
+          text="A team of one that ships like a team of five, obsessed with the craft."
+        />
         <div className="why-grid">
           {CELLS.map((c, i) => (
             <Reveal key={c.n} delay={i * 0.04}>

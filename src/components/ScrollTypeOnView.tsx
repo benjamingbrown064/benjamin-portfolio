@@ -6,13 +6,14 @@ import { useReducedMotion, useScroll } from "framer-motion";
 type ScrollTypeOnViewProps = {
   text: string;
   className?: string;
+  as?: "p" | "h1" | "h2" | "h3" | "div" | "span";
 };
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-export function ScrollTypeOnView({ text, className }: ScrollTypeOnViewProps) {
+export function ScrollTypeOnView({ text, className, as: Tag = "p" }: ScrollTypeOnViewProps) {
   const ref = useRef<HTMLParagraphElement | null>(null);
   const reduceMotion = useReducedMotion();
   const [progress, setProgress] = useState(reduceMotion ? 1 : 0);
@@ -40,7 +41,7 @@ export function ScrollTypeOnView({ text, className }: ScrollTypeOnViewProps) {
     : Math.round(clamp(progress, 0, 1) * characters.length);
 
   return (
-    <p ref={ref} className={`${className ?? ""} scroll-type`}>
+    <Tag ref={ref} className={`${className ?? ""} scroll-type`}>
       <span aria-hidden="true">
         {characters.map((character, index) => {
           const isVisible = index < visibleCount;
@@ -57,6 +58,6 @@ export function ScrollTypeOnView({ text, className }: ScrollTypeOnViewProps) {
         })}
       </span>
       <span className="sr-only">{text}</span>
-    </p>
+    </Tag>
   );
 }

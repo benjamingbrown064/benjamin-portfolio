@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Reveal } from "./Reveal";
+import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 type Quote = {
   quote: string;
@@ -50,9 +51,11 @@ export function Testimonials() {
           <Reveal>
             <div>
               <span className="micro">Testimonials</span>
-              <h2 className="why-head">
-                Success stories from operators I&apos;ve worked with.
-              </h2>
+              <ScrollTypeOnView
+                as="h2"
+                className="why-head"
+                text="Success stories from operators I've worked with."
+              />
               <p className="col-lead">
                 A short selection of recent collaborators. Extended references
                 available on request.
