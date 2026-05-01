@@ -19,7 +19,7 @@ export function ScrollTypeOnView({ text, className }: ScrollTypeOnViewProps) {
   const characters = useMemo(() => Array.from(text), [text]);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.84", "end 0.28"],
+    offset: ["start 0.94", "end 0.34"],
   });
 
   useEffect(() => {
@@ -38,17 +38,23 @@ export function ScrollTypeOnView({ text, className }: ScrollTypeOnViewProps) {
   const visibleCount = reduceMotion
     ? characters.length
     : Math.round(clamp(progress, 0, 1) * characters.length);
-  const visibleText = characters.slice(0, visibleCount).join("");
-  const isComplete = visibleCount >= characters.length;
 
   return (
     <p ref={ref} className={`${className ?? ""} scroll-type`}>
-      <span className="scroll-type-ghost" aria-hidden="true">
-        {text}
-      </span>
-      <span className="scroll-type-live" aria-hidden="true">
-        {visibleText}
-        {!isComplete ? <span className="scroll-type-caret" /> : null}
+      <span aria-hidden="true">
+        {characters.map((character, index) => {
+          const isVisible = index < visibleCount;
+          const showCaret = !reduceMotion && index === Math.max(visibleCount - 1, 0) && visibleCount < characters.length;
+
+          return (
+            <span
+              key={`${character}-${index}`}
+              className={`scroll-type-char ${isVisible ? "is-visible" : "is-hidden"} ${showCaret ? "has-caret" : ""}`}
+            >
+              {character === " " ? "\u00A0" : character}
+            </span>
+          );
+        })}
       </span>
       <span className="sr-only">{text}</span>
     </p>
