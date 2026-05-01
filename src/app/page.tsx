@@ -5,6 +5,7 @@ import { SelectedWork } from "@/components/SelectedWork";
 import { WhyMe } from "@/components/WhyMe";
 import { Services } from "@/components/Services";
 import { Process } from "@/components/Process";
+import { PlaybookBanner } from "@/components/PlaybookBanner";
 import { Pricing } from "@/components/Pricing";
 import { Testimonials } from "@/components/Testimonials";
 import { FAQ } from "@/components/FAQ";
@@ -23,6 +24,7 @@ export default function HomePage() {
         <WhyMe />
         <Services />
         <Process />
+        <PlaybookBanner />
         <Pricing />
         <Testimonials />
         <FAQ />

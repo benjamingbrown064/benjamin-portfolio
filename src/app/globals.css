@@ -318,6 +318,60 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .services-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 48px; gap: 24px; flex-wrap: wrap; }
 .services-foot p { color: var(--dark-mute); font-size: 14.5px; max-width: 520px; margin: 0; line-height: 1.55; }
 
+/* ── playbook banner ── */
+.playbook-wrap { padding: 24px 0 0; }
+.playbook-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 7px;
+  min-height: 520px;
+  padding: 64px 56px;
+  isolation: isolate;
+}
+.playbook-image {
+  position: absolute;
+  inset: 0;
+}
+.playbook-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10,10,10,.84) 0%, rgba(10,10,10,.58) 48%, rgba(10,10,10,.74) 100%);
+}
+.playbook-content {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  color: #fafafa;
+}
+.playbook-content .micro { color: rgba(250,250,250,.72); }
+.playbook-content .micro::before { background: rgba(250,250,250,.72); }
+.playbook-title {
+  font-size: clamp(32px,4.2vw,56px);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  font-weight: 500;
+  margin: 24px 0 24px;
+  max-width: 12ch;
+}
+.playbook-copy {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(250,250,250,.8);
+  max-width: 58ch;
+}
+.playbook-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.playbook-note {
+  font-size: 13px;
+  color: rgba(250,250,250,.62);
+}
+
 /* ── process ── */
 .proc-list { display: flex; flex-direction: column; gap: 12px; }
 .proc-item {
@@ -588,6 +642,7 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
   .work-rail-track { padding-left: 20px; padding-right: 20px; scroll-padding-inline-start: 20px; }
   .stat-strip { grid-template-columns: 1fr 1fr; }
   .services { margin-top: 32px; padding: 40px 28px; }
+  .playbook-card { min-height: 420px; padding: 40px 28px; }
   .nav-center { display: none; }
   .nav-right .pill.ghost { display: none; }
   .newsletter { min-width: 0; width: 100%; }
