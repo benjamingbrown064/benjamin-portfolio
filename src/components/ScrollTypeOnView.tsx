@@ -29,7 +29,7 @@ export function ScrollTypeOnView({ text, className }: ScrollTypeOnViewProps) {
     }
 
     const unsubscribe = scrollYProgress.on("change", (value) => {
-      setProgress(value);
+      setProgress((current) => Math.max(current, value));
     });
 
     return unsubscribe;
@@ -51,7 +51,7 @@ export function ScrollTypeOnView({ text, className }: ScrollTypeOnViewProps) {
               key={`${character}-${index}`}
               className={`scroll-type-char ${isVisible ? "is-visible" : "is-hidden"} ${showCaret ? "has-caret" : ""}`}
             >
-              {character === " " ? "\u00A0" : character}
+              {character}
             </span>
           );
         })}
