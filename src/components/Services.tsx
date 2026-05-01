@@ -19,6 +19,7 @@ export function Services() {
           </Reveal>
           <ScrollTypeOnView
             as="h2"
+            className="services-title"
             text="Design, build, and operate the thing."
           />
           <div className="svc-list">
