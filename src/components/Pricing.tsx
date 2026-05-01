@@ -1,5 +1,4 @@
 import { Reveal } from "./Reveal";
-import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 export function Pricing() {
   return (
@@ -9,11 +8,7 @@ export function Pricing() {
           <Reveal>
             <div>
               <span className="micro">Pricing</span>
-              <ScrollTypeOnView
-                as="h2"
-                className="why-head"
-                text="Two ways to work together."
-              />
+              <h2 className="why-head">Two ways to work together.</h2>
               <p className="col-lead">
                 Retainer for ongoing build and operate work, fixed-scope for
                 defined projects. Every engagement starts with a one-week

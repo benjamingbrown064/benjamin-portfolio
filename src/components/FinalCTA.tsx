@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Reveal } from "./Reveal";
-import { ScrollTypeOnView } from "./ScrollTypeOnView";
+import { AutoTypeText } from "./AutoTypeText";
 
 export function FinalCTA() {
   const [email, setEmail] = useState("");
@@ -21,10 +21,14 @@ export function FinalCTA() {
       <div className="container-x">
         <Reveal>
           <span className="micro">Let&apos;s work together</span>
-          <ScrollTypeOnView
+          <AutoTypeText
             as="h2"
             className="why-head"
             text="Whether you're building a brand, designing a product, or simply want to explore an idea — I'd love to hear from you."
+            startWhenInView
+            initialDelayMs={120}
+            charMs={22}
+            rootMargin="0px 0px -6% 0px"
           />
         </Reveal>
         <Reveal delay={0.05}>

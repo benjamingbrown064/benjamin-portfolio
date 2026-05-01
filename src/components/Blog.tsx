@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Reveal } from "./Reveal";
-import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 const POSTS = [
   {
@@ -34,11 +33,7 @@ export function Blog() {
           <Reveal>
             <div>
               <span className="micro">Blog</span>
-              <ScrollTypeOnView
-                as="h2"
-                className="why-head"
-                text="Latest insights from the build."
-              />
+              <h2 className="why-head">Latest insights from the build.</h2>
             </div>
           </Reveal>
           <Reveal delay={0.05}>

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Reveal } from "./Reveal";
-import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 const FAQS = [
   { q: "Are you a designer, an engineer, or a founder?", a: "All three, in that order by hour count. I sketch, I design, I write the code, and I operate the company. That's the whole point." },
@@ -25,11 +24,7 @@ export function FAQ() {
           <Reveal>
             <div>
               <span className="micro">FAQ</span>
-              <ScrollTypeOnView
-                as="h2"
-                className="why-head"
-                text="Wondering how we work?"
-              />
+              <h2 className="why-head">Wondering how we work?</h2>
               <p className="col-lead">
                 Short answers to the questions I get most often. For anything
                 else, just email.

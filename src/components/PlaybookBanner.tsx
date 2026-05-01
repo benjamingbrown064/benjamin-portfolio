@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 export function PlaybookBanner() {
   return (
@@ -17,11 +16,9 @@ export function PlaybookBanner() {
           <div className="playbook-overlay" />
           <div className="playbook-content">
             <span className="micro">Free playbook</span>
-            <ScrollTypeOnView
-              as="h2"
-              className="playbook-title"
-              text="A practical playbook for turning business problems into AI applications that actually get used."
-            />
+            <h2 className="playbook-title">
+              A practical playbook for turning business problems into AI applications that actually get used.
+            </h2>
             <p className="playbook-copy">
               Built for operators, founders, and teams who know something is
               broken but need a clearer way to frame the problem, design the
