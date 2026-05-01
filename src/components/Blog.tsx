@@ -1,29 +1,9 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { JOURNAL, JOURNAL_ORDER } from "@/lib/journal";
 
-const POSTS = [
-  {
-    cover: "/assets/blog-1.jpg",
-    cat: "Essay",
-    title: "Stop calling it an MVP. Call it what it actually is.",
-    date: "18 Apr 2026",
-    read: "6 min read",
-  },
-  {
-    cover: "/assets/blog-2.jpg",
-    cat: "Notes",
-    title: "Three things I stopped outsourcing in 2025.",
-    date: "11 Apr 2026",
-    read: "3 min read",
-  },
-  {
-    cover: "/assets/blog-3.jpg",
-    cat: "Field",
-    title: "What HatSafe taught me about bad signal.",
-    date: "02 Apr 2026",
-    read: "4 min read",
-  },
-];
+const POSTS = JOURNAL_ORDER.slice(0, 3).map((slug) => JOURNAL[slug]);
 
 export function Blog() {
   return (
@@ -32,38 +12,38 @@ export function Blog() {
         <div className="work-head">
           <Reveal>
             <div>
-              <span className="micro">Blog</span>
-              <h2 className="why-head">Latest insights from the build.</h2>
+              <span className="micro">Journal</span>
+              <h2 className="why-head">A daily record from the workshop.</h2>
             </div>
           </Reveal>
           <Reveal delay={0.05}>
             <p className="intro">
-              Short notes from the workshop — shipped products, hard-won lessons,
-              and occasional opinions.
+              A boutique journal of products in motion, business problems worth
+              solving, and the daily thinking behind the work.
             </p>
           </Reveal>
         </div>
         <div className="blog-grid">
           {POSTS.map((p, i) => (
             <Reveal key={i} delay={i * 0.04}>
-              <article className="blog-card">
+              <Link href={`/journal/${p.slug}`} className="blog-card">
                 <div className="cover">
                   <Image
                     src={p.cover}
-                    alt=""
+                    alt={p.coverAlt}
                     fill
                     sizes="(min-width: 820px) 400px, 100vw"
                     className="cover-img"
                     style={{ objectFit: "cover" }}
                   />
-                  <span className="cat">{p.cat}</span>
+                  <span className="cat">{p.category}</span>
                 </div>
                 <h4>{p.title}</h4>
                 <div className="meta-row">
                   <span>{p.date}</span>
                   <span>{p.read}</span>
                 </div>
-              </article>
+              </Link>
             </Reveal>
           ))}
         </div>

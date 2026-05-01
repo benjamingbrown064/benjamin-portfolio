@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
 
 type NavProps = {
-  variant?: "home" | "case-study";
+  variant?: "home" | "case-study" | "subpage";
 };
 
 export function Nav({ variant = "home" }: NavProps) {
@@ -18,6 +18,7 @@ export function Nav({ variant = "home" }: NavProps) {
           <a href={home ? "#work" : "/#work"}>Work</a>
           <a href={home ? "#services" : "/#services"}>Services</a>
           <a href={home ? "#process" : "/#process"}>Process</a>
+          <a href={home ? "/journal" : "/journal"}>Journal</a>
           <a href={home ? "#faq" : "/#faq"}>FAQ</a>
         </div>
         <div className="nav-right">
@@ -40,8 +41,8 @@ export function Nav({ variant = "home" }: NavProps) {
               </svg>
             </a>
           ) : (
-            <Link className="pill ghost" href="/#work">
-              ← All work
+            <Link className="pill ghost" href="/">
+              ← Home
             </Link>
           )}
           <a className="pill dark" href={home ? "#contact" : "/#contact"}>
