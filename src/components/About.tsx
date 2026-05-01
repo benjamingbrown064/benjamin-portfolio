@@ -25,7 +25,7 @@ export function About() {
             <div className="stat-cell"><div className="n">26+</div><div className="lbl">Projects completed</div></div>
             <div className="stat-cell"><div className="n">05</div><div className="lbl">Active companies</div></div>
             <div className="stat-cell"><div className="n">16</div><div className="lbl">Years building</div></div>
-            <div className="stat-cell"><div className="n">£14M+</div><div className="lbl">Revenue influenced</div></div>
+            <div className="stat-cell"><div className="n">£21M+</div><div className="lbl">Revenue influenced</div></div>
           </div>
         </Reveal>
       </div>
