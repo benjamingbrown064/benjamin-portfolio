@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -7,10 +10,23 @@ type NavProps = {
 
 export function Nav({ variant = "home" }: NavProps) {
   const home = variant === "home";
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : previousOverflow;
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileMenuOpen]);
+
+  const closeMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <nav className="topnav">
       <div className="nav-inner">
-        <Link className="wordmark" href="/">
+        <Link className="wordmark" href="/" onClick={closeMenu}>
           BENJAMIN BROWN<span className="wordmark-dot" aria-hidden="true" />
         </Link>
         <div className="nav-center">
@@ -18,7 +34,7 @@ export function Nav({ variant = "home" }: NavProps) {
           <a href={home ? "#work" : "/#work"}>Work</a>
           <a href={home ? "#services" : "/#services"}>Services</a>
           <a href={home ? "#process" : "/#process"}>Process</a>
-          <a href={home ? "/journal" : "/journal"}>Journal</a>
+          <a href="/journal">Journal</a>
           <a href={home ? "#faq" : "/#faq"}>FAQ</a>
         </div>
         <div className="nav-right">
@@ -49,6 +65,48 @@ export function Nav({ variant = "home" }: NavProps) {
             Get in touch <span className="arr">→</span>
           </a>
           <ThemeToggle />
+          <button
+            type="button"
+            className="mobile-menu-trigger"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open menu"
+          >
+            Menu
+          </button>
+        </div>
+      </div>
+
+      <div className={`mobile-menu-panel ${isMobileMenuOpen ? "is-open" : ""}`}>
+        <div className="mobile-menu-panel-inner">
+          <button
+            type="button"
+            className="mobile-menu-close"
+            onClick={closeMenu}
+            aria-label="Close menu"
+          >
+            Close
+          </button>
+
+          <div className="mobile-menu-links">
+            <Link href="/" onClick={closeMenu}>Home</Link>
+            <a href={home ? "#work" : "/#work"} onClick={closeMenu}>Work</a>
+            <a href={home ? "#about" : "/#about"} onClick={closeMenu}>About</a>
+            <Link href="/journal" onClick={closeMenu}>Journal</Link>
+            <a href={home ? "#services" : "/#services"} onClick={closeMenu}>Services</a>
+            <a href={home ? "#process" : "/#process"} onClick={closeMenu}>Process</a>
+            <a href={home ? "#faq" : "/#faq"} onClick={closeMenu}>FAQ</a>
+          </div>
+
+          <div className="mobile-menu-actions">
+            <a className="pill light" href={home ? "#contact" : "/#contact"} onClick={closeMenu}>
+              Say Hi <span className="arr">→</span>
+            </a>
+            <ThemeToggle />
+          </div>
+
+          <div className="mobile-menu-mark" aria-hidden="true">
+            BB
+          </div>
         </div>
       </div>
     </nav>
