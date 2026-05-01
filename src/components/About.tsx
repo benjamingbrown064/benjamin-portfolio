@@ -1,4 +1,5 @@
 import { Reveal } from "./Reveal";
+import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 export function About() {
   return (
@@ -12,14 +13,12 @@ export function About() {
               first commit through to the P&amp;L.
             </p>
           </Reveal>
-          <Reveal delay={0.05}>
-            <p className="statement">
-              I&apos;m Ben — founder, operator, and full-stack builder shipping
-              across five companies. Twenty-six products live, tens of thousands
-              of users, and a stubborn belief that the best design decisions are
-              made by the people who ship the code.
-            </p>
-          </Reveal>
+          <div className="statement-wrap">
+            <ScrollTypeOnView
+              className="statement"
+              text="I’m Ben — founder, operator, and full-stack builder shipping across five companies. Twenty-six products live, tens of thousands of users, and a stubborn belief that the best design decisions are made by the people who ship the code."
+            />
+          </div>
         </div>
         <Reveal>
           <div className="stat-strip">

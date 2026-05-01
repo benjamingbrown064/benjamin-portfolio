@@ -166,9 +166,16 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .scroll-ind .arr { animation: bob 2s ease-in-out infinite; }
 
 /* ── about ── */
+.about .statement-wrap {
+  max-width: 760px;
+}
 .about .statement {
   font-size: clamp(26px,2.6vw,36px); line-height: 1.2; letter-spacing: -.02em;
   max-width: 760px; margin: 0; font-weight: 500; color: var(--ink); text-wrap: balance;
+}
+.scroll-type-char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
 }
 .stat-strip {
   display: grid; grid-template-columns: repeat(4,1fr);
