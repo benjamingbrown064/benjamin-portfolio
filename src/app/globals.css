@@ -892,6 +892,8 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
 /* ── case study page header ── */
 .cs-page-header { padding: 72px 0 56px; }
 .cs-ph-top { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+.cs-brand-logo { margin: 0 0 24px; max-width: 640px; }
+.cs-brand-logo-img { width: 100%; height: auto; object-fit: contain; }
 .cs-ph-title { font-size: clamp(48px,7vw,96px); font-weight: 600; letter-spacing: -.04em; line-height: .96; margin: 0; }
 .cs-ph-desc { font-size: 20px; color: var(--mute); line-height: 1.4; max-width: 640px; margin: 24px 0 0; letter-spacing: -.01em; }
 .cs-ph-meta { display: grid; grid-template-columns: repeat(5,1fr); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); margin: 48px 0 32px; }

@@ -49,6 +49,18 @@ export default async function CaseStudyPage({
                 <span className="pill ghost">{p.statusLabel}</span>
                 <span className="micro">{p.meta}</span>
               </div>
+              {p.logo ? (
+                <div className="cs-brand-logo">
+                  <Image
+                    src={p.logo}
+                    alt={p.logoAlt || `${p.title} logo`}
+                    width={1280}
+                    height={271}
+                    className="cs-brand-logo-img"
+                    priority
+                  />
+                </div>
+              ) : null}
               <h1 className="cs-ph-title">{p.title}</h1>
               <p className="cs-ph-desc">{p.descriptor}</p>
             </Reveal>
@@ -86,13 +98,13 @@ export default async function CaseStudyPage({
         <div className="container-x">
           <Reveal delay={0.02}>
             <div className="cs-hero-img">
-              <div className="frame">
+              <div className="frame" style={{ background: p.coverBg || undefined }}>
                 <Image
                   src={p.cover}
                   alt={p.coverAlt}
                   fill
                   sizes="(min-width: 1280px) 1200px, 100vw"
-                  style={{ objectFit: "cover", objectPosition: "center 35%" }}
+                  style={{ objectFit: p.coverFit || "cover", objectPosition: p.coverPosition || "center 35%" }}
                   priority
                 />
               </div>

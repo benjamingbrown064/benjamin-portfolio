@@ -6,6 +6,9 @@ export type ProjectCard = {
   cover: string;
   coverAlt: string;
   coverCap: string;
+  coverFit?: "cover" | "contain";
+  coverPosition?: string;
+  coverBg?: string;
   status: ProjectStatus;
   statusLabel: string;
   desc: string;
@@ -14,6 +17,8 @@ export type ProjectCard = {
 
 export type ProjectCaseStudy = ProjectCard & {
   descriptor: string;
+  logo?: string;
+  logoAlt?: string;
   cta: { label: string; href: string };
   pageMeta: {
     scope: string;
@@ -377,15 +382,20 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
   wilbolaw: {
     slug: "wilbolaw",
     title: "WilboLaw",
-    cover: "/assets/wilbolaw.jpg",
-    coverAlt: "WilboLaw — defence-side AI review workspace for QME analysis",
-    coverCap: "WilboLaw · QME review workspace",
+    cover: "/assets/wilbolaw-logo.jpg",
+    coverAlt: "WilboLaw logo",
+    coverCap: "WilboLaw · brand mark",
+    coverFit: "contain",
+    coverPosition: "center",
+    coverBg: "#ffffff",
     status: "live",
     statusLabel: "Live",
     desc: "A defence-side AI review layer for California workers' compensation attorneys analysing QME and PQME reports.",
     meta: "LegalTech · AI",
     descriptor:
       "A defence-side AI review layer for California workers' compensation attorneys, built around one specific workflow: tearing apart a QME report before opposing counsel can lean on it.",
+    logo: "/assets/wilbolaw-logo.jpg",
+    logoAlt: "WilboLaw logo",
     cta: { label: "Live preview", href: "https://benjamin-portfolio-swart.vercel.app/work/wilbolaw" },
     pageMeta: {
       scope: "Legal AI Platform",
@@ -581,6 +591,9 @@ export const PROJECT_CARDS: ProjectCard[] = PROJECT_ORDER.map((slug) => {
     cover: p.cover,
     coverAlt: p.coverAlt,
     coverCap: p.coverCap,
+    coverFit: p.coverFit,
+    coverPosition: p.coverPosition,
+    coverBg: p.coverBg,
     status: p.status,
     statusLabel: p.statusLabel,
     desc: p.desc,

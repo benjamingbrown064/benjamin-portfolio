@@ -123,14 +123,14 @@ export function SelectedWork() {
         <div className="work-rail-track" ref={trackRef} role="region" aria-label="Selected work">
           {PROJECT_CARDS.map((p) => (
             <Link key={p.slug} className="work-card" href={`/work/${p.slug}`} draggable={false}>
-              <div className="cover">
+              <div className="cover" style={{ background: p.coverBg || undefined }}>
                 <Image
                   src={p.cover}
                   alt={p.coverAlt}
                   fill
                   sizes="(min-width: 820px) 380px, 80vw"
                   className="cover-img"
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: p.coverFit || "cover", objectPosition: p.coverPosition || "center" }}
                   draggable={false}
                 />
                 <span className={`tag ${p.status === "beta" ? "beta" : p.status === "dev" ? "dev" : ""}`.trim()}>
