@@ -102,13 +102,13 @@ export default async function CaseStudyPage({
         <div className="container-x">
           <Reveal delay={0.02}>
             <div className="cs-hero-img">
-              <div className="frame" style={{ background: p.coverBg || undefined }}>
+              <div className="frame" style={{ background: p.heroImageBg || p.coverBg || undefined }}>
                 <Image
-                  src={p.cover}
-                  alt={p.coverAlt}
+                  src={p.heroImage || p.cover}
+                  alt={p.heroImageAlt || p.coverAlt}
                   fill
                   sizes="(min-width: 1280px) 1200px, 100vw"
-                  style={{ objectFit: p.coverFit || "cover", objectPosition: p.coverPosition || "center 35%" }}
+                  style={{ objectFit: p.heroImageFit || p.coverFit || "cover", objectPosition: p.heroImagePosition || p.coverPosition || "center 35%" }}
                   priority
                 />
               </div>

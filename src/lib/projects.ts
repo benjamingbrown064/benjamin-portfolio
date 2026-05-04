@@ -21,6 +21,11 @@ export type ProjectCaseStudy = ProjectCard & {
   descriptor: string;
   logo?: string;
   logoAlt?: string;
+  heroImage?: string;
+  heroImageAlt?: string;
+  heroImageFit?: "cover" | "contain";
+  heroImagePosition?: string;
+  heroImageBg?: string;
   cta: { label: string; href: string };
   pageMeta: {
     scope: string;
@@ -395,6 +400,10 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
       "A defence-side AI review layer for California workers' compensation attorneys, built around one specific workflow: tearing apart a QME report before opposing counsel can lean on it.",
     logo: "/assets/wilbolaw-title-logo.jpg",
     logoAlt: "WilboLaw logo",
+    heroImage: "/assets/wilbolaw-hero.jpg",
+    heroImageAlt: "WilboLaw executive dashboard on laptop in a law office",
+    heroImageFit: "cover",
+    heroImagePosition: "center center",
     titleLogo: "/assets/wilbolaw-title-logo.jpg",
     titleLogoAlt: "WilboLaw logo",
     coverFit: "cover",
