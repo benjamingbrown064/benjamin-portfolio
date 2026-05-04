@@ -35,6 +35,7 @@ export type ProjectCaseStudy = ProjectCard & {
     role: string;
   };
   heroCaption: [string, string];
+  detailImages?: { src: string; alt: string }[];
   challenge: { h: string; p: string };
   solution: { h: string; p: string };
   stack: { k: string; v: string[] }[];
@@ -417,6 +418,10 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
       role: "Product strategy · Design & Build",
     },
     heroCaption: ["WilboLaw — QME review layer, 2026", "Product · LegalTech"],
+    detailImages: [
+      { src: "/assets/wilbolaw-detail-1.jpg", alt: "WilboLaw case details view on desktop in law office" },
+      { src: "/assets/wilbolaw-detail-2.jpg", alt: "WilboLaw document and reports view on laptop in law office" },
+    ],
     challenge: {
       h: "California workers' compensation defence is brutally document-heavy, and the core work is finding weaknesses in QME and PQME reports before they shape the case.",
       p: "A single file can span hundreds of pages across QME reports, AME reports, treating physician records, imaging, depositions, prior injuries, and employer correspondence, all of it cross-checked against AMA Guides 5th Edition, California Labor Code, CCR Title 8, the 2005 PDRS, and WCAB decisions. General-purpose legal AI is not enough here. If it invents a page number or misstates a source, the output is unusable.",

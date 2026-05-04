@@ -141,6 +141,23 @@ export default async function CaseStudyPage({
         {/* Solution */}
         <section className="cs-blk">
           <div className="container-x">
+            {p.detailImages?.length ? (
+              <Reveal>
+                <div className="cs-detail-grid">
+                  {p.detailImages.map((img, i) => (
+                    <div className="frame" key={i}>
+                      <Image
+                        src={img.src}
+                        alt={img.alt}
+                        fill
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+            ) : null}
             <Reveal>
               <div className="sec-head">
                 <span className="micro">Solution</span>
