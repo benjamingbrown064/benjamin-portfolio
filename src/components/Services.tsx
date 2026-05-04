@@ -38,8 +38,8 @@ export function Services() {
                 Engagements run from week-long strategy sprints to open-ended
                 fractional CTO work. I take on two clients per quarter, never more.
               </p>
-              <a className="pill light" href="#pricing">
-                See pricing <span className="arr">→</span>
+              <a className="pill light" href="#contact">
+                Get in touch <span className="arr">→</span>
               </a>
             </div>
           </Reveal>

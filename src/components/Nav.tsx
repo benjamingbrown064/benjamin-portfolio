@@ -24,57 +24,58 @@ export function Nav({ variant = "home" }: NavProps) {
   const closeMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <nav className="topnav">
-      <div className="nav-inner">
-        <Link className="wordmark" href="/" onClick={closeMenu}>
-          BENJAMIN BROWN<span className="wordmark-dot" aria-hidden="true" />
-        </Link>
-        <div className="nav-center">
-          <a href={home ? "#about" : "/#about"}>About</a>
-          <a href={home ? "#work" : "/#work"}>Work</a>
-          <a href={home ? "#services" : "/#services"}>Services</a>
-          <a href={home ? "#process" : "/#process"}>Process</a>
-          <a href="/journal">Journal</a>
-          <a href={home ? "#faq" : "/#faq"}>FAQ</a>
-        </div>
-        <div className="nav-right">
-          {home ? (
-            <a className="pill accent" href="#work">
-              Work
-              <svg
-                className="nav-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="3" y="7.5" width="18" height="12.5" rx="2" />
-                <path d="M9 7.5V5.5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                <path d="M3 12.5h18" />
-              </svg>
+    <>
+      <nav className="topnav">
+        <div className="nav-inner">
+          <Link className="wordmark" href="/" onClick={closeMenu}>
+            BENJAMIN BROWN<span className="wordmark-dot" aria-hidden="true" />
+          </Link>
+          <div className="nav-center">
+            <a href={home ? "#about" : "/#about"}>About</a>
+            <a href={home ? "#work" : "/#work"}>Work</a>
+            <a href={home ? "#services" : "/#services"}>Services</a>
+            <a href={home ? "#process" : "/#process"}>Process</a>
+            <Link href="/journal">Journal</Link>
+          </div>
+          <div className="nav-right">
+            {home ? (
+              <a className="pill accent" href="#work">
+                Work
+                <svg
+                  className="nav-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="7.5" width="18" height="12.5" rx="2" />
+                  <path d="M9 7.5V5.5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                  <path d="M3 12.5h18" />
+                </svg>
+              </a>
+            ) : (
+              <Link className="pill ghost" href="/">
+                ← Home
+              </Link>
+            )}
+            <a className="pill dark" href={home ? "#contact" : "/#contact"}>
+              Get in touch <span className="arr">→</span>
             </a>
-          ) : (
-            <Link className="pill ghost" href="/">
-              ← Home
-            </Link>
-          )}
-          <a className="pill dark" href={home ? "#contact" : "/#contact"}>
-            Get in touch <span className="arr">→</span>
-          </a>
-          <ThemeToggle />
-          <button
-            type="button"
-            className="mobile-menu-trigger"
-            onClick={() => setIsMobileMenuOpen(true)}
-            aria-label="Open menu"
-          >
-            Menu
-          </button>
+            <ThemeToggle />
+            <button
+              type="button"
+              className="mobile-menu-trigger"
+              onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              Menu
+            </button>
+          </div>
         </div>
-      </div>
+      </nav>
 
       <div className={`mobile-menu-panel ${isMobileMenuOpen ? "is-open" : ""}`}>
         <div className="mobile-menu-panel-inner">
@@ -94,11 +95,10 @@ export function Nav({ variant = "home" }: NavProps) {
             <Link href="/journal" onClick={closeMenu}>Journal</Link>
             <a href={home ? "#services" : "/#services"} onClick={closeMenu}>Services</a>
             <a href={home ? "#process" : "/#process"} onClick={closeMenu}>Process</a>
-            <a href={home ? "#faq" : "/#faq"} onClick={closeMenu}>FAQ</a>
           </div>
 
           <div className="mobile-menu-actions">
-            <a className="pill light" href={home ? "#contact" : "/#contact"} onClick={closeMenu}>
+            <a className="pill dark" href={home ? "#contact" : "/#contact"} onClick={closeMenu}>
               Say Hi <span className="arr">→</span>
             </a>
             <ThemeToggle />
@@ -109,6 +109,6 @@ export function Nav({ variant = "home" }: NavProps) {
           </div>
         </div>
       </div>
-    </nav>
+    </>
   );
 }

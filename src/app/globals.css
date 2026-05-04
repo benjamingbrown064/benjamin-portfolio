@@ -48,6 +48,7 @@ html, body {
 body { overflow-x: hidden; font-size: 16px; font-weight: 400; letter-spacing: -.01em; line-height: 1.5; }
 a { color: inherit; text-decoration: none; transition: opacity .2s, color .2s, background .2s, border-color .2s; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+html, body { background-color: var(--bg); }
 img { display: block; max-width: 100%; }
 ::selection { background: var(--ink); color: var(--bg); }
 h1, h2, h3, h4 { font-weight: 500; letter-spacing: -.03em; line-height: 1.05; margin: 0; }
@@ -127,8 +128,8 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
 .mobile-menu-panel {
   position: fixed;
   inset: 0;
-  background: #050505;
-  color: #fafafa;
+  background: var(--bg);
+  color: var(--ink);
   opacity: 0;
   pointer-events: none;
   transition: opacity .2s ease;
@@ -140,7 +141,7 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
 }
 .mobile-menu-panel-inner {
   min-height: 100dvh;
-  padding: 24px 20px 28px;
+  padding: calc(env(safe-area-inset-top, 0px) + 24px) 20px calc(env(safe-area-inset-bottom, 0px) + 28px);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -149,9 +150,9 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
   align-self: flex-end;
   padding: 12px 24px;
   border-radius: 999px;
-  background: #fafafa;
-  color: #0a0a0a;
-  border: 1px solid rgba(250,250,250,.4);
+  background: var(--ink);
+  color: var(--bg);
+  border: 1px solid var(--ink);
   font-size: 15px;
 }
 .mobile-menu-links {
@@ -164,7 +165,7 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
   text-align: center;
 }
 .mobile-menu-links a {
-  color: #fafafa;
+  color: var(--ink);
   font-size: clamp(28px, 8vw, 48px);
   line-height: 1.05;
   letter-spacing: -.04em;
@@ -177,8 +178,8 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
   margin-bottom: 20px;
 }
 .mobile-menu-actions .theme-toggle {
-  border-color: rgba(255,255,255,.18);
-  color: #fafafa;
+  border-color: var(--hair);
+  color: var(--ink);
 }
 .mobile-menu-mark {
   position: absolute;
@@ -188,7 +189,7 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
   font-weight: 700;
   line-height: .82;
   letter-spacing: -.08em;
-  color: rgba(255,255,255,.9);
+  color: color-mix(in srgb, var(--ink) 10%, transparent);
   pointer-events: none;
 }
 .theme-toggle {

@@ -25,6 +25,7 @@ export function SelectedWork() {
     window.addEventListener("resize", updateEdges);
 
     let down = false;
+    let dragging = false;
     let startX = 0;
     let startScroll = 0;
     let moved = 0;
@@ -32,26 +33,39 @@ export function SelectedWork() {
     const onPointerDown = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       down = true;
+      dragging = false;
       moved = 0;
       startX = e.clientX;
       startScroll = track.scrollLeft;
-      track.classList.add("dragging");
-      track.setPointerCapture(e.pointerId);
     };
     const onPointerMove = (e: PointerEvent) => {
       if (!down) return;
       const dx = e.clientX - startX;
       moved = Math.max(moved, Math.abs(dx));
+
+      if (!dragging && moved > 8) {
+        dragging = true;
+        track.classList.add("dragging");
+        track.setPointerCapture(e.pointerId);
+      }
+
+      if (!dragging) return;
       track.scrollLeft = startScroll - dx;
     };
     const endDrag = (e: PointerEvent) => {
       if (!down) return;
       down = false;
-      track.classList.remove("dragging");
-      try { track.releasePointerCapture(e.pointerId); } catch {}
+      if (dragging) {
+        track.classList.remove("dragging");
+        try { track.releasePointerCapture(e.pointerId); } catch {}
+      }
+      window.setTimeout(() => {
+        moved = 0;
+        dragging = false;
+      }, 0);
     };
     const onClickCapture = (e: MouseEvent) => {
-      if (moved > 6) {
+      if (dragging || moved > 8) {
         e.preventDefault();
         e.stopPropagation();
       }
