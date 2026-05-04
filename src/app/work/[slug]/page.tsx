@@ -200,6 +200,19 @@ export default async function CaseStudyPage({
         {/* Process */}
         <section className="cs-blk">
           <div className="container-x">
+            {p.processImage ? (
+              <Reveal>
+                <div className="cs-wide-image frame" style={{ background: p.processImage.bg || undefined }}>
+                  <Image
+                    src={p.processImage.src}
+                    alt={p.processImage.alt}
+                    fill
+                    sizes="(min-width: 1280px) 1200px, 100vw"
+                    style={{ objectFit: p.processImage.fit || "cover", objectPosition: p.processImage.position || "center center" }}
+                  />
+                </div>
+              </Reveal>
+            ) : null}
             <Reveal>
               <div className="sec-head">
                 <span className="micro">Process</span>
