@@ -50,18 +50,22 @@ export default async function CaseStudyPage({
                 <span className="micro">{p.meta}</span>
               </div>
               {p.logo ? (
-                <div className="cs-brand-logo">
-                  <Image
-                    src={p.logo}
-                    alt={p.logoAlt || `${p.title} logo`}
-                    width={1280}
-                    height={271}
-                    className="cs-brand-logo-img"
-                    priority
-                  />
-                </div>
-              ) : null}
-              <h1 className="cs-ph-title">{p.title}</h1>
+                <>
+                  <div className="cs-brand-logo">
+                    <Image
+                      src={p.logo}
+                      alt={p.logoAlt || `${p.title} logo`}
+                      width={1280}
+                      height={271}
+                      className="cs-brand-logo-img"
+                      priority
+                    />
+                  </div>
+                  <h1 className="sr-only">{p.title}</h1>
+                </>
+              ) : (
+                <h1 className="cs-ph-title">{p.title}</h1>
+              )}
               <p className="cs-ph-desc">{p.descriptor}</p>
             </Reveal>
             <Reveal delay={0.04}>
