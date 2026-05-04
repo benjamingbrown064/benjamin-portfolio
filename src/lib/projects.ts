@@ -393,7 +393,7 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     meta: "LegalTech · AI",
     descriptor:
       "A defence-side AI review layer for California workers' compensation attorneys, built around one specific workflow: tearing apart a QME report before opposing counsel can lean on it.",
-    logo: "/assets/wilbolaw-logo.jpg",
+    logo: "/assets/wilbolaw-title-logo.jpg",
     logoAlt: "WilboLaw logo",
     titleLogo: "/assets/wilbolaw-title-logo.jpg",
     titleLogoAlt: "WilboLaw logo",

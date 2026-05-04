@@ -350,7 +350,7 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .work-card .cover .tag.dev .d { background: var(--hair); border: 1px solid var(--mute); }
 .work-card .title { font-size: 22px; font-weight: 500; letter-spacing: -.02em; margin: 4px 6px 6px; }
 .work-card .title-logo-wrap { margin: 8px 6px 10px 6px; display: block; }
-.work-card .title-logo { display: block; width: 100%; max-width: 320px; height: auto; object-fit: contain; object-position: left center; }
+.work-card .title-logo { display: block; width: 100%; max-width: 224px; height: auto; object-fit: contain; object-position: left center; }
 .work-card .desc { font-size: 14px; color: var(--mute); margin: 0 6px 10px; line-height: 1.5; }
 .work-card .meta { display: flex; justify-content: space-between; align-items: center; margin: 14px 6px 4px; font-size: 13px; color: var(--mute); }
 .work-card .arrow {
@@ -895,7 +895,7 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
 .cs-page-header { padding: 72px 0 56px; }
 .cs-ph-top { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
 .cs-brand-logo { margin: 0 0 24px; max-width: 640px; }
-.cs-brand-logo-img { width: 100%; height: auto; object-fit: contain; }
+.cs-brand-logo-img { width: 100%; height: auto; object-fit: contain; object-position: left center; }
 .cs-ph-title { font-size: clamp(48px,7vw,96px); font-weight: 600; letter-spacing: -.04em; line-height: .96; margin: 0; }
 .cs-ph-desc { font-size: 20px; color: var(--mute); line-height: 1.4; max-width: 640px; margin: 24px 0 0; letter-spacing: -.01em; }
 .cs-ph-meta { display: grid; grid-template-columns: repeat(5,1fr); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); margin: 48px 0 32px; }
