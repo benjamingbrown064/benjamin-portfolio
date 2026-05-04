@@ -9,6 +9,8 @@ export type ProjectCard = {
   coverFit?: "cover" | "contain";
   coverPosition?: string;
   coverBg?: string;
+  titleLogo?: string;
+  titleLogoAlt?: string;
   status: ProjectStatus;
   statusLabel: string;
   desc: string;
@@ -393,6 +395,8 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
       "A defence-side AI review layer for California workers' compensation attorneys, built around one specific workflow: tearing apart a QME report before opposing counsel can lean on it.",
     logo: "/assets/wilbolaw-logo.jpg",
     logoAlt: "WilboLaw logo",
+    titleLogo: "/assets/wilbolaw-title-logo.jpg",
+    titleLogoAlt: "WilboLaw logo",
     coverFit: "cover",
     coverPosition: "center 35%",
     cta: { label: "Live preview", href: "https://benjamin-portfolio-swart.vercel.app/work/wilbolaw" },
@@ -593,6 +597,8 @@ export const PROJECT_CARDS: ProjectCard[] = PROJECT_ORDER.map((slug) => {
     coverFit: p.coverFit,
     coverPosition: p.coverPosition,
     coverBg: p.coverBg,
+    titleLogo: p.titleLogo,
+    titleLogoAlt: p.titleLogoAlt,
     status: p.status,
     statusLabel: p.statusLabel,
     desc: p.desc,

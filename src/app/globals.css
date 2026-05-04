@@ -349,6 +349,8 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
 .work-card .cover .tag.beta .d { background: var(--mute); }
 .work-card .cover .tag.dev .d { background: var(--hair); border: 1px solid var(--mute); }
 .work-card .title { font-size: 22px; font-weight: 500; letter-spacing: -.02em; margin: 4px 6px 6px; }
+.work-card .title-logo-wrap { margin: 8px 6px 10px 0; display: block; }
+.work-card .title-logo { display: block; width: 100%; max-width: 320px; height: auto; object-fit: contain; object-position: left center; }
 .work-card .desc { font-size: 14px; color: var(--mute); margin: 0 6px 10px; line-height: 1.5; }
 .work-card .meta { display: flex; justify-content: space-between; align-items: center; margin: 14px 6px 4px; font-size: 13px; color: var(--mute); }
 .work-card .arrow {

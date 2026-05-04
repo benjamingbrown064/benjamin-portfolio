@@ -138,7 +138,21 @@ export function SelectedWork() {
                   {p.statusLabel}
                 </span>
               </div>
-              <h3 className="title">{p.title}</h3>
+              {p.titleLogo ? (
+                <div className="title-logo-wrap">
+                  <Image
+                    src={p.titleLogo}
+                    alt={p.titleLogoAlt || `${p.title} logo`}
+                    width={1280}
+                    height={100}
+                    className="title-logo"
+                    draggable={false}
+                  />
+                  <span className="sr-only">{p.title}</span>
+                </div>
+              ) : (
+                <h3 className="title">{p.title}</h3>
+              )}
               <p className="desc">{p.desc}</p>
               <div className="meta">
                 <span>{p.meta}</span>
