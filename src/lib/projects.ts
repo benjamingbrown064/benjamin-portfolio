@@ -26,6 +26,9 @@ export type ProjectCaseStudy = ProjectCard & {
   heroImageFit?: "cover" | "contain";
   heroImagePosition?: string;
   heroImageBg?: string;
+  heroImageDisplay?: "cropped" | "full";
+  heroImageWidth?: number;
+  heroImageHeight?: number;
   cta: { label: string; href: string };
   pageMeta: {
     scope: string;
@@ -391,8 +394,8 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
   wilbolaw: {
     slug: "wilbolaw",
     title: "WilboLaw",
-    cover: "/assets/wilbolaw.jpg",
-    coverAlt: "WilboLaw — defence-side AI review workspace for QME analysis",
+    cover: "/assets/wilbolaw-home.jpg",
+    coverAlt: "WilboLaw case dashboard displayed on a laptop in a law office",
     coverCap: "WilboLaw · QME review workspace",
     status: "live",
     statusLabel: "Live",
@@ -402,30 +405,33 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
       "A defence-side AI review layer for California workers' compensation attorneys, built around one specific workflow: tearing apart a QME report before opposing counsel can lean on it.",
     logo: "/assets/wilbolaw-title-logo.jpg",
     logoAlt: "WilboLaw logo",
-    heroImage: "/assets/wilbolaw-hero.jpg",
+    heroImage: "/assets/wilbolaw-hero-full.jpg",
     heroImageAlt: "WilboLaw executive dashboard on laptop in a law office",
-    heroImageFit: "cover",
+    heroImageFit: "contain",
     heroImagePosition: "center center",
+    heroImageDisplay: "full",
+    heroImageWidth: 1280,
+    heroImageHeight: 720,
     titleLogo: "/assets/wilbolaw-title-logo.jpg",
     titleLogoAlt: "WilboLaw logo",
     coverFit: "cover",
-    coverPosition: "center 35%",
+    coverPosition: "center center",
     cta: { label: "Live preview", href: "https://benjamin-portfolio-swart.vercel.app/work/wilbolaw" },
     pageMeta: {
       scope: "Legal AI Platform",
-      client: "CW Law",
-      duration: "Live · 2026",
-      year: "2026",
-      role: "Product strategy · Design & Build",
+      client: "",
+      duration: "Live · 2025",
+      year: "2025",
+      role: "Founder and Product Owner",
     },
-    heroCaption: ["WilboLaw — QME review layer, 2026", "Product · LegalTech"],
+    heroCaption: ["WilboLaw — QME review layer, 2025", "Product · LegalTech"],
     detailImages: [
-      { src: "/assets/wilbolaw-detail-1.jpg", alt: "WilboLaw case details view on desktop in law office" },
-      { src: "/assets/wilbolaw-detail-2.jpg", alt: "WilboLaw document and reports view on laptop in law office" },
+      { src: "/assets/wilbolaw-detail-3.jpg", alt: "WilboLaw case details view on laptop with user in a law office" },
+      { src: "/assets/wilbolaw-detail-4.jpg", alt: "WilboLaw case details view on laptop at a wooden desk in a law office" },
     ],
     processImage: {
-      src: "/assets/wilbolaw-process.jpg",
-      alt: "WilboLaw missing evidence report on desktop in law office",
+      src: "/assets/wilbolaw-process-2.jpg",
+      alt: "WilboLaw missing evidence report on desktop in a law office",
       fit: "cover",
       position: "center center",
     },
@@ -459,7 +465,7 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
       { n: "3", l: "Primary outputs" },
       { n: "4", l: "Letter types" },
       { n: "1 day", l: "Review instead of a week" },
-      { n: "7 years", l: "Audit retention" },
+      { n: "7YRS", l: "Audit retention" },
     ],
     commercialsCopy:
       "WilboLaw starts as a live pilot with CW Law and is designed to generalise to other California workers' compensation defence firms once the workflow is proven on real files. The commercial shape is deliberate: prove the workflow in one specialist firm, then productise the same defence-side review layer as repeatable legal-tech software.",

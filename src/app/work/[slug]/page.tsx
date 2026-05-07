@@ -70,26 +70,20 @@ export default async function CaseStudyPage({
             </Reveal>
             <Reveal delay={0.04}>
               <div className="cs-ph-meta">
-                <div className="cs-ph-meta-item">
-                  <span className="k">Scope</span>
-                  <span className="v">{p.pageMeta.scope}</span>
-                </div>
-                <div className="cs-ph-meta-item">
-                  <span className="k">Client</span>
-                  <span className="v">{p.pageMeta.client}</span>
-                </div>
-                <div className="cs-ph-meta-item">
-                  <span className="k">Duration</span>
-                  <span className="v">{p.pageMeta.duration}</span>
-                </div>
-                <div className="cs-ph-meta-item">
-                  <span className="k">Year</span>
-                  <span className="v">{p.pageMeta.year}</span>
-                </div>
-                <div className="cs-ph-meta-item">
-                  <span className="k">Role</span>
-                  <span className="v">{p.pageMeta.role}</span>
-                </div>
+                {[
+                  { label: "Scope", value: p.pageMeta.scope },
+                  { label: "Client", value: p.pageMeta.client },
+                  { label: "Duration", value: p.pageMeta.duration },
+                  { label: "Year", value: p.pageMeta.year },
+                  { label: "Role", value: p.pageMeta.role },
+                ]
+                  .filter((item) => item.value)
+                  .map((item) => (
+                    <div className="cs-ph-meta-item" key={item.label}>
+                      <span className="k">{item.label}</span>
+                      <span className="v">{item.value}</span>
+                    </div>
+                  ))}
               </div>
               <a className="pill dark" href={p.cta.href} target="_blank" rel="noopener noreferrer">
                 {p.cta.label} <span className="arr">→</span>
@@ -102,15 +96,30 @@ export default async function CaseStudyPage({
         <div className="container-x">
           <Reveal delay={0.02}>
             <div className="cs-hero-img">
-              <div className="frame" style={{ background: p.heroImageBg || p.coverBg || undefined }}>
-                <Image
-                  src={p.heroImage || p.cover}
-                  alt={p.heroImageAlt || p.coverAlt}
-                  fill
-                  sizes="(min-width: 1280px) 1200px, 100vw"
-                  style={{ objectFit: p.heroImageFit || p.coverFit || "cover", objectPosition: p.heroImagePosition || p.coverPosition || "center 35%" }}
-                  priority
-                />
+              <div
+                className={`frame${p.heroImageDisplay === "full" ? " frame-full-image" : ""}`}
+                style={{ background: p.heroImageBg || p.coverBg || undefined }}
+              >
+                {p.heroImageDisplay === "full" ? (
+                  <Image
+                    src={p.heroImage || p.cover}
+                    alt={p.heroImageAlt || p.coverAlt}
+                    width={p.heroImageWidth || 1600}
+                    height={p.heroImageHeight || 900}
+                    sizes="(min-width: 1280px) 1200px, 100vw"
+                    className="cs-hero-full-img"
+                    priority
+                  />
+                ) : (
+                  <Image
+                    src={p.heroImage || p.cover}
+                    alt={p.heroImageAlt || p.coverAlt}
+                    fill
+                    sizes="(min-width: 1280px) 1200px, 100vw"
+                    style={{ objectFit: p.heroImageFit || p.coverFit || "cover", objectPosition: p.heroImagePosition || p.coverPosition || "center 35%" }}
+                    priority
+                  />
+                )}
               </div>
               <div className="cap">
                 <span>{p.heroCaption[0]}</span>
