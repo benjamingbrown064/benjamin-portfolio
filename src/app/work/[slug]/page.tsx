@@ -275,6 +275,26 @@ export default async function CaseStudyPage({
                 <span className="num">06</span>
               </div>
               <div className="cs-comm">
+                {p.engagementPhases?.length ? (
+                  <div className="cs-phase-grid">
+                    {p.engagementPhases.map((phase) => (
+                      <article className="cs-phase-card" key={phase.n}>
+                        <div className="frame cs-phase-image">
+                          <Image
+                            src={phase.image.src}
+                            alt={phase.image.alt}
+                            fill
+                            sizes="(min-width: 1200px) 360px, (min-width: 768px) 33vw, 100vw"
+                            style={{ objectFit: "cover" }}
+                          />
+                        </div>
+                        <span className="phase-n">{phase.n}</span>
+                        <h3>{phase.title}</h3>
+                        <p>{phase.body}</p>
+                      </article>
+                    ))}
+                  </div>
+                ) : null}
                 <p className="copy">{p.commercialsCopy}</p>
                 <div className="card">
                   <p className="k">Commercial breakdown</p>

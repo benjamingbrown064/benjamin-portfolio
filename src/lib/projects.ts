@@ -46,6 +46,12 @@ export type ProjectCaseStudy = ProjectCard & {
   process: { n: string; d: string }[];
   result: { h: string; p: string };
   metrics: { n: string; l: string }[];
+  engagementPhases?: {
+    n: string;
+    title: string;
+    body: string;
+    image: { src: string; alt: string };
+  }[];
   commercialsCopy: string;
   comm: { model: string; status: string; revenue: string; ownership: string };
   quote: string;
@@ -247,6 +253,35 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
       { n: "4", l: "Cost engine pillars" },
       { n: "$7bn", l: "Addressable market" },
       { n: "Live", l: "Production status" },
+    ],
+    engagementPhases: [
+      {
+        n: "01",
+        title: "Discover.",
+        body: "A focused two-week discovery. We sit with your operations, technology, finance, and risk leads. We read the existing policies, the open audit findings, and the last four board packs. We leave with the inputs, not the answers.",
+        image: {
+          src: "/assets/govscape-hero-4.png",
+          alt: "Discovery interview — consultant and client lead reviewing policy stack.",
+        },
+      },
+      {
+        n: "02",
+        title: "Quantify.",
+        body: "Two weeks of modelling. Every line is calculated from a published method. Every figure carries a sourced range and a stated confidence. The output is a working paper your board can read on a Sunday night.",
+        image: {
+          src: "/assets/govscape-hero-5.png",
+          alt: "Modelling spread — analyst at desk with working paper draft and ledger printout.",
+        },
+      },
+      {
+        n: "03",
+        title: "Remediate.",
+        body: "Optional. Where you want help closing the gaps the assessment surfaced, we scope a fixed-price remediation against the working paper. We do not sell the assessment to sell the remediation. The first stands on its own.",
+        image: {
+          src: "/assets/govscape-hero-6.png",
+          alt: "Remediation session — whiteboard or screen-share showing prioritised gap closure plan.",
+        },
+      },
     ],
     commercialsCopy:
       "Govscape runs a three-phase commercial model. A discovery engagement quantifies financial exposure, a remediation programme closes the gaps, and a managed governance subscription monitors them continuously. Consulting margins on the way in, recurring software revenue on the way out — and a deliberate transition from services to platform that improves both scalability and valuation.",
