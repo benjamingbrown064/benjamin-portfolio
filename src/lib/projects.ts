@@ -9,6 +9,8 @@ export type ProjectCard = {
   coverFit?: "cover" | "contain";
   coverPosition?: string;
   coverBg?: string;
+  coverHover?: string;
+  coverHoverAlt?: string;
   titleLogo?: string;
   titleLogoAlt?: string;
   status: ProjectStatus;
@@ -62,6 +64,7 @@ export const PROJECT_ORDER: string[] = [
   "wilbolaw",
   "warrantyos",
   "govscape",
+  "zebi",
   "dealer-engine",
   "taskbox",
   "love-warranty",
@@ -76,6 +79,8 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     cover: "/assets/warrantyos-hero.png",
     coverAlt: "WarrantyOS dealer onboarding workflow on a laptop in a showroom",
     coverCap: "WarrantyOS · one operating system",
+    titleLogo: "/assets/warrantyos-logo-black.png",
+    titleLogoAlt: "WarrantyOS logo",
     status: "live",
     statusLabel: "Live",
     desc: "A connected warranty operating system: CRM, dealer portal, and claims support working from the same commercial truth.",
@@ -148,6 +153,8 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     cover: "/assets/taskbox.jpg",
     coverAlt: "Taskbox iPhone app in a craftsman's workshop",
     coverCap: "Taskbox · operating system",
+    titleLogo: "/assets/taskbox-logo.png",
+    titleLogoAlt: "Taskbox logo",
     status: "beta",
     statusLabel: "Beta",
     desc: "An AI-native operating system for small teams: inboxes, SOPs, handovers, retros.",
@@ -213,6 +220,8 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     cover: "/assets/govscape.jpg",
     coverAlt: "Govscape — AI governance and financial exposure console",
     coverCap: "Govscape · AI-QEF governance console",
+    titleLogo: "/assets/govscape-logo.png",
+    titleLogoAlt: "Govscape logo",
     status: "live",
     statusLabel: "Live",
     desc: "AI governance and financial exposure platform — turns governance gaps into measurable financial outcomes.",
@@ -300,6 +309,76 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     quote:
       "Every governance tool we looked at produced a report. Govscape produced a number — and that's what got the board moving.",
     attr: { name: "Risk Director", role: "Mid-market enterprise customer" },
+  },
+
+  zebi: {
+    slug: "zebi",
+    title: "Zebi",
+    cover: "/assets/zebi-logo.png",
+    coverAlt: "Zebi — task and knowledge operating system",
+    coverCap: "Zebi · task operating system",
+    coverFit: "contain",
+    coverPosition: "center center",
+    coverBg: "#f5f5f5",
+    titleLogo: "/assets/zebi-logo.png",
+    titleLogoAlt: "Zebi logo",
+    status: "live",
+    statusLabel: "Live",
+    desc: "A task and knowledge operating system for teams that build — structured workflows, documents, and agent coordination in one workspace.",
+    meta: "Productivity · SaaS",
+    descriptor:
+      "A task and knowledge operating system built for the way real teams coordinate — structured task workflows, living documents, and agent-ready automation in one workspace.",
+    cta: { label: "Visit site", href: "https://zebi.app" },
+    pageMeta: {
+      scope: "Operating System",
+      client: "Zebi",
+      duration: "Live · 2025 →",
+      year: "2026",
+      role: "Founder · Design & Build",
+    },
+    heroCaption: ["Zebi — task OS, 2026", "Product · productivity SaaS"],
+    challenge: {
+      h: "Teams were stitching together project tools, docs, and messaging apps — and losing context at every seam.",
+      p: "Work management tools handle tasks. Knowledge tools handle documents. Communication tools handle conversations. But real work crosses all three constantly, and the joins between them are where context dies. Teams spend more time synchronising tools than doing the work the tools are supposed to support.",
+    },
+    solution: {
+      h: "One operating system for tasks, knowledge, and coordination — with agent automation built in from the start.",
+      p: "Zebi brings structured task workflows, living documents, and team coordination into a single workspace. Every task, document, and decision lives in one connected system. Agent-ready automation means repeatable work can be delegated without leaving the platform.",
+    },
+    stack: [
+      { k: "Frontend", v: ["Next.js", "React", "Tailwind"] },
+      { k: "Backend", v: ["Node", "TypeScript"] },
+      { k: "Database", v: ["Postgres", "Supabase"] },
+      { k: "AI Layer", v: ["Claude", "OpenAI"] },
+      { k: "Infrastructure", v: ["Vercel", "Supabase Cloud"] },
+    ],
+    process: [
+      { n: "Workflow design", d: "Built around how teams actually move work — not a kanban board with opinions, but a structured task lifecycle with clear ownership and handover." },
+      { n: "Knowledge layer", d: "Documents that live alongside the work they describe, versioned and linked so nothing drifts." },
+      { n: "Agent coordination", d: "Designed for AI agents to pick up, execute, and report on structured tasks — not bolted on, but native." },
+      { n: "Workspace model", d: "One workspace per team, with spaces, stacks, and projects organising work without admin overhead." },
+      { n: "Production deployment", d: "Live at zebi.app, with API access for integrations and agent-driven workflows." },
+    ],
+    result: {
+      h: "Zebi is live and running real team workflows — tasks, documents, and agent automation in one operating system.",
+      p: "Teams use Zebi as the single place where work is planned, tracked, and documented. The agent layer means structured tasks can be picked up and executed programmatically, closing the loop between human coordination and automated execution.",
+    },
+    metrics: [
+      { n: "1", l: "Unified workspace" },
+      { n: "Live", l: "Production status" },
+      { n: "AI-native", l: "Agent coordination" },
+      { n: "Full", l: "API access" },
+    ],
+    commercialsCopy:
+      "Zebi is a per-workspace SaaS subscription. The product earns its place by replacing the gap between three or four tools teams were already paying for — and adding the agent automation layer none of them offered.",
+    comm: {
+      model: "SaaS subscription",
+      status: "Live",
+      revenue: "Per-workspace monthly",
+      ownership: "Founder",
+    },
+    quote: "It replaced our project tool, our wiki, and half our Slack channels. That was week one.",
+    attr: { name: "Early adopter", role: "Product team lead" },
   },
 
   hatsafe: {
@@ -435,16 +514,18 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
   wilbolaw: {
     slug: "wilbolaw",
     title: "WilboLaw",
-    cover: "/assets/wilbolaw-home.jpg",
-    coverAlt: "WilboLaw case dashboard displayed on a laptop in a law office",
+    cover: "/assets/portfolio-thumbnail-wilbolaw-1.jpg",
+    coverAlt: "WilboLaw case dashboard with logo overlay",
     coverCap: "WilboLaw · QME review workspace",
+    coverHover: "/assets/portfolio-thumbnail-wilbolaw-2.jpg",
+    coverHoverAlt: "WilboLaw case dashboard detail view",
     status: "live",
     statusLabel: "Live",
     desc: "A defence-side AI review layer for California workers' compensation attorneys analysing QME and PQME reports.",
     meta: "LegalTech · AI",
     descriptor:
       "A defence-side AI review layer for California workers' compensation attorneys, built around one specific workflow: tearing apart a QME report before opposing counsel can lean on it.",
-    logo: "/assets/wilbolaw-title-logo.jpg",
+    logo: "/assets/wilbolaw-title-logo.png",
     logoAlt: "WilboLaw logo",
     heroImage: "/assets/wilbolaw-hero-full.jpg",
     heroImageAlt: "WilboLaw executive dashboard on laptop in a law office",
@@ -453,7 +534,7 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     heroImageDisplay: "full",
     heroImageWidth: 1280,
     heroImageHeight: 720,
-    titleLogo: "/assets/wilbolaw-title-logo.jpg",
+    titleLogo: "/assets/wilbolaw-title-logo.png",
     titleLogoAlt: "WilboLaw logo",
     coverFit: "cover",
     coverPosition: "center center",
@@ -665,6 +746,8 @@ export const PROJECT_CARDS: ProjectCard[] = PROJECT_ORDER.map((slug) => {
     coverFit: p.coverFit,
     coverPosition: p.coverPosition,
     coverBg: p.coverBg,
+    coverHover: p.coverHover,
+    coverHoverAlt: p.coverHoverAlt,
     titleLogo: p.titleLogo,
     titleLogoAlt: p.titleLogoAlt,
     status: p.status,

@@ -4,12 +4,11 @@ import { PROJECT_CARDS } from "@/lib/projects";
 import { Reveal } from "./Reveal";
 
 const FEATURED_PROJECT_SLUGS = [
-  "warrantyos",
-  "taskbox",
-  "govscape",
-  "hatsafe",
-  "dealer-engine",
   "wilbolaw",
+  "warrantyos",
+  "govscape",
+  "taskbox",
+  "zebi",
 ];
 
 const FEATURED_PROJECTS = FEATURED_PROJECT_SLUGS.map((slug) =>
@@ -49,9 +48,19 @@ export function SelectedWork() {
                     alt={p.coverAlt}
                     fill
                     sizes="(min-width: 960px) 548px, (min-width: 700px) 44vw, 100vw"
-                    className="cover-img"
+                    className={p.coverHover ? "cover-img cover-img-default" : "cover-img"}
                     style={{ objectFit: p.coverFit || "cover", objectPosition: p.coverPosition || "center" }}
                   />
+                  {p.coverHover && (
+                    <Image
+                      src={p.coverHover}
+                      alt={p.coverHoverAlt || p.coverAlt}
+                      fill
+                      sizes="(min-width: 960px) 548px, (min-width: 700px) 44vw, 100vw"
+                      className="cover-img cover-img-hover"
+                      style={{ objectFit: p.coverFit || "cover", objectPosition: p.coverPosition || "center" }}
+                    />
+                  )}
                   <span className={`tag ${p.status === "beta" ? "beta" : p.status === "dev" ? "dev" : ""}`.trim()}>
                     <span className="d" />
                     {p.statusLabel}
@@ -80,6 +89,23 @@ export function SelectedWork() {
               </Link>
             </Reveal>
           ))}
+
+          <Reveal delay={FEATURED_PROJECTS.length * 0.04}>
+            <a className="work-card collab-card" href="mailto:hello@benjaminbrown.co?subject=Let%27s%20collaborate">
+              <div className="cover collab-cover">
+                <span className="collab-heading">Let&apos;s build<br />something.</span>
+              </div>
+              <h3 className="title">Collaborate together</h3>
+              <p className="desc">
+                Have a product idea, a team that needs a builder, or a venture that
+                needs a technical co-founder? Let&apos;s talk.
+              </p>
+              <div className="meta">
+                <span>Get in touch</span>
+                <span className="arrow">→</span>
+              </div>
+            </a>
+          </Reveal>
         </div>
       </div>
     </section>
