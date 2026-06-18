@@ -67,20 +67,7 @@ export function SelectedWork() {
                   </span>
                   <span className="cover-cap">{p.coverCap}</span>
                 </div>
-                {p.titleLogo ? (
-                  <div className="title-logo-wrap">
-                    <Image
-                      src={p.titleLogo}
-                      alt={p.titleLogoAlt || `${p.title} logo`}
-                      width={1280}
-                      height={100}
-                      className="title-logo"
-                    />
-                    <span className="sr-only">{p.title}</span>
-                  </div>
-                ) : (
-                  <h3 className="title">{p.title}</h3>
-                )}
+                <h3 className="title">{p.title}</h3>
                 <p className="desc">{p.desc}</p>
                 <div className="meta">
                   <span>{p.meta}</span>
