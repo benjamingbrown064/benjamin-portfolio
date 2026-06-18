@@ -152,9 +152,11 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
   taskbox: {
     slug: "taskbox",
     title: "Taskbox",
-    cover: "/assets/taskbox.jpg",
-    coverAlt: "Taskbox iPhone app in a craftsman's workshop",
+    cover: "/assets/portfolio-thumbnail-taskbox-1.jpg",
+    coverAlt: "Taskbox with logo overlay",
     coverCap: "Taskbox · operating system",
+    coverHover: "/assets/portfolio-thumbnail-taskbox-2.jpg",
+    coverHoverAlt: "Taskbox detail view",
     titleLogo: "/assets/taskbox-logo.png",
     titleLogoAlt: "Taskbox logo",
     status: "beta",
