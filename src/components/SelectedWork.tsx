@@ -4,9 +4,9 @@ import { PROJECT_CARDS } from "@/lib/projects";
 import { Reveal } from "./Reveal";
 
 const FEATURED_PROJECT_SLUGS = [
-  "wilbolaw",
-  "warrantyos",
   "govscape",
+  "warrantyos",
+  "wilbolaw",
   "taskbox",
   "zebi",
 ];
