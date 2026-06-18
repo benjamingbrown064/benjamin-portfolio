@@ -76,9 +76,11 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
   warrantyos: {
     slug: "warrantyos",
     title: "WarrantyOS",
-    cover: "/assets/warrantyos-hero.png",
-    coverAlt: "WarrantyOS dealer onboarding workflow on a laptop in a showroom",
+    cover: "/assets/portfolio-thumbnail-warrantyos-1.jpg",
+    coverAlt: "WarrantyOS dealer onboarding workflow with logo overlay",
     coverCap: "WarrantyOS · one operating system",
+    coverHover: "/assets/portfolio-thumbnail-warrantyos-2.jpg",
+    coverHoverAlt: "WarrantyOS dealer onboarding workflow detail view",
     titleLogo: "/assets/warrantyos-logo-black.png",
     titleLogoAlt: "WarrantyOS logo",
     status: "live",
