@@ -219,10 +219,10 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
   govscape: {
     slug: "govscape",
     title: "Govscape",
-    cover: "/assets/portfolio-thumbnail-govscape-1.jpg",
+    cover: "/assets/portfolio-thumbnail-govscape-2.jpg",
     coverAlt: "Govscape AI governance console with logo overlay",
     coverCap: "Govscape · AI-QEF governance console",
-    coverHover: "/assets/portfolio-thumbnail-govscape-2.jpg",
+    coverHover: "/assets/portfolio-thumbnail-govscape-1.jpg",
     coverHoverAlt: "Govscape AI governance console detail view",
     titleLogo: "/assets/govscape-logo.png",
     titleLogoAlt: "Govscape logo",
