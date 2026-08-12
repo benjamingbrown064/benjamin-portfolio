@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Reveal } from "./Reveal";
-import { AutoTypeText } from "./AutoTypeText";
+import { LineReveal } from "./LineReveal";
 
 export function FinalCTA() {
   const [email, setEmail] = useState("");
@@ -21,14 +21,16 @@ export function FinalCTA() {
       <div className="container-x">
         <Reveal>
           <span className="micro">Let&apos;s work together</span>
-          <AutoTypeText
+          <LineReveal
             as="h2"
             className="why-head"
-            text="Whether you're building a brand, designing a product, or simply want to explore an idea — I'd love to hear from you."
-            startWhenInView
-            initialDelayMs={120}
-            charMs={22}
-            rootMargin="0px 0px -6% 0px"
+            lines={[
+              "Whether you’re building",
+              "a brand, designing a",
+              "product, or simply want",
+              "to explore an idea —",
+              "I’d love to hear from you.",
+            ]}
           />
         </Reveal>
         <Reveal delay={0.05}>

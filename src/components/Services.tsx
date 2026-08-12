@@ -1,5 +1,6 @@
 import { Reveal } from "./Reveal";
-import { ScrollTypeOnView } from "./ScrollTypeOnView";
+import { LineReveal } from "./LineReveal";
+import { Stagger, StaggerItem } from "./Stagger";
 
 const SERVICES = [
   "Discovery & Strategy",
@@ -17,21 +18,19 @@ export function Services() {
           <Reveal>
             <span className="micro">Services</span>
           </Reveal>
-          <ScrollTypeOnView
+          <LineReveal
             as="h2"
             className="services-title"
-            text="Design, build, and operate the thing."
+            lines={["Design, build,", "and operate", "the thing."]}
           />
-          <div className="svc-list">
+          <Stagger className="svc-list">
             {SERVICES.map((name, i) => (
-              <Reveal key={name} delay={i * 0.04}>
-                <div className="svc">
-                  <span className="name">{name}</span>
-                  <span className="num">{String(i + 1).padStart(2, "0")}</span>
-                </div>
-              </Reveal>
+              <StaggerItem key={name} className="svc">
+                <span className="name">{name}</span>
+                <span className="num">{String(i + 1).padStart(2, "0")}</span>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
           <Reveal>
             <div className="services-foot">
               <p>

@@ -1,5 +1,6 @@
 import { Reveal } from "./Reveal";
-import { ScrollTypeOnView } from "./ScrollTypeOnView";
+import { LineReveal } from "./LineReveal";
+import { Stagger, StaggerItem } from "./Stagger";
 
 const CELLS = [
   { n: "01", title: "Full-stack delivery", body: "Discovery, design, engineering and operation in one head. No relay race, no broken handoffs." },
@@ -17,22 +18,25 @@ export function WhyMe() {
         <Reveal>
           <span className="micro">Why me</span>
         </Reveal>
-        <ScrollTypeOnView
+        <LineReveal
           as="h2"
           className="why-head"
-          text="A team of one that ships like a team of five, obsessed with the craft."
+          lines={[
+            "A team of one that",
+            "ships like a team",
+            "of five, obsessed",
+            "with the craft.",
+          ]}
         />
-        <div className="why-grid">
-          {CELLS.map((c, i) => (
-            <Reveal key={c.n} delay={i * 0.04}>
-              <div className="why-cell">
-                <div className="n">{c.n}</div>
-                <h4>{c.title}</h4>
-                <p>{c.body}</p>
-              </div>
-            </Reveal>
+        <Stagger className="why-grid">
+          {CELLS.map((c) => (
+            <StaggerItem key={c.n} className="why-cell">
+              <div className="n">{c.n}</div>
+              <h4>{c.title}</h4>
+              <p>{c.body}</p>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

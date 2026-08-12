@@ -11,11 +11,13 @@ type RevealProps = {
   as?: "div" | "section" | "article" | "header" | "footer" | "aside";
 };
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 export function Reveal({
   children,
   className,
   delay = 0,
-  y = 10,
+  y = 14,
   as = "div",
 }: RevealProps) {
   const reduce = useReducedMotion();
@@ -26,7 +28,7 @@ export function Reveal({
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, delay, ease: [0.22, 0.61, 0.36, 1] },
+      transition: { duration: reduce ? 0.3 : 0.8, delay, ease: EASE },
     },
   };
 
@@ -35,7 +37,7 @@ export function Reveal({
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-40px 0px -40px 0px" }}
+      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       variants={variants}
     >
       {children}

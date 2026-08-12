@@ -268,34 +268,19 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
   font-size: clamp(26px,2.6vw,36px); line-height: 1.2; letter-spacing: -.02em;
   max-width: 760px; margin: 0; font-weight: 500; color: var(--ink); text-wrap: balance;
 }
-.scroll-type {
-  position: relative;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+/* ── line-mask headline reveal ──
+   Each line sits in its own clipping box and slides up from beneath its
+   baseline. padding-bottom keeps descenders out of the clip; the matching
+   negative margin keeps the heading's overall metrics unchanged. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
 }
-.scroll-type-char {
-  color: currentColor;
-  transition: opacity .12s linear;
-  will-change: opacity;
-}
-.scroll-type-char.is-hidden {
-  opacity: 0;
-}
-.scroll-type-char.is-visible {
-  opacity: 1;
-}
-.scroll-type-char.has-caret {
-  position: relative;
-}
-.scroll-type-char.has-caret::after {
-  content: "";
-  position: absolute;
-  right: -0.08em;
-  top: 0.12em;
-  width: 0.08em;
-  height: 0.82em;
-  background: currentColor;
-  border-radius: 999px;
+.line-inner {
+  display: block;
+  will-change: transform;
 }
 .stat-strip {
   display: grid; grid-template-columns: repeat(4,1fr);
@@ -968,4 +953,21 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
   .cs-ph-meta-item + .cs-ph-meta-item { padding-left: 0; }
   .cs-ph-meta-item + .cs-ph-meta-item::before { display: none; }
   .cs-page-header { padding: 48px 0 40px; }
+}
+
+/* ── reduced motion ──
+   The motion components already read prefers-reduced-motion via framer, but
+   this covers CSS-driven transitions and anything added later. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .line-inner {
+    transform: none !important;
+  }
 }

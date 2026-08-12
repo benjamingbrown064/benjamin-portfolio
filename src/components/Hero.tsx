@@ -1,16 +1,15 @@
 import Image from "next/image";
-import { AutoTypeText } from "./AutoTypeText";
+import { LineReveal } from "./LineReveal";
 
 export function Hero() {
   return (
     <section className="hero" id="top">
       <div className="container-x">
         <span className="micro hero-label">Portfolio · 2026</span>
-        <AutoTypeText
+        <LineReveal
           as="h1"
-          text="Building in the open, shipping for real."
-          initialDelayMs={180}
-          charMs={38}
+          lines={["Building in the open,", "shipping for real."]}
+          delay={0.15}
         />
         <div className="hero-sub">
           <p>

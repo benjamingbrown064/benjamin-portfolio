@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { PROJECT_CARDS } from "@/lib/projects";
 import { Reveal } from "./Reveal";
+import { LineReveal } from "./LineReveal";
+import { Stagger, StaggerItem } from "./Stagger";
 
 const FEATURED_PROJECT_SLUGS = [
   "govscape",
@@ -23,11 +25,11 @@ export function SelectedWork() {
           <Reveal>
             <div>
               <span className="micro">Selected work</span>
-              <h2 className="why-head">
-                Recent projects
-                <br />
-                from the studio.
-              </h2>
+              <LineReveal
+                as="h2"
+                className="why-head"
+                lines={["Recent projects", "from the studio."]}
+              />
             </div>
           </Reveal>
           <Reveal delay={0.05}>
@@ -38,9 +40,9 @@ export function SelectedWork() {
           </Reveal>
         </div>
 
-        <div className="work-grid" aria-label="Selected work">
-          {FEATURED_PROJECTS.map((p, index) => (
-            <Reveal key={p.slug} delay={index * 0.04}>
+        <Stagger className="work-grid" ariaLabel="Selected work">
+          {FEATURED_PROJECTS.map((p) => (
+            <StaggerItem key={p.slug}>
               <Link className="work-card" href={`/work/${p.slug}`}>
                 <div className="cover" style={{ background: p.coverBg || undefined }}>
                   <Image
@@ -74,10 +76,10 @@ export function SelectedWork() {
                   <span className="arrow">→</span>
                 </div>
               </Link>
-            </Reveal>
+            </StaggerItem>
           ))}
 
-          <Reveal delay={FEATURED_PROJECTS.length * 0.04}>
+          <StaggerItem>
             <a className="work-card collab-card" href="mailto:hello@benjaminbrown.co?subject=Let%27s%20collaborate">
               <div className="cover collab-cover">
                 <span className="collab-heading">Let&apos;s build<br />something.</span>
@@ -92,8 +94,8 @@ export function SelectedWork() {
                 <span className="arrow">→</span>
               </div>
             </a>
-          </Reveal>
-        </div>
+          </StaggerItem>
+        </Stagger>
       </div>
     </section>
   );

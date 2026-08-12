@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { LineReveal } from "./LineReveal";
+import { Stagger, StaggerItem } from "./Stagger";
 import { JOURNAL, JOURNAL_ORDER } from "@/lib/journal";
 
 const POSTS = JOURNAL_ORDER.slice(0, 3).map((slug) => JOURNAL[slug]);
@@ -13,7 +15,11 @@ export function Blog() {
           <Reveal>
             <div>
               <span className="micro">Journal</span>
-              <h2 className="why-head">A daily record from the workshop.</h2>
+              <LineReveal
+                as="h2"
+                className="why-head"
+                lines={["A daily record", "from the workshop."]}
+              />
             </div>
           </Reveal>
           <Reveal delay={0.05}>
@@ -23,9 +29,9 @@ export function Blog() {
             </p>
           </Reveal>
         </div>
-        <div className="blog-grid">
-          {POSTS.map((p, i) => (
-            <Reveal key={i} delay={i * 0.04}>
+        <Stagger className="blog-grid">
+          {POSTS.map((p) => (
+            <StaggerItem key={p.slug}>
               <Link href={`/journal/${p.slug}`} className="blog-card">
                 <div className="cover">
                   <Image
@@ -44,9 +50,9 @@ export function Blog() {
                   <span>{p.read}</span>
                 </div>
               </Link>
-            </Reveal>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

@@ -1,22 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark" | null>(null);
-
-  useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme");
-    setTheme(current === "dark" ? "dark" : "light");
-  }, []);
-
+  // No local state: the <html data-theme> attribute is the single source of
+  // truth, read at click time. Two toggles are mounted at once (nav + mobile
+  // menu) and mirrored state would let one go stale and swallow a click.
   function toggle() {
-    const next = theme === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
+    const root = document.documentElement;
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
     try {
       localStorage.setItem("bb:theme", next);
     } catch {}
-    setTheme(next);
   }
 
   return (

@@ -1,5 +1,4 @@
 import { Reveal } from "./Reveal";
-import { ScrollTypeOnView } from "./ScrollTypeOnView";
 
 export function About() {
   return (
@@ -14,10 +13,14 @@ export function About() {
             </p>
           </Reveal>
           <div className="statement-wrap">
-            <ScrollTypeOnView
-              className="statement"
-              text="I’m Ben — founder, operator, and full-stack builder shipping across five companies. Twenty-six products live, tens of thousands of users, and a stubborn belief that the best design decisions are made by the people who ship the code."
-            />
+            <Reveal y={18}>
+              <p className="statement">
+                I&rsquo;m Ben &mdash; founder, operator, and full-stack builder
+                shipping across five companies. Twenty-six products live, tens of
+                thousands of users, and a stubborn belief that the best design
+                decisions are made by the people who ship the code.
+              </p>
+            </Reveal>
           </div>
         </div>
         <Reveal>
