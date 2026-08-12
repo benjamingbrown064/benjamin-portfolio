@@ -25,7 +25,9 @@ export function Nav({ variant = "home" }: NavProps) {
 
   return (
     <>
-      <nav className="topnav">
+      {/* Named so the header can be pinned during route transitions — a
+          sliding header removes the user's only fixed spatial reference. */}
+      <nav className="topnav" style={{ viewTransitionName: "site-header" }}>
         <div className="nav-inner">
           <Link className="wordmark" href="/" onClick={closeMenu}>
             BENJAMIN BROWN<span className="wordmark-dot" aria-hidden="true" />

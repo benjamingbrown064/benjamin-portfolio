@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { LineReveal } from "./LineReveal";
+import { HeroPortrait } from "./HeroPortrait";
 
 export function Hero() {
   return (
@@ -34,18 +34,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="hero-photo" aria-label="Editorial portrait of Benjamin Brown">
-          <Image
-            src="/assets/ben-portrait.jpg"
-            alt="Benjamin Brown — portrait"
-            fill
-            sizes="(min-width: 1280px) 1200px, 100vw"
-            priority
-            className="portrait"
-            style={{ objectFit: "cover", objectPosition: "center 45%" }}
-          />
-          <span className="cap">Portrait — London, UK · 2026</span>
-        </div>
+        <HeroPortrait />
         <a className="scroll-ind" href="#about" aria-label="Scroll to next section">
           <span>Scroll</span>
           <span className="arr">↓</span>

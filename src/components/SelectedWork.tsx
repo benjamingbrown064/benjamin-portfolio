@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PROJECT_CARDS } from "@/lib/projects";
@@ -44,6 +45,14 @@ export function SelectedWork() {
           {FEATURED_PROJECTS.map((p) => (
             <StaggerItem key={p.slug}>
               <Link className="work-card" href={`/work/${p.slug}`}>
+                {/* Opts this navigation into a view transition (without a
+                    <ViewTransition> in the tree, Next hard-cuts). The matching
+                    name on the case-study hero is intended to morph the cover
+                    into it, but React assigns no view-transition-name on the
+                    stable react 19.2 build — verified in Chrome 151, only the
+                    root group animates. Left in place so the morph activates
+                    if/when it lands; the page crossfade is the working part. */}
+                <ViewTransition name={`work-${p.slug}`} share="morph">
                 <div className="cover" style={{ background: p.coverBg || undefined }}>
                   <Image
                     src={p.cover}
@@ -69,6 +78,7 @@ export function SelectedWork() {
                   </span>
                   <span className="cover-cap">{p.coverCap}</span>
                 </div>
+                </ViewTransition>
                 <h3 className="title">{p.title}</h3>
                 <p className="desc">{p.desc}</p>
                 <div className="meta">

@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -96,6 +97,9 @@ export default async function CaseStudyPage({
         <div className="container-x">
           <Reveal delay={0.02}>
             <div className="cs-hero-img">
+              {/* Intended receiving end of the work-card morph — see the note
+                  in SelectedWork; currently only the root crossfade runs. */}
+              <ViewTransition name={`work-${slug}`} share="morph">
               <div
                 className={`frame${p.heroImageDisplay === "full" ? " frame-full-image" : ""}`}
                 style={{ background: p.heroImageBg || p.coverBg || undefined }}
@@ -121,6 +125,7 @@ export default async function CaseStudyPage({
                   />
                 )}
               </div>
+              </ViewTransition>
               <div className="cap">
                 <span>{p.heroCaption[0]}</span>
                 <span>{p.heroCaption[1]}</span>

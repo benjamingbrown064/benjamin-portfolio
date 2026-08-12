@@ -531,8 +531,10 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     meta: "LegalTech · AI",
     descriptor:
       "A defence-side AI review layer for California workers' compensation attorneys, built around one specific workflow: tearing apart a QME report before opposing counsel can lean on it.",
-    logo: "/assets/wilbolaw-title-logo.png",
-    logoAlt: "WilboLaw logo",
+    // logo intentionally unset: /assets/wilbolaw-title-logo.png has never
+    // existed in the repo, and a set `logo` demotes the <h1> to sr-only — so
+    // the page rendered a broken image and no visible title. Restore both
+    // lines once the real asset lands.
     heroImage: "/assets/wilbolaw-hero-full.jpg",
     heroImageAlt: "WilboLaw executive dashboard on laptop in a law office",
     heroImageFit: "contain",
