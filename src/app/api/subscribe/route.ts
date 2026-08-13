@@ -5,7 +5,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Every Resend key on this account is send-only restricted, so the Contacts
 // API (POST /audiences/:id/contacts) is not available — it 401s with
 // "restricted_api_key". Signups are therefore delivered as a notification
-// email instead. If a full-access key is ever issued, switching to a real
+// email instead. NEWSLETTER_FROM must be a Resend-verified domain — use
+// noreply@benjaminbrown.co, not a sender on another brand's domain.
+// If a full-access key is ever issued, switching to a real
 // audience is the better shape.
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
 

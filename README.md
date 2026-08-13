@@ -66,18 +66,28 @@ It requires three variables, all set in Vercel:
 | Variable | Purpose |
 | --- | --- |
 | `RESEND_API_KEY` | Resend API key |
-| `NEWSLETTER_FROM` | Verified sender, e.g. `Benjamin Brown <noreply@govscape.app>` |
+| `NEWSLETTER_FROM` | `Benjamin Brown <noreply@benjaminbrown.co>` |
 | `NEWSLETTER_TO` | Where signups land, e.g. `hello@benjaminbrown.co` |
 
 If any are missing the route returns 503 and the form shows a real error — it
 never reports success it did not achieve.
 
+**Sender domain.** `NEWSLETTER_FROM` must be a domain verified in Resend. As of
+2026-08-12 `benjaminbrown.co` is **not** verified — DNS carries no
+`resend._domainkey.benjaminbrown.co` DKIM record and no `send.benjaminbrown.co`
+subdomain, so Resend will reject the send. Add the domain in the Resend
+dashboard and publish the three records it issues (DKIM, plus MX and SPF on the
+`send.` subdomain). Resend scopes SPF to the subdomain, so the root
+`v=spf1 include:_spf.google.com ~all` used by Google Workspace is untouched.
+
+Do not fall back to a sender on another brand's domain — mail from
+benjaminbrown.co should come from benjaminbrown.co.
+
 **Why a notification email and not a mailing list:** every Resend key on this
 account is *send-only restricted*. The Contacts API returns
 `restricted_api_key` for all of them, so a real audience is not reachable.
 Issue a full-access key and switching to `POST /audiences/:id/contacts` is the
-better long-term shape. `NEWSLETTER_FROM` must be a domain verified in Resend —
-`govscape.app` is verified; `benjaminbrown.co` may not be.
+better long-term shape.
 
 ## Deploying
 
