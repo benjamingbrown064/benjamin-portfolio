@@ -1,4 +1,5 @@
 import { Reveal } from "./Reveal";
+import { CountUp } from "./CountUp";
 
 export function About() {
   return (
@@ -25,10 +26,10 @@ export function About() {
         </div>
         <Reveal>
           <div className="stat-strip">
-            <div className="stat-cell"><div className="n">26+</div><div className="lbl">Projects completed</div></div>
-            <div className="stat-cell"><div className="n">05</div><div className="lbl">Active companies</div></div>
-            <div className="stat-cell"><div className="n">16</div><div className="lbl">Years building</div></div>
-            <div className="stat-cell"><div className="n">£21M+</div><div className="lbl">Revenue influenced</div></div>
+            <div className="stat-cell"><div className="n"><CountUp to={26} suffix="+" /></div><div className="lbl">Projects completed</div></div>
+            <div className="stat-cell"><div className="n"><CountUp to={5} pad={2} /></div><div className="lbl">Active companies</div></div>
+            <div className="stat-cell"><div className="n"><CountUp to={16} /></div><div className="lbl">Years building</div></div>
+            <div className="stat-cell"><div className="n"><CountUp to={21} prefix="£" suffix="M+" /></div><div className="lbl">Revenue influenced</div></div>
           </div>
         </Reveal>
       </div>

@@ -1,6 +1,7 @@
 import { Reveal } from "./Reveal";
 import { LineReveal } from "./LineReveal";
 import { Stagger, StaggerItem } from "./Stagger";
+import { Magnetic } from "./Magnetic";
 
 const SERVICES = [
   "Discovery & Strategy",
@@ -37,9 +38,11 @@ export function Services() {
                 Engagements run from week-long strategy sprints to open-ended
                 fractional CTO work. I take on two clients per quarter, never more.
               </p>
-              <a className="pill light" href="#contact">
-                Get in touch <span className="arr">→</span>
-              </a>
+              <Magnetic>
+                <a className="pill light" href="#contact">
+                  Get in touch <span className="arr">→</span>
+                </a>
+              </Magnetic>
             </div>
           </Reveal>
         </div>

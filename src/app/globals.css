@@ -973,6 +973,16 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
   }
 }
 
+/* ── nav condense on scroll ── */
+nav.topnav { transition: box-shadow .3s ease, background .3s ease; }
+.nav-inner { transition: padding .35s cubic-bezier(0.16, 1, 0.3, 1); }
+nav.topnav.is-condensed .nav-inner { padding-top: 8px; padding-bottom: 8px; }
+nav.topnav.is-condensed { box-shadow: 0 1px 24px rgba(0,0,0,.07); }
+html[data-theme="dark"] nav.topnav.is-condensed { box-shadow: 0 1px 24px rgba(0,0,0,.45); }
+
+/* ── magnetic CTA wrapper ── */
+.magnetic { display: inline-flex; will-change: transform; }
+
 /* ── view transitions ──
    Route navigations crossfade instead of hard-cutting. The incoming page
    clears a slight blur so the swap reads as a settle rather than a flash.

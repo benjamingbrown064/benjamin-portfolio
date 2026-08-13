@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
+import { Magnetic } from "./Magnetic";
 
 type NavProps = {
   variant?: "home" | "case-study" | "subpage";
@@ -11,6 +12,19 @@ type NavProps = {
 export function Nav({ variant = "home" }: NavProps) {
   const home = variant === "home";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCondensed, setIsCondensed] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setIsCondensed(window.scrollY > 80);
+    // rAF rather than a direct call so the initial sync happens after paint
+    // (covers reloading part-way down the page).
+    const raf = requestAnimationFrame(onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -27,7 +41,10 @@ export function Nav({ variant = "home" }: NavProps) {
     <>
       {/* Named so the header can be pinned during route transitions — a
           sliding header removes the user's only fixed spatial reference. */}
-      <nav className="topnav" style={{ viewTransitionName: "site-header" }}>
+      <nav
+        className={`topnav ${isCondensed ? "is-condensed" : ""}`.trim()}
+        style={{ viewTransitionName: "site-header" }}
+      >
         <div className="nav-inner">
           <Link className="wordmark" href="/" onClick={closeMenu}>
             BENJAMIN BROWN<span className="wordmark-dot" aria-hidden="true" />
@@ -63,9 +80,11 @@ export function Nav({ variant = "home" }: NavProps) {
                 ← Home
               </Link>
             )}
-            <a className="pill dark" href={home ? "#contact" : "/#contact"}>
-              Get in touch <span className="arr">→</span>
-            </a>
+            <Magnetic>
+              <a className="pill dark" href={home ? "#contact" : "/#contact"}>
+                Get in touch <span className="arr">→</span>
+              </a>
+            </Magnetic>
             <ThemeToggle />
             <button
               type="button"
