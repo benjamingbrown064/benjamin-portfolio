@@ -1,4 +1,4 @@
-import { LineReveal } from "./LineReveal";
+import { TextReveal } from "./TextReveal";
 import { HeroPortrait } from "./HeroPortrait";
 
 export function Hero() {
@@ -6,7 +6,7 @@ export function Hero() {
     <section className="hero" id="top">
       <div className="container-x">
         <span className="micro hero-label">Portfolio · 2026</span>
-        <LineReveal
+        <TextReveal
           as="h1"
           lines={["Building in the open,", "shipping for real."]}
           delay={0.15}

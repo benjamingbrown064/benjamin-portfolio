@@ -1,5 +1,5 @@
 import { Reveal } from "./Reveal";
-import { LineReveal } from "./LineReveal";
+import { TextReveal } from "./TextReveal";
 import { Stagger, StaggerItem } from "./Stagger";
 
 const CELLS = [
@@ -18,7 +18,7 @@ export function WhyMe() {
         <Reveal>
           <span className="micro">Why me</span>
         </Reveal>
-        <LineReveal
+        <TextReveal
           as="h2"
           className="why-head"
           lines={[

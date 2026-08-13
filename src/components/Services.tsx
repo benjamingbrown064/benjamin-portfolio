@@ -1,5 +1,5 @@
 import { Reveal } from "./Reveal";
-import { LineReveal } from "./LineReveal";
+import { TextReveal } from "./TextReveal";
 import { Stagger, StaggerItem } from "./Stagger";
 import { Magnetic } from "./Magnetic";
 
@@ -19,7 +19,7 @@ export function Services() {
           <Reveal>
             <span className="micro">Services</span>
           </Reveal>
-          <LineReveal
+          <TextReveal
             as="h2"
             className="services-title"
             lines={["Design, build,", "and operate", "the thing."]}

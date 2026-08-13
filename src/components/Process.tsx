@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Reveal } from "./Reveal";
-import { LineReveal } from "./LineReveal";
+import { TextReveal } from "./TextReveal";
 
 const STEPS = [
   { step: "Step 01", name: "Discover", body: "A short, intense scoping week. We lock the problem, the user, the metric and the hard constraints. No proposal bingo — we end with a one-pager and a decision." },
@@ -21,7 +21,7 @@ export function Process() {
           <Reveal>
             <div>
               <span className="micro">Process</span>
-              <LineReveal
+              <TextReveal
                 as="h2"
                 className="why-head"
                 lines={["Our process is simple,", "purposeful, and", "adaptable."]}

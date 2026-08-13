@@ -14,7 +14,7 @@ type StaggerProps = {
 };
 
 /** One scroll observer for a whole grid or list, instead of one per child. */
-export function Stagger({ children, className, ariaLabel, step = 0.07 }: StaggerProps) {
+export function Stagger({ children, className, ariaLabel, step = 0.05 }: StaggerProps) {
   const reduce = useReducedMotion();
 
   const container: Variants = {
@@ -42,7 +42,7 @@ type StaggerItemProps = {
   y?: number;
 };
 
-export function StaggerItem({ children, className, y = 14 }: StaggerItemProps) {
+export function StaggerItem({ children, className, y = 10 }: StaggerItemProps) {
   const reduce = useReducedMotion();
 
   const item: Variants = {

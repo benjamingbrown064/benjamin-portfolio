@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Reveal } from "./Reveal";
-import { LineReveal } from "./LineReveal";
+import { TextReveal } from "./TextReveal";
 
 type Quote = {
   quote: string;
@@ -44,7 +44,7 @@ export function Testimonials() {
           <Reveal>
             <div>
               <span className="micro">Testimonials</span>
-              <LineReveal
+              <TextReveal
                 as="h2"
                 className="why-head"
                 lines={["Success stories from", "operators I’ve", "worked with."]}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Reveal } from "./Reveal";
-import { LineReveal } from "./LineReveal";
+import { TextReveal } from "./TextReveal";
 
 type Status = "idle" | "sending" | "done" | "error";
 
@@ -48,7 +48,7 @@ export function FinalCTA() {
       <div className="container-x">
         <Reveal>
           <span className="micro">Let&apos;s work together</span>
-          <LineReveal
+          <TextReveal
             as="h2"
             className="why-head"
             lines={[

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
-import { LineReveal } from "./LineReveal";
+import { TextReveal } from "./TextReveal";
 import { Stagger, StaggerItem } from "./Stagger";
 import { JOURNAL, JOURNAL_ORDER } from "@/lib/journal";
 
@@ -15,7 +15,7 @@ export function Blog() {
           <Reveal>
             <div>
               <span className="micro">Journal</span>
-              <LineReveal
+              <TextReveal
                 as="h2"
                 className="why-head"
                 lines={["Notes from", "the workshop."]}

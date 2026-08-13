@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { PROJECT_CARDS } from "@/lib/projects";
 import { Reveal } from "./Reveal";
-import { LineReveal } from "./LineReveal";
+import { TextReveal } from "./TextReveal";
 import { Stagger, StaggerItem } from "./Stagger";
 
 const FEATURED_PROJECT_SLUGS = [
@@ -26,7 +26,7 @@ export function SelectedWork() {
           <Reveal>
             <div>
               <span className="micro">Selected work</span>
-              <LineReveal
+              <TextReveal
                 as="h2"
                 className="why-head"
                 lines={["Recent projects", "from the studio."]}

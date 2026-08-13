@@ -274,20 +274,6 @@ html[data-theme="dark"] .theme-toggle .i-moon { display: none; }
   font-size: clamp(26px,2.6vw,36px); line-height: 1.2; letter-spacing: -.02em;
   max-width: 760px; margin: 0; font-weight: 500; color: var(--ink); text-wrap: balance;
 }
-/* ── line-mask headline reveal ──
-   Each line sits in its own clipping box and slides up from beneath its
-   baseline. padding-bottom keeps descenders out of the clip; the matching
-   negative margin keeps the heading's overall metrics unchanged. */
-.line-mask {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.12em;
-  margin-bottom: -0.12em;
-}
-.line-inner {
-  display: block;
-  will-change: transform;
-}
 .stat-strip {
   display: grid; grid-template-columns: repeat(4,1fr);
   margin-top: 64px; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); position: relative;
@@ -972,9 +958,6 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-  .line-inner {
-    transform: none !important;
   }
 }
 
