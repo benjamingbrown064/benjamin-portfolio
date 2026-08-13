@@ -32,10 +32,10 @@ export const JOURNAL: Record<(typeof JOURNAL_ORDER)[number], JournalEntry> = {
     coverAlt: "Editorial black and white portrait",
     excerpt:
       "Most AI app ideas die because the team falls in love with the interface before they've named the operational pain clearly enough.",
-    kicker: "Daily journal · systems thinking",
+    kicker: "Journal · systems thinking",
     intro:
       "The quickest way to waste a month is to start sketching screens before you've named the constraint, the bottleneck, and the behaviour you're trying to change. AI makes this worse because it creates the illusion that the hard part is the model. It isn't. The hard part is deciding what job the application is actually being hired to do.",
-    metaNote: "Written from the workshop — one useful idea a day.",
+    metaNote: "Written from the workshop, while the work is still warm.",
     sections: [
       {
         heading: "Write down the pain in operational language",
@@ -64,7 +64,7 @@ export const JOURNAL: Record<(typeof JOURNAL_ORDER)[number], JournalEntry> = {
     coverAlt: "Warm-toned editorial still life",
     excerpt:
       "If a screen looks nice but doesn't help someone decide what to do next, it is decoration, not product design.",
-    kicker: "Daily journal · product design",
+    kicker: "Journal · product design",
     intro:
       "A lot of product work gets described as improving user experience, which is true but vague. The sharper lens is decision speed. What matters is whether the interface reduces hesitation, shortens the path to action, and leaves less room for drift.",
     metaNote: "Short note from a live build week.",
@@ -96,7 +96,7 @@ export const JOURNAL: Record<(typeof JOURNAL_ORDER)[number], JournalEntry> = {
     coverAlt: "Close-up abstract editorial image",
     excerpt:
       "You do not learn from perfect roadmaps. You learn from product touching reality.",
-    kicker: "Daily journal · shipping",
+    kicker: "Journal · shipping",
     intro:
       "There is a class of project that always sounds busy and strategic but never actually meets the market. I have become increasingly impatient with it. The only learning that really matters is the learning you earn after something ships and collides with real behaviour.",
     metaNote: "From the side of the desk where delivery happens.",
@@ -128,7 +128,7 @@ export const JOURNAL: Record<(typeof JOURNAL_ORDER)[number], JournalEntry> = {
     coverAlt: "AI governance dashboard visual",
     excerpt:
       "The smartest model in the world cannot rescue a broken workflow with bad inputs and no ownership.",
-    kicker: "Daily journal · AI applications",
+    kicker: "Journal · AI applications",
     intro:
       "A lot of businesses come asking for an AI application when what they actually need is a cleaner system for inputs, handoffs, and decisions. The model matters, obviously. But workflow design matters first.",
     metaNote: "A note for teams trying to be practical about AI.",
@@ -160,7 +160,7 @@ export const JOURNAL: Record<(typeof JOURNAL_ORDER)[number], JournalEntry> = {
     coverAlt: "Portrait of Benjamin Brown",
     excerpt:
       "Software decisions look different when you know how the money moves, where the risk sits, and what actually hurts the operator.",
-    kicker: "Daily journal · operating context",
+    kicker: "Journal · operating context",
     intro:
       "I do not think design, engineering, and operations should be treated as separate conversations if the goal is to build something durable. The more commercial context the builder has, the more likely the product is to make decisions that help the business instead of just pleasing the roadmap.",
     metaNote: "Operator view, not agency view.",

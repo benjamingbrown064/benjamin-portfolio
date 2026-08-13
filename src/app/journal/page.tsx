@@ -8,7 +8,7 @@ import { JOURNAL, JOURNAL_ORDER } from "@/lib/journal";
 export const metadata = {
   title: "Journal — Benjamin Brown",
   description:
-    "A daily journal from Benjamin Brown on building products, solving business problems, and shipping AI applications in the real world.",
+    "Notes from Benjamin Brown on building products, solving business problems, and shipping AI applications in the real world.",
 };
 
 export default function JournalIndexPage() {
@@ -24,9 +24,9 @@ export default function JournalIndexPage() {
             <Reveal>
               <div className="journal-hero-meta">
                 <span className="micro">Journal</span>
-                <span className="journal-hero-note">Daily entries from the workshop</span>
+                <span className="journal-hero-note">Notes from the workshop</span>
               </div>
-              <h1 className="journal-title">Field notes, build logs, and daily thinking.</h1>
+              <h1 className="journal-title">Field notes, build logs, and working thinking.</h1>
               <p className="journal-intro">
                 A running journal on the problems worth solving, the products in motion,
                 and the practical lessons that appear once something real is being built.

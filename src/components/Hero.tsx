@@ -27,7 +27,6 @@ export function Hero() {
           <span className="lead">Companies founded &amp; operated</span>
           <div className="logos-row">
             <span className="logo-mark"><span className="glyph">WO</span>WarrantyOS</span>
-            <span className="logo-mark"><span className="sq" />The DGS</span>
             <span className="logo-mark"><span className="tri" />Taskbox</span>
             <span className="logo-mark"><span className="slash" />Govscape</span>
             <span className="logo-mark"><span className="dot-mark" />HatSafe</span>

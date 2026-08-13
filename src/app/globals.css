@@ -132,12 +132,17 @@ html[data-theme="dark"] nav.topnav { background: rgba(10,10,10,.82); }
   color: var(--ink);
   opacity: 0;
   pointer-events: none;
-  transition: opacity .2s ease;
+  /* visibility (not just opacity) so the panel leaves the a11y tree; delayed
+     so the fade-out still plays before it is hidden. */
+  visibility: hidden;
+  transition: opacity .2s ease, visibility 0s linear .2s;
   z-index: 80;
 }
 .mobile-menu-panel.is-open {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
+  transition: opacity .2s ease, visibility 0s linear 0s;
 }
 .mobile-menu-panel-inner {
   min-height: 100dvh;
@@ -972,6 +977,11 @@ html[data-theme="dark"] .topnav-cs { background: rgba(10,10,10,.82); }
     transform: none !important;
   }
 }
+
+/* ── newsletter feedback ── */
+.newsletter-msg { font-size: 13.5px; color: var(--mute); margin: 10px 0 0; }
+.newsletter-msg.is-error { color: var(--ink); }
+.newsletter input:disabled, .newsletter button:disabled { opacity: .6; cursor: default; }
 
 /* ── nav condense on scroll ── */
 nav.topnav { transition: box-shadow .3s ease, background .3s ease; }

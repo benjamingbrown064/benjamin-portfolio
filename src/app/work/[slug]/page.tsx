@@ -22,6 +22,13 @@ export async function generateMetadata({
   return {
     title: `${p.title} — Benjamin Brown`,
     description: p.descriptor,
+    alternates: { canonical: `/work/${slug}` },
+    openGraph: {
+      title: `${p.title} — Benjamin Brown`,
+      description: p.descriptor,
+      url: `https://benjaminbrown.co/work/${slug}`,
+      type: "article",
+    },
   };
 }
 

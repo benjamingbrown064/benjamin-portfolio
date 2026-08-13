@@ -18,14 +18,14 @@ export function Blog() {
               <LineReveal
                 as="h2"
                 className="why-head"
-                lines={["A daily record", "from the workshop."]}
+                lines={["Notes from", "the workshop."]}
               />
             </div>
           </Reveal>
           <Reveal delay={0.05}>
             <p className="intro">
               A boutique journal of products in motion, business problems worth
-              solving, and the daily thinking behind the work.
+              solving, and the thinking behind the work.
             </p>
           </Reveal>
         </div>

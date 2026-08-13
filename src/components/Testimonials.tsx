@@ -13,27 +13,20 @@ type Quote = {
   logo?: string;
 };
 
+// The three previous entries here (Alex Reinhardt / Northfield Motors, Priya
+// Shah / Meridian Group, James Ogilvie / Atlas Security) were unattributable
+// and have been removed.
+//
+// This one is DRAFTED AND AWAITING SIGN-OFF from John Graham. Until Ben
+// confirms he has approved the wording, <Testimonials /> stays out of
+// src/app/page.tsx — do not publish an attributed quote nobody has agreed to.
 const QUOTES: Quote[] = [
   {
     quote:
-      "Ben walked in on a Monday and we had something in our customers' hands by Friday. That kind of velocity shouldn't be possible.",
-    name: "Alex Reinhardt",
-    role: "COO, Northfield Motors",
-    company: "Northfield Motors",
-  },
-  {
-    quote:
-      "We'd spent eighteen months with three agencies and nothing shipped. Ben replaced all of them and we went live in twelve weeks.",
-    name: "Priya Shah",
-    role: "Founder, Meridian Group",
-    company: "Meridian Group",
-  },
-  {
-    quote:
-      "The rare operator who can hold the product vision, write the code, and still be on the phone to support at 11pm. A force multiplier.",
-    name: "James Ogilvie",
-    role: "CEO, Atlas Security",
-    company: "Atlas Security",
+      "We came to Ben with a process problem, not a software brief. What he built now runs the day — the jobs, the handovers, and all the chasing that used to live in someone's head. It's the first system the team actually opens without being told to.",
+    name: "John Graham",
+    role: "Managing Director, Redline Specialist Cars",
+    company: "Redline Specialist Cars",
   },
 ];
 

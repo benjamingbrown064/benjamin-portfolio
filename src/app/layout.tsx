@@ -14,11 +14,20 @@ export const metadata: Metadata = {
   title: "Benjamin Brown® — Founder, Builder, Operator",
   description:
     "Benjamin Brown — founder, operator and full-stack builder behind five companies and twenty-six shipped products. I design, build and run the thing. No outsourced craft.",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Benjamin Brown® — Founder, Builder, Operator",
     description:
       "Design, build, and operate the thing. Five companies, twenty-six shipped products.",
     type: "website",
+    url: "https://benjaminbrown.co",
+    siteName: "Benjamin Brown",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Benjamin Brown® — Founder, Builder, Operator",
+    description:
+      "Design, build, and operate the thing. Five companies, twenty-six shipped products.",
   },
 };
 

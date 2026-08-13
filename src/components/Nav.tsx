@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
 import { Magnetic } from "./Magnetic";
@@ -13,6 +13,8 @@ export function Nav({ variant = "home" }: NavProps) {
   const home = variant === "home";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCondensed, setIsCondensed] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setIsCondensed(window.scrollY > 80);
@@ -35,7 +37,25 @@ export function Nav({ variant = "home" }: NavProps) {
     };
   }, [isMobileMenuOpen]);
 
-  const closeMenu = () => setIsMobileMenuOpen(false);
+  // Escape closes, and focus moves into the panel on open and back to the
+  // trigger on close — otherwise keyboard users are dropped at the top of the
+  // document with no way back.
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    closeButtonRef.current?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isMobileMenuOpen]);
+
+  const closeMenu = () => {
+    setIsMobileMenuOpen(false);
+    triggerRef.current?.focus();
+  };
 
   return (
     <>
@@ -87,10 +107,13 @@ export function Nav({ variant = "home" }: NavProps) {
             </Magnetic>
             <ThemeToggle />
             <button
+              ref={triggerRef}
               type="button"
               className="mobile-menu-trigger"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
             >
               Menu
             </button>
@@ -98,9 +121,19 @@ export function Nav({ variant = "home" }: NavProps) {
         </div>
       </nav>
 
-      <div className={`mobile-menu-panel ${isMobileMenuOpen ? "is-open" : ""}`}>
+      {/* inert keeps the nine controls inside out of the tab order and the
+          accessibility tree while the panel is invisible. */}
+      <div
+        id="mobile-menu"
+        className={`mobile-menu-panel ${isMobileMenuOpen ? "is-open" : ""}`}
+        inert={!isMobileMenuOpen}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site menu"
+      >
         <div className="mobile-menu-panel-inner">
           <button
+            ref={closeButtonRef}
             type="button"
             className="mobile-menu-close"
             onClick={closeMenu}

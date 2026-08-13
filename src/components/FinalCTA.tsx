@@ -4,17 +4,44 @@ import { useState } from "react";
 import { Reveal } from "./Reveal";
 import { LineReveal } from "./LineReveal";
 
+type Status = "idle" | "sending" | "done" | "error";
+
 export function FinalCTA() {
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [error, setError] = useState("");
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!email) return;
-    setEmail("");
-    setSent(true);
-    setTimeout(() => setSent(false), 1800);
+    if (!email || status === "sending") return;
+
+    setStatus("sending");
+    setError("");
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(data.error || "Something went wrong. Please email instead.");
+        setStatus("error");
+        return;
+      }
+
+      setEmail("");
+      setStatus("done");
+    } catch {
+      setError("Couldn’t reach the server. Please email instead.");
+      setStatus("error");
+    }
   }
+
+  const buttonLabel =
+    status === "sending" ? "Signing up…" : status === "done" ? "Signed up ✓" : "Sign up";
 
   return (
     <section className="finalcta" id="contact">
@@ -46,9 +73,22 @@ export function FinalCTA() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={status === "sending"}
               />
-              <button type="submit">{sent ? "Sent ✓" : "Sign up"}</button>
+              <button type="submit" disabled={status === "sending"}>
+                {buttonLabel}
+              </button>
             </form>
+            {status === "error" && (
+              <p className="newsletter-msg is-error" role="alert">
+                {error}
+              </p>
+            )}
+            {status === "done" && (
+              <p className="newsletter-msg" role="status">
+                You&rsquo;re on the list.
+              </p>
+            )}
           </div>
         </Reveal>
       </div>

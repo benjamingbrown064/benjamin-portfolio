@@ -33,7 +33,7 @@ export function HeroPortrait() {
           style={{ objectFit: "cover", objectPosition: "center 45%" }}
         />
       </motion.div>
-      <span className="cap">Portrait — London, UK · 2026</span>
+      <span className="cap">Portrait — Costa Mesa, CA · 2026</span>
     </div>
   );
 }
