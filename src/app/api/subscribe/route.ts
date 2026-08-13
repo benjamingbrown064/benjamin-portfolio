@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Every Resend key on this account is send-only restricted, so the Contacts
+// API (POST /audiences/:id/contacts) is not available — it 401s with
+// "restricted_api_key". Signups are therefore delivered as a notification
+// email instead. If a full-access key is ever issued, switching to a real
+// audience is the better shape.
+const RESEND_ENDPOINT = "https://api.resend.com/emails";
+
 export async function POST(request: Request) {
   let email: unknown;
   try {
@@ -18,33 +25,41 @@ export async function POST(request: Request) {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const audienceId = process.env.RESEND_AUDIENCE_ID;
+  const from = process.env.NEWSLETTER_FROM;
+  const to = process.env.NEWSLETTER_TO;
 
-  // Fail loudly rather than pretending to succeed — the previous version of
+  // Fail loudly rather than pretending to succeed — the original version of
   // this form told everyone "Sent" and dropped the address on the floor.
-  if (!apiKey || !audienceId) {
-    console.error("subscribe: RESEND_API_KEY or RESEND_AUDIENCE_ID is not set");
+  if (!apiKey || !from || !to) {
+    console.error(
+      "subscribe: RESEND_API_KEY, NEWSLETTER_FROM or NEWSLETTER_TO is not set"
+    );
     return NextResponse.json(
       { error: "Signup is temporarily unavailable. Please email instead." },
       { status: 503 }
     );
   }
 
-  const res = await fetch(
-    `https://api.resend.com/audiences/${audienceId}/contacts`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: email.trim(), unsubscribed: false }),
-    }
-  );
+  const address = email.trim();
+
+  const res = await fetch(RESEND_ENDPOINT, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      reply_to: address,
+      subject: `Newsletter signup: ${address}`,
+      text: `${address} signed up via the benjaminbrown.co footer form.`,
+    }),
+  });
 
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
-    console.error("subscribe: resend rejected the contact", res.status, detail);
+    console.error("subscribe: resend rejected the send", res.status, detail);
     return NextResponse.json(
       { error: "Something went wrong. Please email instead." },
       { status: 502 }

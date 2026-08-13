@@ -60,15 +60,24 @@ at all and the crossfade is lost.
 
 ## Newsletter
 
-`POST /api/subscribe` adds a contact to a Resend audience. It requires:
+`POST /api/subscribe` delivers each signup as a notification email via Resend.
+It requires three variables, all set in Vercel:
 
 | Variable | Purpose |
 | --- | --- |
 | `RESEND_API_KEY` | Resend API key |
-| `RESEND_AUDIENCE_ID` | Target audience to add contacts to |
+| `NEWSLETTER_FROM` | Verified sender, e.g. `Benjamin Brown <noreply@govscape.app>` |
+| `NEWSLETTER_TO` | Where signups land, e.g. `hello@benjaminbrown.co` |
 
-Both are set in Vercel. If either is missing the route returns a 503 and the
-form shows a real error — it never reports success it did not achieve.
+If any are missing the route returns 503 and the form shows a real error — it
+never reports success it did not achieve.
+
+**Why a notification email and not a mailing list:** every Resend key on this
+account is *send-only restricted*. The Contacts API returns
+`restricted_api_key` for all of them, so a real audience is not reachable.
+Issue a full-access key and switching to `POST /audiences/:id/contacts` is the
+better long-term shape. `NEWSLETTER_FROM` must be a domain verified in Resend —
+`govscape.app` is verified; `benjaminbrown.co` may not be.
 
 ## Deploying
 
