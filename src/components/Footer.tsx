@@ -1,74 +1,35 @@
+import { FlagMark } from "./marks";
 import { PacificClock } from "./PacificClock";
 
 export function Footer() {
   return (
     <footer className="foot-wrap">
       <div className="container-x">
-        <div className="wordmark-big">
-          <svg
-            className="row"
-            viewBox="0 0 1000 110"
-            preserveAspectRatio="xMidYMid meet"
-            role="img"
-            aria-label="Benjamin Brown"
-          >
-            <text
-              x="0"
-              y="92"
-              fontWeight={700}
-              fontSize={110}
-              textLength={1000}
-              lengthAdjust="spacingAndGlyphs"
-              fill="currentColor"
-            >
-              BENJAMIN BROWN
-            </text>
-          </svg>
+        <div className="foot-lockup">
+          <FlagMark className="mark-lg" accent />
+          <p className="foot-name">Benjamin Brown</p>
         </div>
         <div className="foot-meta">
           <div className="fm-col">
-            <p className="fm-label">Contact</p>
+            <p className="fm-label">Talk</p>
             <div className="line">
-              <a href="mailto:hello@benjaminbrown.co">
-                hello@benjaminbrown.co <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-            <div className="line">
-              <a href="tel:+19498670232">
-                +1 (949) 867-0232 <span aria-hidden="true">↗</span>
-              </a>
+              <a href="mailto:hello@benjaminbrown.co">hello@benjaminbrown.co</a>
             </div>
           </div>
           <div className="fm-col">
-            <p className="fm-label">My current time</p>
+            <p className="fm-label">Time</p>
             <div className="big">
               <PacificClock />
               <span className="city">Costa Mesa (PT)</span>
             </div>
           </div>
           <div className="fm-col">
-            <p className="fm-label">Studio</p>
-            <div className="line">695 Town Center Dr</div>
-            <div className="line">Suite 1100</div>
-            <div className="line">Costa Mesa, CA 92626</div>
-            <div className="line">United States</div>
-          </div>
-          <div className="fm-col fm-socials">
-            <a href="#">Instagram</a>
-            <a href="#">X</a>
-            <a href="#">YouTube</a>
-            <a href="#">LinkedIn</a>
+            <p className="fm-label">Place</p>
+            <div className="line">Costa Mesa, CA</div>
           </div>
         </div>
         <div className="foot-bottom">
-          <span className="legal">
-            © 2026 Benjamin Brown — All rights reserved.
-          </span>
-          <div className="links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms &amp; Conditions</a>
-            <a href="#">Imprint</a>
-          </div>
+          <span className="legal">© 2026 Benjamin Brown</span>
           <a className="back" href="#top" aria-label="Back to top">
             ↑
           </a>

@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Benjamin Brown — Founder, Builder, Operator";
+export const alt = "Benjamin Brown — look at the flag";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -14,56 +14,48 @@ export default function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#0a0a0a",
-          color: "#fafafa",
+          background: "#f4f0e6",
+          color: "#171513",
           padding: "72px 80px",
-          fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-          <div style={{ fontSize: 30, fontWeight: 600, letterSpacing: "-0.02em" }}>
-            BENJAMIN BROWN
-          </div>
-          <div
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 999,
-              background: "#fafafa",
-              marginTop: 6,
-            }}
-          />
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+            <path d="M9 4.5v23" stroke="#171513" strokeWidth="1.5" />
+            <path d="M6.5 27.5h5" stroke="#171513" strokeWidth="1.5" />
+            <path d="M9 5.5h13.5l-3.4 4.4 3.4 4.4H9" stroke="#171513" strokeWidth="1.5" fill="#b42318" />
+          </svg>
+          <div style={{ fontSize: 26, letterSpacing: "-0.02em" }}>Benjamin Brown</div>
         </div>
 
         <div
           style={{
             display: "flex",
-            fontSize: 88,
-            fontWeight: 600,
-            letterSpacing: "-0.04em",
-            lineHeight: 1.05,
-            maxWidth: 900,
+            flexDirection: "column",
+            fontSize: 44,
+            letterSpacing: "-0.03em",
+            lineHeight: 1.2,
+            maxWidth: 920,
           }}
         >
-          Building in the open, shipping for real.
+          The why is the win. The how is the win. The result is the win.
         </div>
 
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "flex-end",
-            borderTop: "1px solid #1f1f1f",
+            borderTop: "1px solid #d8d2c6",
             paddingTop: 28,
-            fontSize: 24,
-            color: "#8a8a8a",
+            fontSize: 22,
+            color: "#6f6a62",
           }}
         >
-          <div style={{ display: "flex" }}>Founder · Builder · Operator</div>
+          <div style={{ display: "flex" }}>Costa Mesa</div>
           <div style={{ display: "flex" }}>benjaminbrown.co</div>
         </div>
       </div>
     ),
-    { ...size }
+    { ...size },
   );
 }

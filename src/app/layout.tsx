@@ -1,40 +1,46 @@
 import type { Metadata, Viewport } from "next";
-import { Inter_Tight } from "next/font/google";
+import { Source_Sans_3, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
+const sourceSans = Source_Sans_3({
+  variable: "--font-source-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
+});
+
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin"],
+  display: "swap",
+  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://benjaminbrown.co"),
-  title: "Benjamin Brown® — Founder, Builder, Operator",
+  title: "Benjamin Brown — Costa Mesa",
   description:
-    "Benjamin Brown — founder, operator and full-stack builder behind five companies and twenty-six shipped products. I design, build and run the thing. No outsourced craft.",
+    "We are getting lost in the glamor of using AI, as if using it is the win. It isn’t. The why is the win. The how is the win. The result is the win.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Benjamin Brown® — Founder, Builder, Operator",
+    title: "Benjamin Brown — Costa Mesa",
     description:
-      "Design, build, and operate the thing. Five companies, twenty-six shipped products.",
+      "No one tees off without looking at the flag. The why is the win. The how is the win. The result is the win.",
     type: "website",
     url: "https://benjaminbrown.co",
     siteName: "Benjamin Brown",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Benjamin Brown® — Founder, Builder, Operator",
+    title: "Benjamin Brown — Costa Mesa",
     description:
-      "Design, build, and operate the thing. Five companies, twenty-six shipped products.",
+      "No one tees off without looking at the flag. The why is the win. The how is the win. The result is the win.",
   },
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f0e6" },
+    { media: "(prefers-color-scheme: dark)", color: "#141210" },
   ],
 };
 
@@ -46,7 +52,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={interTight.variable}>
+    <html lang="en" className={`${sourceSans.variable} ${sourceSerif.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeFlashScript }} />
       </head>

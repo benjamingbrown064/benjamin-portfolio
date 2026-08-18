@@ -1,9 +1,6 @@
 "use client";
 
 export function ThemeToggle() {
-  // No local state: the <html data-theme> attribute is the single source of
-  // truth, read at click time. Two toggles are mounted at once (nav + mobile
-  // menu) and mirrored state would let one go stale and swallow a click.
   function toggle() {
     const root = document.documentElement;
     const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
@@ -25,7 +22,9 @@ export function ThemeToggle() {
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1.8}
+        strokeWidth={1.25}
+        strokeLinecap="round"
+        strokeLinejoin="round"
         aria-hidden="true"
       >
         <path d="M20 14.5A8 8 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z" />
@@ -35,7 +34,9 @@ export function ThemeToggle() {
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1.8}
+        strokeWidth={1.25}
+        strokeLinecap="round"
+        strokeLinejoin="round"
         aria-hidden="true"
       >
         <circle cx="12" cy="12" r="4" />

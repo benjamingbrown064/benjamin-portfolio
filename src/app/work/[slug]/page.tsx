@@ -93,9 +93,11 @@ export default async function CaseStudyPage({
                     </div>
                   ))}
               </div>
-              <a className="pill dark" href={p.cta.href} target="_blank" rel="noopener noreferrer">
-                {p.cta.label} <span className="arr">→</span>
-              </a>
+              {p.cta.href.startsWith("http") && !p.cta.href.includes(".example") ? (
+                <a className="pill dark" href={p.cta.href} target="_blank" rel="noopener noreferrer">
+                  {p.cta.label} <span className="arr">→</span>
+                </a>
+              ) : null}
             </Reveal>
           </div>
         </header>
