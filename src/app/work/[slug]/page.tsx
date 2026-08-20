@@ -2,8 +2,7 @@ import { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
+import { SiteChrome } from "@/components/SiteChrome";
 import { Reveal } from "@/components/Reveal";
 import { PROJECTS, PROJECT_ORDER } from "@/lib/projects";
 
@@ -46,8 +45,7 @@ export default async function CaseStudyPage({
   const next = PROJECTS[nextSlug];
 
   return (
-    <>
-      <Nav variant="case-study" />
+    <SiteChrome>
       <main>
         {/* Page header */}
         <header className="cs-page-header">
@@ -369,7 +367,6 @@ export default async function CaseStudyPage({
           </div>
         </div>
       </main>
-      <Footer />
-    </>
+    </SiteChrome>
   );
 }

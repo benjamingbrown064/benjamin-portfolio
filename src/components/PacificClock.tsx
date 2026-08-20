@@ -2,14 +2,19 @@
 
 import { useEffect, useState } from "react";
 
-export function PacificClock() {
+type PacificClockProps = {
+  hour12?: boolean;
+  className?: string;
+};
+
+export function PacificClock({ hour12 = false, className }: PacificClockProps) {
   const [time, setTime] = useState<string>("");
 
   useEffect(() => {
     const fmt = new Intl.DateTimeFormat("en-US", {
-      hour: "2-digit",
+      hour: "numeric",
       minute: "2-digit",
-      hour12: false,
+      hour12,
       timeZone: "America/Los_Angeles",
     });
     function tick() {
@@ -18,7 +23,7 @@ export function PacificClock() {
     tick();
     const id = window.setInterval(tick, 15000);
     return () => window.clearInterval(id);
-  }, []);
+  }, [hour12]);
 
-  return <span>{time || "00:00"}</span>;
+  return <span className={className}>{time || (hour12 ? "0:00 AM" : "00:00")}</span>;
 }

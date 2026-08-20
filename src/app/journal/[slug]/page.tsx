@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Footer } from "@/components/Footer";
-import { Nav } from "@/components/Nav";
+import { SiteChrome } from "@/components/SiteChrome";
 import { Reveal } from "@/components/Reveal";
 import { JOURNAL, JOURNAL_ORDER } from "@/lib/journal";
 
@@ -46,8 +45,7 @@ export default async function JournalArticlePage({
   const nextPost = JOURNAL[nextSlug];
 
   return (
-    <>
-      <Nav variant="subpage" />
+    <SiteChrome>
       <main className="journal-page article-page">
         <header className="journal-article-head">
           <div className="container-x">
@@ -118,7 +116,6 @@ export default async function JournalArticlePage({
           </div>
         </section>
       </main>
-      <Footer />
-    </>
+    </SiteChrome>
   );
 }

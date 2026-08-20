@@ -1,5 +1,10 @@
 /** Locked voice. Keep in step with ETHOS.md. Do not punch up. */
 
+export const IDENTITY_NAME = "Ben";
+export const IDENTITY_PLACE = "Costa Mesa";
+export const IDENTITY_LINE =
+  "I found and run companies, and I still build the software.";
+
 export const GOLF_LINE = "No one tees off without looking at the flag.";
 
 export const FLAG_STATEMENT =
