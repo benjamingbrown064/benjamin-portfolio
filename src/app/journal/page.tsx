@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
+import { SiteChrome } from "@/components/SiteChrome";
 import { Reveal } from "@/components/Reveal";
 import { JOURNAL, JOURNAL_ORDER } from "@/lib/journal";
 
@@ -16,8 +15,7 @@ export default function JournalIndexPage() {
   const [lead, ...rest] = posts;
 
   return (
-    <>
-      <Nav variant="subpage" />
+    <SiteChrome>
       <main className="journal-page journal-index-page">
         <header className="journal-hero">
           <div className="container-x">
@@ -92,7 +90,6 @@ export default function JournalIndexPage() {
           </div>
         </section>
       </main>
-      <Footer />
-    </>
+    </SiteChrome>
   );
 }

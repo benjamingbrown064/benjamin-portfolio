@@ -1,44 +1,45 @@
 import type { Metadata, Viewport } from "next";
-import { Inter_Tight } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://benjaminbrown.co"),
-  title: "Benjamin Brown® — Founder, Builder, Operator",
+  title: "Benjamin Brown — Costa Mesa",
   description:
-    "Benjamin Brown — founder, operator and full-stack builder behind five companies and twenty-six shipped products. I design, build and run the thing. No outsourced craft.",
+    "We are getting lost in the glamor of using AI, as if using it is the win. It isn’t. The why is the win. The how is the win. The result is the win.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Benjamin Brown® — Founder, Builder, Operator",
+    title: "Benjamin Brown — Costa Mesa",
     description:
-      "Design, build, and operate the thing. Five companies, twenty-six shipped products.",
+      "No one tees off without looking at the flag. The why is the win. The how is the win. The result is the win.",
     type: "website",
     url: "https://benjaminbrown.co",
     siteName: "Benjamin Brown",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Benjamin Brown® — Founder, Builder, Operator",
+    title: "Benjamin Brown — Costa Mesa",
     description:
-      "Design, build, and operate the thing. Five companies, twenty-six shipped products.",
+      "No one tees off without looking at the flag. The why is the win. The how is the win. The result is the win.",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  themeColor: "#8fb9d6",
 };
-
-const themeFlashScript = `(function(){try{var s=localStorage.getItem('bb:theme');var m=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',s||m);}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -46,10 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={interTight.variable}>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeFlashScript }} />
-      </head>
+    <html lang="en" className={`${plexSans.variable} ${plexMono.variable}`}>
       <body>{children}</body>
     </html>
   );

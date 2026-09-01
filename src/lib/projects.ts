@@ -89,7 +89,7 @@ export const PROJECTS: Record<string, ProjectCaseStudy> = {
     meta: "Automotive · Operating System",
     descriptor:
       "I found a business where the sales picture, dealer activity, fund exposure, and claims workload all lived in different places. WarrantyOS brings them into one live operating system.",
-    cta: { label: "Product overview", href: "https://warrantyos-marketing.vercel.app" },
+    cta: { label: "Live portal", href: "https://portal.warrantyos.app" },
     pageMeta: {
       scope: "Product estate",
       client: "WarrantyOS",
