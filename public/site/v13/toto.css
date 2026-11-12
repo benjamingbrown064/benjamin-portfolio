@@ -69,3 +69,23 @@
 .bba-gate-err{font-size:12.5px;color:var(--signal)}
 .bba-gate-err:empty{display:none}
 @media(prefers-reduced-motion:reduce){.bba-comp .mic.rec{animation:none}}
+
+/* First-look report card */
+.bba-report{align-self:stretch;display:grid;gap:10px;padding:16px;border:1.5px solid var(--ink);border-radius:12px;font-size:14px;line-height:1.45;animation:bbain .4s var(--ease) both}
+.bba-report .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.bba-report .t{font-size:18px;font-weight:600;letter-spacing:-.03em;line-height:1.2}
+.bba-report p{margin:0}
+.bba-report .st{font-weight:600}
+.bba-report .ar{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:0;border-top:1px solid var(--bone-2)}
+.bba-report .ar li{display:grid;gap:2px;padding:9px 0;border-bottom:1px solid var(--bone-2)}
+.bba-report .ar .h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.bba-report .ar .n{font-weight:600;font-size:13.5px}
+.bba-report .ar .g{flex:none;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:980px;background:var(--bone-2);color:var(--mute)}
+.bba-report .ar li.open .g{background:var(--signal);color:#fff}
+.bba-report .ar li.solid .g{background:var(--ink);color:var(--bone)}
+.bba-report .ar .d{font-size:13px;color:var(--mute)}
+.bba-report .f{font-size:12px;color:var(--mute);line-height:1.4}
+.bba-report .bt{display:flex;flex-wrap:wrap;gap:8px}
+.bba-report .bt button{font:inherit;font-weight:600;font-size:13px;padding:10px 14px;border-radius:8px;background:var(--ink);color:var(--bone)}
+.bba-report .bt button.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.bba-report .bt button:hover{background:var(--signal);color:var(--ink);box-shadow:none}

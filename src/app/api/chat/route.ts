@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { rpc } from "@/lib/db";
+import { randomBytes } from "node:crypto";
+import { insert, rpc } from "@/lib/db";
 import { fail, guard, str } from "@/lib/guard";
-import { askToto, type Turn } from "@/lib/toto";
+import { askToto, type Action, type Turn } from "@/lib/toto";
 
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 const LIMITS = {
   sessionMessages: 30, // per conversation, before the visitor has left an email
@@ -13,12 +14,12 @@ const LIMITS = {
   siteDay: 1500,
   monthlyUsd: Number(process.env.CHAT_MONTHLY_CAP_USD ?? 40),
   messageChars: 1200,
-  historyTurns: 16,
+  historyTurns: 44, // long enough to hold a whole discovery conversation
 };
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-type Precheck = { session_messages: number; known: boolean; ip_hour: number; ip_day: number; site_day: number; month_cost: number };
+type Precheck = { session_messages: number; known: boolean; name: string | null; email: string | null; reports: number; ip_hour: number; ip_day: number; site_day: number; month_cost: number };
 
 function limited(reply: string) {
   return NextResponse.json({ ok: true, limited: true, reply, actions: [] });
@@ -26,7 +27,7 @@ function limited(reply: string) {
 
 export async function POST(request: Request) {
   if (!process.env.ANTHROPIC_API_KEY) return fail(503, "The assistant is not connected yet.");
-  const g = await guard(request, { maxBytes: 40_000 });
+  const g = await guard(request, { maxBytes: 70_000 });
   if (!g.ok) return g.response;
 
   const session = str(g.body.session, 40);
@@ -67,12 +68,39 @@ export async function POST(request: Request) {
     }
 
     const out = await askToto(turns, page, pre.known);
+    const actions: Action[] = [...out.actions];
+    let reply = out.reply;
+
+    // A first-look report is saved against the visitor's details, so those come first, and it is
+    // limited to a few a day per visitor.
+    if (out.report) {
+      const email = out.email ?? pre.email;
+      if (!email) {
+        reply = "Before I put your first look together, what is your name and email? Then I can save it for you and Ben.";
+      } else if (pre.reports >= 3) {
+        reply = "I have already put together a few first looks for you today. The request form is the best next step from here.";
+      } else {
+        const ref = `BB-D-${randomBytes(3).toString("hex").toUpperCase()}`;
+        await insert("discovery_submissions", {
+          ref,
+          journey: "conversation",
+          name: out.name ?? pre.name,
+          email,
+          company: out.report.company,
+          answers: { session, areas: out.report.areas, start: out.report.start, fit: out.report.fit },
+          signals: Object.fromEntries(out.report.areas.map((a) => [a.n, a.signal])),
+          summary: out.report.summary,
+          ip_hash: g.ip,
+        });
+        actions.unshift({ type: "report", ref, report: out.report });
+      }
+    }
     await rpc("chat_log_turn", {
-      p_session: session, p_ip: g.ip, p_page: page, p_user: question, p_reply: out.reply,
-      p_actions: out.actions.length ? out.actions : null,
+      p_session: session, p_ip: g.ip, p_page: page, p_user: question, p_reply: reply,
+      p_actions: actions.length ? actions : null,
       p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
     });
-    return NextResponse.json({ ok: true, reply: out.reply, actions: out.actions, known: pre.known || Boolean(out.email) });
+    return NextResponse.json({ ok: true, reply, actions, known: pre.known || Boolean(out.email) });
   } catch (e) {
     console.error("chat: failed", e);
     return fail(502, "I could not answer that just now. Please try again, or use the request form.");
