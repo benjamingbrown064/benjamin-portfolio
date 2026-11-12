@@ -79,7 +79,6 @@ export function renderPage(name: string, opts: PageOptions): string {
     `<meta property="og:url" content="${canonical}">`,
     `<meta property="og:image" content="${SITE_URL}/opengraph-image">`,
     `<meta name="twitter:card" content="summary_large_image">`,
-    `<link rel="stylesheet" href="/site/v13/site.css">`,
   ]
     .filter(Boolean)
     .join("\n");
