@@ -54,6 +54,13 @@ export async function signedUploadUrl(bucket: string, path: string): Promise<str
   return `${URL_}/storage/v1${j.url}`;
 }
 
+/** Read rows. `query` is a PostgREST query string, e.g. "select=ref,name&created_at=gte.2026-…&order=created_at.desc". */
+export async function select<T = Record<string, unknown>>(table: string, query: string): Promise<T[]> {
+  const res = await fetch(`${URL_}/rest/v1/${table}?${query}`, { headers: headers() });
+  if (!res.ok) throw new DbError(res.status, await res.text().catch(() => ""));
+  return (await res.json()) as T[];
+}
+
 /** Call a database function. */
 export async function rpc<T = unknown>(fn: string, args: Record<string, unknown>): Promise<T> {
   const res = await fetch(`${URL_}/rest/v1/rpc/${fn}`, { method: "POST", headers: headers(), body: JSON.stringify(args) });
