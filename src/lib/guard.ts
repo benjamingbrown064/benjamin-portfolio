@@ -11,15 +11,20 @@ export function fail(status: number, error: string): NextResponse {
   return NextResponse.json({ ok: false, error }, { status });
 }
 
+/** True when the request comes from a page on this site. */
+export function originAllowed(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  try {
+    return Boolean(origin) && ALLOWED_HOSTS.test(new URL(origin!).host);
+  } catch {
+    return false;
+  }
+}
+
 export async function guard(request: Request, opts: { table?: string; perHour?: number; perDay?: number; maxBytes?: number }): Promise<Guarded> {
   if (!dbConfigured()) return { ok: false, response: fail(503, "This form is not connected yet. Please email instead.") };
 
-  const origin = request.headers.get("origin");
-  let host = "";
-  try {
-    host = origin ? new URL(origin).host : "";
-  } catch {}
-  if (!host || !ALLOWED_HOSTS.test(host)) return { ok: false, response: fail(403, "Request not allowed.") };
+  if (!originAllowed(request)) return { ok: false, response: fail(403, "Request not allowed.") };
 
   const text = await request.text();
   if (text.length > (opts.maxBytes ?? 60_000)) return { ok: false, response: fail(413, "That is too long to send.") };
