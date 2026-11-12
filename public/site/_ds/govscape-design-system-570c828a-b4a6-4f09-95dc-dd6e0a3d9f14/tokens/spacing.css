@@ -1,0 +1,10 @@
+/* Layout, radius, motion. No shadows except the docked advisor. */
+:root{
+--wrap-max:1200px;--wrap-pad:clamp(24px,5vw,88px);--sec-pad:clamp(72px,10vw,128px);--grid-gap:16px;--col-gap:70px;
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:22px;--space-6:28px;--space-7:34px;--space-8:44px;--space-9:56px;--space-10:72px;
+--r-panel:18px;--r-inner:14px;--r-box:6px;--r-pill:999px;--r-appicon:23%;/* @kind radius */
+--sh-pop:0 24px 56px -20px rgba(11,11,12,.35);
+--ease:cubic-bezier(.2,0,0,1);/* @kind other */
+--dur-micro:180ms;/* @kind other */--dur-surface:320ms;/* @kind other */--dur-page:440ms;/* @kind other */--dur-brand:640ms;/* @kind other */
+--slide-w:1920px;--slide-h:1080px;--slide-margin:112px;
+}

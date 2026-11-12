@@ -1,0 +1,19 @@
+/* One family speaks (Outfit). One counts (Geist Mono). Sizes for a 1440px canvas. */
+:root{
+--font-sans:'Outfit',system-ui,-apple-system,sans-serif;
+--font-mono:'Geist Mono',ui-monospace,monospace;
+--weight-light:300;--weight-regular:400;--weight-medium:500;--weight-semibold:600;--weight-bold:700;
+--type-display-size:112px;--type-display-line:.92;--type-display-track:-.05em;
+--type-h1-size:54px;--type-h1-line:.99;--type-h1-track:-.04em;
+--type-h2-size:34px;--type-h2-line:1.1;--type-h2-track:-.03em;
+--type-h3-size:22px;--type-h3-line:1.2;--type-h3-track:-.028em;
+--type-lede-size:18px;--type-lede-line:1.6;
+--type-body-size:16px;--type-body-line:1.55;
+--type-micro-size:11px;--type-micro-line:1.4;--type-micro-track:.26em;
+--type-eyebrow-size:12px;--type-eyebrow-track:.3em;
+--type-quote-size:34px;--type-quote-line:1.18;--type-quote-track:-.03em;
+--type-num-size:13px;--type-num-track:.1em;
+--wordmark-track:-.05em;
+/* semantic */
+--font-heading:var(--font-sans);--font-body:var(--font-sans);--font-figures:var(--font-mono);
+}

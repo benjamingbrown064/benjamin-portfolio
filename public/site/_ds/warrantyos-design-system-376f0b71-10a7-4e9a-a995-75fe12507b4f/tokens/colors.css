@@ -1,0 +1,19 @@
+/* Ink, paper, gold. Gold is the only chromatic colour; it appears once per view. */
+:root{
+--gold:#F4B352;--gold-deep:#8A5A18;
+--ink:#0E0E10;--graphite:#17171B;--hair:#26262B;--night:#08080A;
+--slate:#56565E;--label:#8A8A93;--divider:#E3E3E6;
+--card:#F5F5F7;--paper:#F4F2ED;--white:#FFFFFF;
+--ink-body:#C9C9D0;--ink-label:#6E6E77;--ink-dot-off:#3A3A40;--clear-space:#C9C4B8;
+--ok:#1F9D55;--no:#C2352B;
+/* monogram only: deep amber → brand gold gradient. Never used outside the mark. */
+--mark-amber:#C9741A;--mark-pale:#F4B352;--mark-deep:#C9741A;--mark-gold:#F4B352;
+/* semantic */
+--surface-page:var(--white);--surface-card:var(--card);--surface-editorial:var(--paper);--surface-statement:var(--ink);--surface-card-on-ink:var(--graphite);--surface-accent:var(--gold);
+--text-strong:var(--ink);--text-body:var(--slate);--text-label:var(--label);
+--text-on-ink:var(--white);--text-body-on-ink:var(--ink-body);--text-label-on-ink:var(--ink-label);--text-accent-on-ink:var(--gold);
+--border-divider:var(--divider);--border-on-ink:var(--hair);--border-ghost-on-ink:rgba(255,255,255,.28);
+--accent:var(--gold);--accent-on-light:var(--gold-deep);--spark-on-light:var(--gold-deep);--spark-on-ink:var(--gold);
+--status-ok:var(--ok);--status-no:var(--no);--status-live:var(--gold);
+--link-underline:var(--gold);
+}

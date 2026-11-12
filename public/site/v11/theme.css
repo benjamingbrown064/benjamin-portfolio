@@ -1,0 +1,104 @@
+/* v11 theme: bare-icon nav actions, light/dark switch. Load after every other stylesheet. */
+.nav-r{gap:4px}
+.clock{margin-right:14px}
+.nav-btn,.th-btn{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:none;color:inherit;opacity:.85;cursor:pointer;transition:opacity .25s,transform .5s var(--ease)}
+.nav-btn:hover,.th-btn:hover{background:none;color:inherit;opacity:1}
+.nav-btn:active,.th-btn:active{transform:scale(.94)}
+.nb-ic,.nav-btn svg,.th-btn svg{width:22px;height:22px}
+.th-btn svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.th-btn .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
+[data-theme="dark"] .th-btn .sun{opacity:1;transform:none}
+[data-theme="dark"] .th-btn .moon{opacity:0;transform:rotate(90deg) scale(.6)}
+@media(prefers-reduced-motion:reduce){.th-btn svg{transition:none}}
+
+/* dark: tokens flip, dark bands stay as they are */
+html[data-theme="dark"]{--ink:#F5F5F7;--bone:#000;--bone-2:#1D1D1F;--bone-3:#2C2C2E;--line:rgba(255,255,255,.16);--mute:#A1A1A6;--fg:#F5F5F7;color-scheme:dark}
+:where([data-theme="dark"]) body{background:#000}
+:where([data-theme="dark"]) ::selection{color:#000}
+:where([data-theme="dark"]) .btn{color:#000}
+:where([data-theme="dark"]) .btn:hover{background:#fff;color:#000}
+:where([data-theme="dark"]) .go{background:var(--bone-3)}
+:where([data-theme="dark"]) .media .go{background:rgba(29,29,31,.88)}
+:where([data-theme="dark"]) .svc:hover .go,:where([data-theme="dark"]) .lt-c:hover .go,:where([data-theme="dark"]) .fitem.open .pl,:where([data-theme="dark"]) .oc-more:hover,:where([data-theme="dark"]) .jx-filters button[aria-pressed="true"],:where([data-theme="dark"]) .bba-spk[aria-pressed="true"]{color:#000}
+:where([data-theme="dark"]) .lt-k,:where([data-theme="dark"]) .post .media .tag{color:#1D1D1F}
+:where([data-theme="dark"]) .logos-row img{filter:grayscale(1) invert(1)}
+:where([data-theme="dark"]) .price,:where([data-theme="dark"]) .tcard,:where([data-theme="dark"]) .jx-form,:where([data-theme="dark"]) .svc .lev span{background:var(--bone)}
+:where([data-theme="dark"]) .oc-ic,:where([data-theme="dark"]) .oc-more{background:var(--bone-3)}
+:where([data-theme="dark"]) .h2-line i::after{box-shadow:0 0 0 4px var(--bone)}
+/* the emphasised card in each set: one step off its neighbours, in both modes */
+.oc.ink,.price.ink{background:var(--bone-3);color:var(--ink)}
+.oc.ink p,.oc.ink .n{color:var(--mute)}
+.oc.ink .oc-t{color:inherit}
+.oc.ink .oc-ic,.oc.ink .oc-more{background:var(--bone);color:var(--ink)}
+.oc.ink .oc-more:hover{background:var(--ink);color:var(--bone)}
+:where(html:not([data-theme="dark"])) .price.ink{--line:#D2D2D7;--mute:#6E6E73;--fg:var(--ink)}
+.price.ink .tag{background:var(--bone-2);color:var(--ink)}
+.price.ink .btn,.price.ink .btn:hover{background:var(--ink);color:var(--bone)}
+/* floating surfaces */
+:where([data-theme="dark"]) .oc-dlg{background:#141415;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12)}
+:where([data-theme="dark"]) .oc-dlg::backdrop{background:rgba(0,0,0,.6)}
+:where([data-theme="dark"]) .oc-x:hover{background:var(--bone-3)}
+html[data-theme="dark"] body .bbc{background:var(--bone)}
+html[data-theme="dark"] body .bbc-modal{background:rgba(0,0,0,.6)}
+html[data-theme="dark"] body .bbc-modal-in{background:#141415;box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12)}
+html[data-theme="dark"] body .bbc-modal-bar,html[data-theme="dark"] body .bbc-modal .bbc{background:#141415}
+html[data-theme="dark"] body .bbc-steps span::before,html[data-theme="dark"] body .bbc-chip span{background:transparent}
+html[data-theme="dark"] body .bbc-steps span.on::before{background:var(--ink);color:#000}
+html[data-theme="dark"] body .bbc-type:hover,html[data-theme="dark"] body .bbc-type:focus-visible,html[data-theme="dark"] body .bbc-label .hd span+span{color:#000}
+html[data-theme="dark"] body .bbc-chip input:checked+span{background:var(--ink);color:#000}
+html[data-theme="dark"] body .bbc-type .ico,html[data-theme="dark"] body .bbc-type:hover .ico{background:var(--bone-3);color:var(--ink)}
+html[data-theme="dark"] body .bbc-type:hover .d,html[data-theme="dark"] body .bbc-type:hover .k,html[data-theme="dark"] body .bbc-type:focus-visible .d,html[data-theme="dark"] body .bbc-type:focus-visible .k{color:#6E6E73}
+html[data-theme="dark"] body .bba{background:#141415;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12)}
+html[data-theme="dark"] body .bba-starters button:hover,html[data-theme="dark"] body .bba-comp button:not(.bba-mic),html[data-theme="dark"] body .bba[data-v="listening"] .bba-comp .bba-mic,html[data-theme="dark"] body .bba[data-v="speaking"] .bba-comp .bba-mic{color:#000}
+html[data-theme="dark"] body .bba[data-v="speaking"] .bba-mic .vx-stop{background:#000}
+/* light: every black ground becomes Cloud, with Ink text. Photographs keep their scrims. */
+:where(html:not([data-theme="dark"])) .dark{--fg:var(--ink);--line:#D2D2D7;--mute:#6E6E73;background:var(--bone-2);color:var(--ink)}
+:where(html:not([data-theme="dark"])) .dark .btn{background:var(--ink);color:#fff}
+:where(html:not([data-theme="dark"])) .dark .btn:hover{background:#000;color:#fff}
+:where(html:not([data-theme="dark"])) .dark .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+:where(html:not([data-theme="dark"])) .dark .btn.ghost:hover{background:var(--bone-3);color:var(--ink)}
+:where(html:not([data-theme="dark"])) .dark .tag{background:var(--bone);color:var(--ink)}
+:where(html:not([data-theme="dark"])) .bb-intro{background:#F5F5F7}
+:where(html:not([data-theme="dark"])) .bb-intro .bb-loader{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .nav,:where(html:not([data-theme="dark"])) .nav.on-dark{background:#F5F5F7;color:var(--ink);border-bottom-color:transparent}
+:where(html:not([data-theme="dark"])) .nav.scrolled,:where(html:not([data-theme="dark"])) .nav.scrolled.on-dark{background:rgba(255,255,255,.8);color:var(--ink);border-bottom-color:rgba(0,0,0,.08)}
+:where(html:not([data-theme="dark"])) .nav-links a{color:var(--mute)}
+:where(html:not([data-theme="dark"])) .nav-links a:hover,:where(html:not([data-theme="dark"])) .nav-links a.on{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .eq-tag{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .hero-fig .frame::after{background:linear-gradient(rgba(0,0,0,0) 58%,rgba(0,0,0,.72))}
+:where(html:not([data-theme="dark"])) .sh-glow::after{background-image:radial-gradient(circle .95em at var(--mx) var(--my),#FFA53D 0%,#FF6B1F 40%,#E04434 100%)}
+:where(html:not([data-theme="dark"])) .ledger-band{background:#F5F5F7;color:var(--ink)}
+:where(html:not([data-theme="dark"])) .lr-band .bg img{filter:none}
+:where(html:not([data-theme="dark"])) .lr-band .bg::after{background:linear-gradient(90deg,rgba(245,245,247,.1) 20%,rgba(245,245,247,.9) 50%,rgba(245,245,247,.96))}
+:where(html:not([data-theme="dark"])) .ledger .eyebrow,:where(html:not([data-theme="dark"])) .ledger .small{color:var(--mute)}
+:where(html:not([data-theme="dark"])) .led-row{border-top-color:var(--line);color:var(--mute)}
+:where(html:not([data-theme="dark"])) .led-row.hot{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .lr-tag{border-color:var(--line);color:var(--mute)}
+:where(html:not([data-theme="dark"])) .hot .lr-tag{color:var(--ink);border-color:#A1A1A6}
+:where(html:not([data-theme="dark"])) .lr-tally i{background:rgba(0,0,0,.1)}
+:where(html:not([data-theme="dark"])) .lr-tally i.on{background:var(--ink)}
+:where(html:not([data-theme="dark"])) .lr-tally i.hot{background:#FF6B1F}
+:where(html:not([data-theme="dark"])) .eqx .eqx-words button{color:#A1A1A6}
+:where(html:not([data-theme="dark"])) .eqx .eqx-words button.on,:where(html:not([data-theme="dark"])) .eqx .eqx-words button:hover{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .eqx .eqx-words i,:where(html:not([data-theme="dark"])) .eqx .eqx-res i{color:#A1A1A6}
+:where(html:not([data-theme="dark"])) .eqx .eqx-res{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .eqx .eqx-note,:where(html:not([data-theme="dark"])) .eq-cols p{color:var(--mute)}
+:where(html:not([data-theme="dark"])) .eqx .eqx-bar i{background:var(--line)}
+:where(html:not([data-theme="dark"])) .eqx .eqx-bar i::after{background:var(--ink)}
+:where(html:not([data-theme="dark"])) .fill .wd{color:var(--line)}
+:where(html:not([data-theme="dark"])) .fill .wd.on{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .foot{border-top:1px solid var(--line)}
+:where(html:not([data-theme="dark"])) .foot-brand,:where(html:not([data-theme="dark"])) .foot-brand .bb-loader,:where(html:not([data-theme="dark"])) .foot-grid .t,:where(html:not([data-theme="dark"])) .foot-grid>div{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .foot-grid{border-top-color:var(--line)}
+:where(html:not([data-theme="dark"])) .foot-grid h4,:where(html:not([data-theme="dark"])) .foot-bot,:where(html:not([data-theme="dark"])) .foot-grid a:hover{color:var(--mute)}
+:where(html:not([data-theme="dark"])) .foot-bot a:hover{color:var(--ink)}
+:where(html:not([data-theme="dark"])) .top{border-color:var(--line);color:var(--ink)}
+:where(html:not([data-theme="dark"])) .top:hover{background:var(--ink);color:#fff}
+/* hero photograph: one per mode */
+.hero-fig .frame img.h-lt{display:none;object-position:50% 40%}
+html.js .hero-fig .frame img.h-lt{opacity:1}
+:where(html:not([data-theme="dark"])) .hero-fig .frame img.h-dk{display:none}
+:where(html:not([data-theme="dark"])) .hero-fig .frame img.h-lt{display:block}
+
+:where(html:not([data-theme="dark"])) .eqx-arr{background:#fff;color:var(--ink)}
+:where(html:not([data-theme="dark"])) .eqx-arr:hover{background:var(--ink);color:#fff}

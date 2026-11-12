@@ -1,0 +1,10 @@
+/* One family: Archivo. Weight and tracking do the differentiating. Sentence case everywhere except micro-labels. */
+:root{
+--ff-text:"Archivo",system-ui,sans-serif;/* @kind font */
+--font-display:var(--ff-text);--font-body:var(--ff-text);
+--fs-cover:118px;--fs-headline:60px;--fs-statement:38px;--fs-subhead:24px;--fs-lead:18px;--fs-body:16px;--fs-label:12px;
+--ls-cover:-.045em;/* @kind other */--ls-headline:-.038em;/* @kind other */--ls-statement:-.024em;/* @kind other */--ls-subhead:-.02em;/* @kind other */--ls-figure:-.05em;/* @kind other */--ls-label:.26em;/* @kind other */
+--lh-cover:.92;/* @kind other */--lh-headline:.98;/* @kind other */--lh-body:1.55;/* @kind other */
+--fw-display:800;/* @kind other */--fw-body:500;/* @kind other */--fw-label:700;/* @kind other */
+--fs-u-title:28px;--fs-u-statement:26px;--fs-u-figure:36px;--fs-u-section:18px;--fs-u-card:15px;--fs-u-body:14px;--fs-u-small:13px;--fs-u-label:11px;
+}

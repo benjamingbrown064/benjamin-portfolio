@@ -1,0 +1,25 @@
+/* v6 home: cleaner pass over v5/site.css */
+:root{--r-lg:28px;--r:16px}
+.split::before{display:none}
+.head{justify-items:center;text-align:center;margin-left:auto;margin-right:auto;max-width:980px}.head .lede{margin-left:auto;margin-right:auto;text-wrap:balance}
+.head .lnk{margin-top:4px}
+.sec{padding:clamp(104px,12vw,160px) 0}
+.stats{text-align:left}
+.big-p{margin-left:auto;margin-right:auto;text-align:center;text-wrap:balance}
+/* work rail */
+.hw{gap:clamp(16px,2vw,24px);align-items:flex-start}
+.hw>.card{flex:0 0 clamp(300px,40vw,560px);scroll-snap-align:start}
+.hw .media{aspect-ratio:5/4;border-radius:var(--r-lg)}
+.hw .meta{gap:10px;padding:24px 4px 0;max-width:500px}
+.hw-k{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--mute)}
+.hw-p{font-size:clamp(17px,1.4vw,19px);font-weight:600;letter-spacing:-.02em;line-height:1.4;color:var(--mute);text-wrap:pretty}.hw-p b{color:var(--fg);font-weight:600}
+.hw-ctl{justify-content:space-between;align-items:center;margin-top:clamp(32px,4vw,48px)}
+.hw-btns{display:flex;gap:12px}
+.hw-btns button{width:44px;height:44px;border-radius:50%;background:var(--bone-2);display:grid;place-items:center;transition:background .3s,opacity .3s}.hw-btns button:hover{background:var(--bone-3)}.hw-btns button:disabled{opacity:.35;cursor:default}
+.hw-btns svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* calmer cards */
+.oc,.price,.tcard,.steps{border-radius:var(--r-lg)}
+.post .media{border-radius:var(--r-lg)}
+.eq-cols>div{text-align:center;border-top:0;padding-top:0}
+.tests .tcard .tag{display:none}
+.svc-foot{justify-content:center;text-align:center;flex-direction:column}

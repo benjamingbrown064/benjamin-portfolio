@@ -1,0 +1,18 @@
+/* Let's talk page: intro left, the contact flow inline on the right */
+.lt{padding:clamp(120px,14vw,176px) 0 clamp(80px,10vw,128px)}
+.lt-in{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(40px,6vw,88px);align-items:start}
+.lt-l{position:sticky;top:120px;display:grid;gap:20px;align-content:start}
+.lt-l .h-l{margin:0}
+.lt-l .lede{margin:0;max-width:40ch}
+.lt-meta{margin:12px 0 0;display:grid;border-top:1px solid #D2D2D7}
+.lt-meta>div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1px solid #D2D2D7;font-size:15px;line-height:1.45}
+.lt-meta dt{color:#6E6E73}.lt-meta dd{margin:0;color:#1D1D1F}
+.lt-coffee{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;font-weight:500;color:#1D1D1F;text-decoration:none;transition:opacity .25s}
+.lt-coffee:hover{opacity:.7}.lt-coffee .arr{transition:transform .35s cubic-bezier(.2,.7,.2,1)}.lt-coffee:hover .arr{transform:translateX(4px)}
+.lt-form{min-width:0}
+.lt-form .bf-inline{height:min(720px,calc(100dvh - 140px));min-height:560px;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 24px 48px rgba(0,0,0,.06)}
+.lt-form .bf-brand{visibility:hidden}
+html[data-theme="dark"] .lt-meta,html[data-theme="dark"] .lt-meta>div{border-color:rgba(255,255,255,.16)}
+html[data-theme="dark"] .lt-meta dt{color:#A1A1A6}html[data-theme="dark"] .lt-meta dd,html[data-theme="dark"] .lt-coffee{color:#F5F5F7}
+html[data-theme="dark"] .lt-form .bf-inline{box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+@media(max-width:1000px){.lt-in{grid-template-columns:minmax(0,1fr)}.lt-l{position:static}}
