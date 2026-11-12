@@ -129,5 +129,17 @@
   "old": "<h3>See you then.</h3>",
   "new": "<h3>'+(ok?'See you then.':'Request sent.')+'</h3>",
   "count": 1
+ },
+ {
+  "file": "Ben Brown Portfolio v12.html",
+  "old": "<a class=\"lnk\" href=\"#\" onclick=\"event.preventDefault();window.BBAgentDesk&&window.BBAgentDesk.open()\">Ask the agent</a>",
+  "new": "<a class=\"lnk\" href=\"#\" data-agent-open>Ask Toto</a>",
+  "count": 1
+ },
+ {
+  "file": "discovery.html",
+  "old": " onclick=\"if(document.referrer&&document.referrer.indexOf(location.host)>-1&&history.length>1){event.preventDefault();history.back()}\"",
+  "new": " data-back",
+  "count": 1
  }
 ]

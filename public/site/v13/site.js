@@ -40,3 +40,10 @@
   document.addEventListener('keydown',function(e){if(e.key==='Tab')h.classList.add('kbd')},true);
   document.addEventListener('pointerdown',function(){h.classList.remove('kbd')},true);
 })();
+
+/* "Exit" links marked data-back return to the page the visitor came from when that page is on this site. */
+document.addEventListener('click',function(e){
+  var a=e.target.closest&&e.target.closest('[data-back]');
+  if(!a)return;
+  if(document.referrer&&document.referrer.indexOf(location.host)>-1&&history.length>1){e.preventDefault();history.back()}
+});

@@ -11,7 +11,7 @@ The design is plain HTML/CSS/JS. Pages are served by route handlers (src/lib/sit
 the tokens. Re-run this script when a new design export arrives; edits that must survive a re-import
 belong in PATCHES below or in public/site/v13/ (hand-written, never overwritten).
 """
-import os, re, shutil, subprocess, sys, urllib.parse, urllib.request, json
+import hashlib, os, re, shutil, subprocess, sys, urllib.parse, urllib.request, json
 
 SRC = sys.argv[1]
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -278,6 +278,65 @@ def process_page(src_rel, out_name):
         f.write(html)
 
 
+LINK_RE = re.compile(r'<link rel="stylesheet" href="(/site/[^"]+?)(?:\?[^"]*)?">\s*')
+
+
+def absolutise_css(css, css_public_rel):
+    """Make url() and @import paths in a stylesheet absolute, so it can be moved into a bundle."""
+    base = os.path.dirname(css_public_rel)
+    def fix(m):
+        q, u = m.group(1), m.group(2).strip()
+        if is_external(u) or u.startswith("/") or u.startswith("data:"):
+            return m.group(0)
+        path, sep, tail = u.partition("#")
+        t = os.path.normpath(os.path.join(base, urllib.parse.unquote(path))).replace(os.sep, "/")
+        return "url(" + q + "/site/" + urllib.parse.quote(t) + (sep + tail if tail else "") + q + ")"
+    return CSSURL_RE.sub(fix, css)
+
+
+def bundle_css():
+    """One stylesheet per page: the page's stylesheets joined in their original order (so the cascade is
+    unchanged), followed by the hand-written v13 additions. Comments are dropped; nothing else is altered."""
+    out_dir = os.path.join(PUB, "css")
+    os.makedirs(out_dir, exist_ok=True)
+    extra = "v13/site.css"
+    for name in sorted(os.listdir(PAGES_OUT)):
+        page = os.path.join(PAGES_OUT, name)
+        html = open(page, encoding="utf-8").read()
+        hrefs = [h[len("/site/"):] for h in LINK_RE.findall(html)]
+        if not hrefs:
+            continue
+        parts = []
+        for h in hrefs + [extra]:
+            rel_path = urllib.parse.unquote(h)
+            css = open(os.path.join(PUB, rel_path), encoding="utf-8").read()
+            if css.lstrip().startswith("@charset"):
+                css = css[css.index(";") + 1:]
+            css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+            # A stylesheet that only pulls in files the page already links: the imports are redundant here.
+            for imp in re.findall(r'@import\s+"([^"]+)";', css):
+                target = os.path.normpath(os.path.join(os.path.dirname(rel_path), imp)).replace(os.sep, "/")
+                if target not in [urllib.parse.unquote(x) for x in hrefs]:
+                    raise SystemExit("%s imports %s, which the page does not link" % (rel_path, target))
+            css = re.sub(r'@import\s+"[^"]+";\s*', "", css)
+            parts.append("/* " + rel_path + " */\n" + absolutise_css(css, rel_path).strip())
+        text = "\n".join(parts) + "\n"
+        if "@import" in text:
+            raise SystemExit("bundle for %s contains @import, which must come first in a stylesheet" % name)
+        digest = hashlib.sha1(text.encode()).hexdigest()[:10]
+        fn = "%s.%s.css" % (name[:-5], digest)
+        open(os.path.join(out_dir, fn), "w", encoding="utf-8").write(text)
+        first = True
+        def repl(m):
+            nonlocal first
+            if first:
+                first = False
+                return '<link rel="stylesheet" href="/site/css/%s">\n' % fn
+            return ""
+        open(page, "w", encoding="utf-8").write(LINK_RE.sub(repl, html))
+    print("css bundles:", len(os.listdir(out_dir)))
+
+
 def main():
     if os.path.isdir(PAGES_OUT):
         shutil.rmtree(PAGES_OUT)
@@ -343,6 +402,7 @@ def main():
         else:
             shutil.copyfile(src, dst)
 
+    bundle_css()
     total = sum(os.path.getsize(os.path.join(d, f)) for d, _, fs in os.walk(PUB) for f in fs)
     print("pages:", sorted(os.listdir(PAGES_OUT)))
     print("renamed images:", len(RENAMED))
