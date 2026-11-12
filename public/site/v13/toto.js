@@ -11,10 +11,10 @@
 
   var NAME = 'Toto';
   var GREETING = "Hi, I'm Toto, Ben's AI assistant. I can answer questions about the work, the method and pricing, show you around, or open a request for Ben. What are you working on?";
-  var STARTERS = ['What does Ben do?', 'Which way of working fits me?', 'Show me the work', 'I would like to talk to Ben'];
+  var STARTERS = ['What does Ben do?', 'Run a quick discovery', 'Show me the work', 'I would like to talk to Ben'];
   var HOME_SECTIONS = { work: 'work', method: 'services', pricing: 'pricing', testimonials: 'testimonials' };
   var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen' };
-  var MAX_STORED = 40;
+  var MAX_STORED = 60;
 
   /* ---------- storage ---------- */
   function read(store, key) { try { return store.getItem(key); } catch (e) { return null; } }
@@ -75,10 +75,37 @@
       var n = el('div', 'bba-msg' + (m.role === 'user' ? ' u' : '') + (m.error ? ' err' : ''));
       n.textContent = m.text; // text only: nothing from the server or the visitor is treated as HTML
       log.appendChild(n);
+      if (m.report) log.appendChild(reportCard(m.report));
     });
     starters.style.display = history.some(function (m) { return m.role === 'user'; }) ? 'none' : '';
     if (gate) log.appendChild(gate);
     log.scrollTop = log.scrollHeight;
+  }
+
+  /* The first-look report at the end of a discovery by conversation. Built from text nodes only. */
+  var SIGNALS = { solid: 'Solid', partly: 'Partly there', open: 'Open' };
+  function reportCard(data) {
+    var r = data.report || {}, card = el('div', 'bba-report');
+    function add(tag, cls, text) { var n = el(tag, cls); n.textContent = text; card.appendChild(n); return n; }
+    add('span', 'k', 'First look · ' + (data.ref || ''));
+    add('b', 't', r.company ? 'Where ' + r.company + ' should start' : 'Where to start');
+    if (r.summary) add('p', 's', r.summary);
+    var starts = (r.start || []).map(function (n) { var a = (r.areas || []).filter(function (x) { return x.n === n; })[0]; return a ? a.name : null; }).filter(Boolean);
+    if (starts.length) add('p', 'st', 'Start with: ' + starts.join(', ') + '.');
+    var list = el('ul', 'ar');
+    (r.areas || []).forEach(function (a) {
+      var li = el('li', a.signal), top = el('div', 'h'), nm = el('span', 'n'), sg = el('span', 'g'), nt = el('span', 'd');
+      nm.textContent = a.n + '  ' + a.name; sg.textContent = SIGNALS[a.signal] || ''; nt.textContent = a.note || '';
+      top.appendChild(nm); top.appendChild(sg); li.appendChild(top); if (a.note) li.appendChild(nt); list.appendChild(li);
+    });
+    card.appendChild(list);
+    add('small', 'f', 'An automated first look, based only on what you told me. A full Discovery is Ben’s own appraisal of the business.');
+    var row = el('div', 'bt'), book = el('button'), talk = el('button', 'ghost');
+    book.type = talk.type = 'button'; book.textContent = 'Book a Discovery'; talk.textContent = 'Talk to Ben';
+    book.addEventListener('click', function () { openRequest('discovery', (r.company ? r.company + ': ' : '') + 'first look ' + (data.ref || '') + (starts.length ? ', start with ' + starts.join(', ') : '')); });
+    talk.addEventListener('click', function () { openCoffee(); });
+    row.appendChild(book); row.appendChild(talk); card.appendChild(row);
+    return card;
   }
 
   function note(text) { history.push({ role: 'assistant', text: text, error: true }); render(); }
@@ -114,6 +141,14 @@
       }, 700 + i * 300);
     });
   }
+  /* A report belongs to the reply it came with, so it is kept with that message and survives page changes. */
+  function attachReport(actions) {
+    (actions || []).forEach(function (a) {
+      if (a.type !== 'report') return;
+      history[history.length - 1].report = { ref: a.ref, report: a.report };
+      save(); render();
+    });
+  }
 
   /* ---------- sending ---------- */
   var busy = false;
@@ -137,7 +172,7 @@
         page: location.pathname,
         known: read(localStorage, KEYS.known) || '',
         // Lines this script wrote itself (limit notices, the thank-you after the details step) are not sent back.
-        messages: history.filter(function (m) { return !m.local && !m.error; }).map(function (m) { return { role: m.role, text: m.text }; })
+        messages: history.filter(function (m) { return !m.local && !m.error; }).map(function (m) { return { role: m.role, text: m.text }; }).slice(-44)
       })
     })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
@@ -146,6 +181,7 @@
         if (j.known) write(localStorage, KEYS.known, '1');
         history.push({ role: 'assistant', text: j.reply, local: !!j.limited });
         save(); render();
+        attachReport(j.actions);
         if (j.gate) { showGate(); return; }
         // A spoken question gets a spoken answer; any move to another page waits until he has finished.
         if (spoken && !j.limited) speak(function () { run(j.actions); });
