@@ -46,6 +46,7 @@ SKIP_FILES = {
     "v5/voice.js",  # browser-speech layer for the old chat; voice returns with the assistant's own voice stage
 }
 SKIP_DIRS = ()
+OPTIMISE_CSS = os.environ.get("OPTIMISE_CSS", "1") != "0"
 ASSET_EXT = (".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif", ".mp4", ".woff2", ".css", ".js", ".jsx", ".html", ".ico")
 RENAMED = {}  # public-relative path -> new public-relative path (png -> jpg, jsx -> js)
 
@@ -280,6 +281,46 @@ def process_page(src_rel, out_name):
         f.write(html)
 
 
+# Scripts in the design that wrote their own styles into the page. Their CSS is lifted into a
+# stylesheet (so it sits in the normal cascade) and the injecting lines are removed.
+INJECTED_CSS = {"v12/bb-flow.js": "gen/flow.css", "v12/coffee.js": "gen/coffee.css"}
+INJECT_RE = re.compile(r"const CSS=`(.*?)`;\s*const st=document\.createElement\('style'\);st\.textContent=CSS;document\.head\.appendChild\(st\);", re.S)
+BLUE_FOCUS_RE = re.compile(r"[^{}]*\{outline:2px solid #0071E3;outline-offset:2px\}\n?")
+READABLE_DIRS = ("v5/", "v6/", "v7/", "v11/", "v12/", "work/")
+TO_FORMAT = []
+
+
+def extract_injected_css(code, css_rel):
+    m = INJECT_RE.search(code)
+    if not m:
+        raise SystemExit("expected injected CSS was not found for " + css_rel)
+    css = BLUE_FOCUS_RE.sub("", m.group(1))  # focus styling is handled once, in v13/site.css
+    out = os.path.join(PUB, css_rel)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    open(out, "w", encoding="utf-8").write("/* Lifted from the script of the same name by scripts/import-design.py. */\n" + css.strip() + "\n")
+    return code[:m.start()] + code[m.end():]
+
+
+def format_scripts():
+    """The design's scripts arrive as long compressed lines. Formatting changes nothing but makes them readable."""
+    if not TO_FORMAT:
+        return
+    r = subprocess.run(["npx", "--yes", "prettier@3.6.2", "--write", "--print-width", "140", "--log-level", "warn"] + TO_FORMAT,
+                       capture_output=True, text=True, cwd=ROOT)
+    if r.returncode != 0:
+        raise SystemExit("prettier failed\n" + r.stderr[-2000:])
+    print("scripts formatted:", len(TO_FORMAT))
+
+
+def optimise_css(text):
+    """Minify the bundle. Rule merging ("restructuring") is deliberately off: with it on, the WarrantyOS
+    case study rendered differently, because the layered design files rely on the order of their rules."""
+    r = subprocess.run(["npx", "--yes", "csso-cli@4.0.2", "--no-restructure"], input=text, capture_output=True, text=True, cwd=ROOT)
+    if r.returncode != 0 or not r.stdout.strip():
+        raise SystemExit("csso failed\n" + r.stderr[-2000:])
+    return r.stdout
+
+
 LINK_RE = re.compile(r'<link rel="stylesheet" href="(/site/[^"]+?)(?:\?[^"]*)?">\s*')
 
 
@@ -301,7 +342,8 @@ def bundle_css():
     unchanged), followed by the hand-written v13 additions. Comments are dropped; nothing else is altered."""
     out_dir = os.path.join(PUB, "css")
     os.makedirs(out_dir, exist_ok=True)
-    extra = ["v13/site.css", "v13/toto.css"]
+    extra = ["gen/flow.css", "gen/coffee.css", "v13/site.css", "v13/toto.css"]
+    before = after = 0
     for name in sorted(os.listdir(PAGES_OUT)):
         page = os.path.join(PAGES_OUT, name)
         html = open(page, encoding="utf-8").read()
@@ -325,6 +367,10 @@ def bundle_css():
         text = "\n".join(parts) + "\n"
         if "@import" in text:
             raise SystemExit("bundle for %s contains @import, which must come first in a stylesheet" % name)
+        before += len(text)
+        if OPTIMISE_CSS:
+            text = optimise_css(text)
+        after += len(text)
         digest = hashlib.sha1(text.encode()).hexdigest()[:10]
         fn = "%s.%s.css" % (name[:-5], digest)
         open(os.path.join(out_dir, fn), "w", encoding="utf-8").write(text)
@@ -336,14 +382,14 @@ def bundle_css():
                 return '<link rel="stylesheet" href="/site/css/%s">\n' % fn
             return ""
         open(page, "w", encoding="utf-8").write(LINK_RE.sub(repl, html))
-    print("css bundles:", len(os.listdir(out_dir)))
+    print("css bundles: %d, %d KB -> %d KB" % (len(os.listdir(out_dir)), before // 1024, after // 1024))
 
 
 def main():
     if os.path.isdir(PAGES_OUT):
         shutil.rmtree(PAGES_OUT)
     os.makedirs(PAGES_OUT)
-    keep = {"v13", "fonts", "vendor"}
+    keep = {"v13", "fonts", "vendor"}  # hand-written or downloaded once; everything else is regenerated
     if os.path.isdir(PUB):
         for name in os.listdir(PUB):
             if name not in keep:
@@ -385,7 +431,11 @@ def main():
             code = apply_patches(r, open(src, encoding="utf-8").read())
             if not r.startswith("_ds/") and not r.startswith("assets/"):
                 code = rewrite_script(code, os.path.dirname(r))
+            if r in INJECTED_CSS:
+                code = extract_injected_css(code, INJECTED_CSS[r])
             open(dst, "w", encoding="utf-8").write(code)
+            if r.startswith(READABLE_DIRS):
+                TO_FORMAT.append(dst)
         elif low.endswith(".css"):
             css = apply_patches(r, open(src, encoding="utf-8").read())
             css = re.sub(r"@import url\([^)]*fonts\.googleapis\.com[^)]*\);?\s*", "", css)
@@ -404,6 +454,7 @@ def main():
         else:
             shutil.copyfile(src, dst)
 
+    format_scripts()
     bundle_css()
     total = sum(os.path.getsize(os.path.join(d, f)) for d, _, fs in os.walk(PUB) for f in fs)
     print("pages:", sorted(os.listdir(PAGES_OUT)))
