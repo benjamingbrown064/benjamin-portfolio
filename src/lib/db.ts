@@ -54,6 +54,14 @@ export async function signedUploadUrl(bucket: string, path: string): Promise<str
   return `${URL_}/storage/v1${j.url}`;
 }
 
+/** Call a database function. */
+export async function rpc<T = unknown>(fn: string, args: Record<string, unknown>): Promise<T> {
+  const res = await fetch(`${URL_}/rest/v1/rpc/${fn}`, { method: "POST", headers: headers(), body: JSON.stringify(args) });
+  if (!res.ok) throw new DbError(res.status, await res.text().catch(() => ""));
+  const text = await res.text();
+  return (text ? JSON.parse(text) : null) as T;
+}
+
 export class DbError extends Error {
   constructor(public status: number, public detail: string) {
     super(`database request failed (${status})`);

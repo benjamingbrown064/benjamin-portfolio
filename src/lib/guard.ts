@@ -11,7 +11,7 @@ export function fail(status: number, error: string): NextResponse {
   return NextResponse.json({ ok: false, error }, { status });
 }
 
-export async function guard(request: Request, opts: { table: string; perHour: number; perDay: number; maxBytes?: number }): Promise<Guarded> {
+export async function guard(request: Request, opts: { table?: string; perHour?: number; perDay?: number; maxBytes?: number }): Promise<Guarded> {
   if (!dbConfigured()) return { ok: false, response: fail(503, "This form is not connected yet. Please email instead.") };
 
   const origin = request.headers.get("origin");
@@ -32,13 +32,15 @@ export async function guard(request: Request, opts: { table: string; perHour: nu
   if (!body || typeof body !== "object" || Array.isArray(body)) return { ok: false, response: fail(400, "Invalid request.") };
 
   const ip = ipHash(request);
+  // Callers with their own limits (the chat) pass no table.
+  if (!opts.table) return { ok: true, ip, body: body as Record<string, unknown> };
   const hourAgo = new Date(Date.now() - 3600_000).toISOString();
   const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
   const [mine, all] = await Promise.all([
     count(opts.table, `ip_hash=eq.${ip}&created_at=gte.${hourAgo}`),
     count(opts.table, `created_at=gte.${dayAgo}`),
   ]);
-  if (mine >= opts.perHour || all >= opts.perDay) {
+  if (mine >= (opts.perHour ?? Infinity) || all >= (opts.perDay ?? Infinity)) {
     return { ok: false, response: fail(429, "Too many requests. Please try again later, or email instead.") };
   }
   return { ok: true, ip, body: body as Record<string, unknown> };

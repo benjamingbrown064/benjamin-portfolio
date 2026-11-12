@@ -42,6 +42,8 @@ for k, (_, url) in PAGES.items():
 SKIP_FILES = {
     "Mobile Preview.html", "README.md", "index.html", "work/case-study.html", "work/warrantyos-v2.html",
     "work/warrantyos-v2.jsx",
+    "v3/bb-agent.js",  # replaced by public/site/v13/toto.js
+    "v5/voice.js",  # browser-speech layer for the old chat; voice returns with the assistant's own voice stage
 }
 SKIP_DIRS = ()
 ASSET_EXT = (".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif", ".mp4", ".woff2", ".css", ".js", ".jsx", ".html", ".ico")
@@ -299,7 +301,7 @@ def bundle_css():
     unchanged), followed by the hand-written v13 additions. Comments are dropped; nothing else is altered."""
     out_dir = os.path.join(PUB, "css")
     os.makedirs(out_dir, exist_ok=True)
-    extra = "v13/site.css"
+    extra = ["v13/site.css", "v13/toto.css"]
     for name in sorted(os.listdir(PAGES_OUT)):
         page = os.path.join(PAGES_OUT, name)
         html = open(page, encoding="utf-8").read()
@@ -307,7 +309,7 @@ def bundle_css():
         if not hrefs:
             continue
         parts = []
-        for h in hrefs + [extra]:
+        for h in hrefs + extra:
             rel_path = urllib.parse.unquote(h)
             css = open(os.path.join(PUB, rel_path), encoding="utf-8").read()
             if css.lstrip().startswith("@charset"):

@@ -82,7 +82,9 @@ export function renderPage(name: string, opts: PageOptions): string {
   ]
     .filter(Boolean)
     .join("\n");
-  const bodyEnd = `<script src="/site/v13/site.js" defer></script>`;
+  // The assistant is on every page except the discovery questionnaire, which is a focused full-screen flow.
+  const bodyEnd =
+    `<script src="/site/v13/site.js" defer></script>` + (name === "discovery" ? "" : `\n<script src="/site/v13/toto.js" defer></script>`);
 
   const tokens: Record<string, string> = {
     head,
