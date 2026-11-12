@@ -95,11 +95,29 @@ const TOOLS = [
   },
 ];
 
+const PAGE_NAMES: Record<string, string> = {
+  "/": "the home page",
+  "/work": "the work",
+  "/work/warrantyos": "the WarrantyOS case study",
+  "/work/taskbox": "the Taskbox case study",
+  "/work/govscape": "the Govscape case study",
+  "/method": "the method",
+  "/discovery": "the discovery questionnaire",
+  "/journal": "the journal",
+  "/contact": "the Let’s talk page",
+};
+
+/** The line Toto says when he moves the visitor without adding words of his own. */
+function describeMove(path: string, section?: string): string {
+  if (section) return `Here is the ${section === "work" ? "selected work" : section} section. Ask me anything about it.`;
+  return `Here is ${PAGE_NAMES[path] ?? "that page"}. Ask me anything as you look through it.`;
+}
+
 export type TotoResult = { reply: string; actions: Action[]; name: string | null; email: string | null; inputTokens: number; outputTokens: number; cost: number };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-export async function askToto(history: Turn[], page: string): Promise<TotoResult> {
+export async function askToto(history: Turn[], page: string, known = false): Promise<TotoResult> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": process.env.ANTHROPIC_API_KEY!, "anthropic-version": "2023-06-01", "content-type": "application/json" },
@@ -109,7 +127,7 @@ export async function askToto(history: Turn[], page: string): Promise<TotoResult
       // The long, unchanging part is marked for caching so repeat turns cost a fraction of the first.
       system: [
         { type: "text", text: systemPrompt(), cache_control: { type: "ephemeral" } },
-        { type: "text", text: `The visitor is currently on the page ${page}.` },
+        { type: "text", text: `The visitor is currently on the page ${page}.${known ? " They have already left their name and email with the site, so do not ask for them again." : ""}` },
       ],
       tools: TOOLS,
       messages: history.map((t) => ({ role: t.role, content: t.text })),
@@ -146,7 +164,7 @@ export async function askToto(history: Turn[], page: string): Promise<TotoResult
   reply = reply.trim();
   if (!reply) {
     const a = actions[0];
-    reply = !a ? "Noted." : a.type === "go_to" ? "Here you go." : a.type === "open_request" ? "I have opened the request form for you." : "I have opened the coffee booking.";
+    reply = !a ? "Noted." : a.type === "go_to" ? describeMove(a.path, a.section) : a.type === "open_request" ? "I have opened the request form for you." : "I have opened the coffee booking.";
   }
 
   const u = data.usage ?? {};

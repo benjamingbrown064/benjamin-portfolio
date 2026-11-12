@@ -47,3 +47,25 @@
 .bba-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .bba-msg.err{background:transparent;border:1.5px solid var(--bone-2);color:var(--mute)}
 .bba-comp textarea:disabled{opacity:.6}
+
+/* Voice */
+.bba-comp .mic{background:var(--bone-2);color:var(--ink)}
+.bba-comp .mic:hover{background:var(--ink);color:var(--bone)}
+.bba-comp .mic.rec{background:var(--signal);color:#fff;animation:bbarec 1.2s ease-in-out infinite}
+.bba-comp .mic[hidden]{display:none}
+@keyframes bbarec{50%{transform:scale(.92)}}
+.bba-launch.speaking .ping{display:block;animation:bbablink .8s ease-in-out infinite}
+
+/* The ask-once details step */
+.bba-gate{align-self:stretch;display:grid;gap:8px;padding:14px;border:1.5px solid var(--ink);border-radius:12px;animation:bbain .4s var(--ease) both}
+.bba-gate input{font:inherit;font-size:14.5px;color:var(--ink);background:var(--bone-2);border:1.5px solid transparent;border-radius:10px;padding:11px 14px;outline:0;min-width:0}
+.bba-gate input:focus{border-color:var(--ink)}
+.bba-gate input::placeholder{color:var(--mute)}
+.bba-gate button{font:inherit;font-weight:600;font-size:14px;padding:11px 14px;border-radius:10px;background:var(--ink);color:var(--bone)}
+.bba-gate button:hover{background:var(--signal);color:var(--ink)}
+.bba-gate button:disabled{opacity:.6}
+.bba-gate small{font-size:12px;color:var(--mute);line-height:1.4}
+.bba-gate small a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.bba-gate-err{font-size:12.5px;color:var(--signal)}
+.bba-gate-err:empty{display:none}
+@media(prefers-reduced-motion:reduce){.bba-comp .mic.rec{animation:none}}

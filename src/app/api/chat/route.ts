@@ -18,7 +18,7 @@ const LIMITS = {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-type Precheck = { session_messages: number; ip_hour: number; ip_day: number; site_day: number; month_cost: number };
+type Precheck = { session_messages: number; known: boolean; ip_hour: number; ip_day: number; site_day: number; month_cost: number };
 
 function limited(reply: string) {
   return NextResponse.json({ ok: true, limited: true, reply, actions: [] });
@@ -52,24 +52,27 @@ export async function POST(request: Request) {
 
   try {
     const pre = await rpc<Precheck>("chat_precheck", { p_session: session, p_ip: g.ip });
-    const known = Boolean(str(g.body.known, 5));
     if (Number(pre.month_cost) >= LIMITS.monthlyUsd || pre.site_day >= LIMITS.siteDay) {
       return limited("I am at my limit for now. The request form still works, and Ben reads every one. You can also email hello@benjaminbrown.co.");
     }
     if (pre.ip_hour >= LIMITS.ipHour || pre.ip_day >= LIMITS.ipDay) {
       return limited("That is as much as I can do for today. The request form is the best next step, or email hello@benjaminbrown.co.");
     }
-    if (pre.session_messages >= (known ? LIMITS.sessionMessagesKnown : LIMITS.sessionMessages)) {
+    if (!pre.known && pre.session_messages >= LIMITS.sessionMessages) {
+      // Ask once: the visitor leaves a name and email and the conversation carries on.
+      return NextResponse.json({ ok: true, limited: true, gate: true, reply: "Happy to keep going. Leave your name and email below and we can carry on.", actions: [] });
+    }
+    if (pre.session_messages >= LIMITS.sessionMessagesKnown) {
       return limited("We have covered a lot. The best next step is the request form, or a coffee with Ben. Both are on the Let’s talk page.");
     }
 
-    const out = await askToto(turns, page);
+    const out = await askToto(turns, page, pre.known);
     await rpc("chat_log_turn", {
       p_session: session, p_ip: g.ip, p_page: page, p_user: question, p_reply: out.reply,
       p_actions: out.actions.length ? out.actions : null,
       p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
     });
-    return NextResponse.json({ ok: true, reply: out.reply, actions: out.actions, known: Boolean(out.email) || undefined });
+    return NextResponse.json({ ok: true, reply: out.reply, actions: out.actions, known: pre.known || Boolean(out.email) });
   } catch (e) {
     console.error("chat: failed", e);
     return fail(502, "I could not answer that just now. Please try again, or use the request form.");
