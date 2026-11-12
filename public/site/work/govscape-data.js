@@ -1,1 +1,455 @@
-window.GX_DATA = {"portal":[{"n":"Multi-tenant consultancy model","d":"One consultant account holds many client organisations, each with its own data, scores, evidence and reports, and a client-switcher in the header moves between them. Every query is scoped by organisation at the data-access layer, so a consultant never sees two clients' data in one view."},{"n":"Client creation and archiving","d":"A guided wizard creates a client from name, sector and size, and seeds the frameworks that sector normally works towards. Archiving hides a client from the switcher and all counts without deleting anything, so an ended engagement stops cluttering the workspace but stays auditable."},{"n":"Four-area governance cockpit","d":"The home page scores a client across four areas — operational, regulatory, commercial and technical — and shows each as a figure with the contributions that produced it. Scores are computed from approved evidence, accepted clause mappings and confirmed inputs, never from anything a person has not signed off."},{"n":"Governance scorecard","d":"A dedicated screen breaks the headline score into controls covered, controls in progress and controls untouched across every adopted framework. Half credit is given for a control with approved evidence but no accepted mapping, which is why a client can be visibly moving before anything is formally covered."},{"n":"Score history and snapshots","d":"A nightly job writes a snapshot of every area score, and the area pages plot the trend. This exists so a consultant can show a board movement over a quarter rather than a single number with no past."},{"n":"Levers and contributors","d":"Each area page lists what is currently dragging the score down and what single action would move it most. The lever list is generated from the gap between the current state and the next achievable state, ranked by points per unit of effort."},{"n":"Liability register","d":"Every scored weakness carries an annual cost figure, and the register lists them with their basis. Figures come from the cost engine, so each one can be opened to show whether it was measured from the client's own data or derived from a sector benchmark."},{"n":"Cost / liability engine","d":"A four-step assessment turns a handful of stated facts about a client into draft annual exposure figures across the four areas. Inputs, benchmarks, calculations and results are stored separately so a figure can always be traced back to the input and benchmark version that produced it."},{"n":"Benchmark library with sources and history","d":"Sector benchmarks are versioned, each carries a citation, and changing one writes a history row rather than overwriting. The PDF reports print the citation next to the figure, so a client can check the provenance of a number without asking."},{"n":"Draft, override, approve, revert","d":"Every engine figure starts as a draft; a consultant can override it with a reason, must approve it before it counts, and can revert to any earlier state. Nothing a client sees is a raw model or benchmark output — approval is a hard gate."},{"n":"Assessment cloning and templates","d":"An assessment can be cloned from another client or started from a sector template. This takes a repeat engagement from a blank form to a reviewable draft in a couple of minutes."},{"n":"Confidence and freshness","d":"Each figure carries a confidence level based on how much of it was measured versus inferred, and a freshness check flags figures resting on stale inputs. Both are surfaced in the UI and in reports, so an old number cannot quietly keep being presented as current."},{"n":"Frameworks and readiness","d":"Eight standards are modelled clause by clause — ISO/IEC 27001, ISO/IEC 42001, ISO 9001, SOC 2, NIST CSF 2.0, Cyber Essentials, GDPR and the EU AI Act — totalling 395 clauses. A client adopts the ones that apply, and readiness is computed per clause from mappings and evidence rather than from a self-assessment questionnaire."},{"n":"Clause coverage view","d":"Each framework has a coverage page listing every clause with its status, mapped controls and linked evidence. It is the screen a consultant opens in a client meeting to answer \"where exactly are we on 27001\"."},{"n":"Evidence pack export","d":"One click builds a framework-scoped pack of every approved artefact with its clause references. This is the thing that would otherwise take a consultant two days of folder archaeology before an audit."},{"n":"Policy upload and two-stage extraction","d":"An uploaded policy is read in two stages — a cheap first pass decides whether it is a governing document, then a full pass extracts its clauses and proposes mappings. Nothing is written to the register until a person approves the extraction, and the extraction job can be skipped or restored."},{"n":"Policy discovery from connected systems","d":"A scan of a connected tenant identifies candidate governing documents and queues them, and a prompt on the review page tells the consultant how many are waiting. The scan stores conclusions only — document text is never copied out of the client's tenant until someone chooses to promote a candidate, which is a deliberate consent boundary."},{"n":"Control extraction and mapping register","d":"Controls are extracted from policy text and held as records that can be mapped to clauses across several frameworks at once. A single control satisfying clauses in three standards is stored once and credited three times, which is where most of the time saving comes from."},{"n":"Evidence register with lifecycle","d":"Evidence items carry a status, an owner, an expiry date and links to the clauses they support. Renewal and expiry are tracked by a scheduled job, so evidence that has gone out of date stops counting towards readiness instead of silently inflating it."},{"n":"Review queue with rule-based triage","d":"Suggested evidence links arrive in a queue ordered by how much each decision unblocks, grouped so that hundreds of similar items become a handful of decisions. The queue counts over the whole backlog rather than the visible page, which was the difference between \"335 pending\" and a page that looked nearly empty."},{"n":"Bulk review","d":"Strong matches can be approved in batches of a hundred from one button. Each item still records its own decision and correlation id, so a bulk action leaves a trail of individual judgements rather than one opaque event — the customer's 113 approvals are 113 auditable decisions."},{"n":"\"No clause suggested\" state","d":"Items the matcher could propose nothing for sit in their own state rather than pretending to be pending a human decision. They do not count as coverage, and a consultant can propose a clause by hand to move them into the normal queue."},{"n":"Registers: AI systems, AI risks, business processes, data assets","d":"Four linked registers model what a client actually runs, with every record linkable to controls, evidence, policies and each other. Adding an AI system and linking it to a process and a data asset produces the inventory that the EU AI Act and ISO 42001 both ask for."},{"n":"Exceptions register","d":"Accepted risks are recorded with an owner, a rationale and an expiry date. A job expires them on schedule, so an exception cannot become a permanent silent hole in coverage."},{"n":"AI lifecycle events and requirement checks","d":"Changes to an AI system's lifecycle stage are recorded as events, and each stage has a requirements check. This is what turns a static AI register into something that can show a regulator when a system entered production and what was in place at the time."},{"n":"Discovery and sensing engine","d":"A scan walks a connected tenant, fingerprints what it finds, and produces findings grouped by kind: policies missing essentials or past review, data needing cleaning, unlabelled sensitive information, duplicates, sign-in and admin access, and unused licences. Findings carry forward between scans, so a fixed item is marked fixed rather than reappearing as new."},{"n":"Inventory","d":"Every file and object seen by a scan is held as an inventory item — 437,000 of them for the first live client. Inventory is indexed and queried separately from findings, so the register stays usable at that volume."},{"n":"Asset discovery","d":"Candidate data assets are inferred from inventory patterns and offered for confirmation, with dismissals remembered. This builds the data asset register from what exists rather than from a workshop."},{"n":"Header fingerprinting","d":"Spreadsheet and CSV headers are fingerprinted to recognise the same dataset across copies and locations. It is how duplicate-data findings and asset matching work without reading file contents."},{"n":"Identity posture","d":"A scheduled sweep reads sign-in and admin configuration from the connected tenant and writes a posture snapshot. Findings from it feed the technical area score, so MFA gaps and standing admin rights show up as cost rather than as a security report nobody opens."},{"n":"Licence sweep and estate view","d":"Assigned licences are compared against actual activity to surface what nobody is using. The estate page prices that at the client's own licence rates, which a consultant can set per client."},{"n":"Scan resumption","d":"Long scans tick through work in slices and resume after interruption from a scheduled job. This is what lets a 437,000-item tenant complete on serverless infrastructure with request time limits."},{"n":"Finding triage and promotion","d":"A finding can be triaged, dismissed with a reason, or promoted into a task, an evidence item or a register record. Promotion is the bridge between \"the scan noticed something\" and \"someone owns fixing it\"."},{"n":"AI Advisor","d":"A consultant can ask questions about a client in plain language and get an answer with citations back to the client's own records. Answers are built only from that client's data, and the streaming response aborts when the tab closes so an abandoned question stops costing money."},{"n":"Advisor health check","d":"A scheduled whole-client review produces a dated summary of what needs attention, with history. It is the \"what changed since I last looked\" view for a consultant running several clients."},{"n":"Advisor recommendations and area summaries","d":"The Advisor writes short per-area summaries and ranked recommendations that appear inline on the cockpit. These are suggestions only — none of them change a score until a person acts on them."},{"n":"90-day plan","d":"Proposals are generated from the open gaps, banded into three 30-day blocks, and applied as a plan with owners and dates. The plan exports as a PDF and a CSV, which is usually the artefact a client's board actually reads."},{"n":"Task management and my list","d":"Tasks carry owners, ordering and status, with a personal list view. Tasks created from findings and plan proposals keep their link back to the source, so closing one updates the thing that raised it."},{"n":"Board and client reporting","d":"Five PDF reports are generated server-side: the cockpit board report, the client value report, the framework readiness report, the discovery pack and the plan report. Each is built from the same approved data as the screens, with charts, a figure ledger and benchmark citations printed in place."},{"n":"Read-only share links","d":"A report or cockpit can be shared with a client as a tokenised read-only page with no account required. Tokens are rate-limited and revocable, and the shared view is a separate render path that cannot reach anything the token does not cover."},{"n":"Firm branding / white label","d":"A consultancy can upload its own logo and colours, which are applied to the portal and fetched into the generated PDFs. It is what lets a firm put a report in front of its own client without Govscape's name on it."},{"n":"Briefing notes with transcription","d":"A consultant can dictate or paste a client briefing, have it transcribed, and have structured records extracted from it for approval. Promoting an extraction creates register records, so a meeting becomes inventory without anyone retyping it."},{"n":"Data requests","d":"Organisation-level and person-level data requests are generated pre-filled from what is already known, sent by email, and tracked to completion with an export. This covers both client onboarding questionnaires and subject access style requests from one mechanism."},{"n":"Consent links","d":"A consultant can send a client a link that lets the client's own administrator authorise a connection, without the consultant ever holding their credentials. Links are single-purpose and expiring, which is the difference between a defensible integration and a shared password."},{"n":"Spreadsheet import and bulk import","d":"Registers accept spreadsheet import with column mapping and a dry-run preview. This matters because every prospective client arrives with a folder of spreadsheets, not an API."},{"n":"Add-data hub","d":"One screen gathers every route in — connect a system, import a sheet, write a brief, upload a policy, upload evidence, answer questions — with a waiting state while work completes. It exists because the single most common failure in this category of product is a user who cannot find where to start."},{"n":"Search","d":"Cross-register search spans controls, evidence, policies, registers and findings. It is scoped to the active client, so results can never leak across tenants."},{"n":"Team, roles and invitations","d":"Members are invited by email with a role of admin, editor or viewer, with resend and status tracking. Read-only is enforced at the API, not just hidden in the UI, so a viewer cannot change anything by calling the endpoint directly."},{"n":"Audit log","d":"Every state change writes an actor, action, target, correlation id and timestamp to an append-only log with its own screen. It is the artefact that makes the rest of the product defensible: a consultant can show who approved a figure and when."},{"n":"Notification digest and unsubscribe","d":"A scheduled digest emails each user what changed, with a one-click unsubscribe that works without signing in. Per-user notification preferences decide what the digest contains."},{"n":"Data privacy controls","d":"A client's data can be exported in full or deleted, with deletion queued and then purged by a scheduled job. The delay is deliberate — it makes an accidental deletion recoverable while still honouring the request."},{"n":"Support desk","d":"Clients raise requests in-app with attachments, see status, and reply in a thread. Attachments are served as short-lived links rather than public URLs, and message bodies are masked before anything leaves the system."},{"n":"Help centre","d":"48 written guides in 12 categories, each with steps and screenshots, reachable from the left menu. Content is held in code rather than a CMS, which means a guide that references a screen breaks the build when that screen is renamed."},{"n":"Onboarding","d":"Self-serve signup runs a cost-led onboarding flow with a live preview, and a guided first run tracks activation events afterwards. The first thing a new user sees is a figure for their own organisation, not an empty dashboard."},{"n":"Demo and sample data","d":"A seeded sample tenant with invariant tests lets anyone see a populated product without touching real client data. The invariant tests exist so a demo cannot drift into showing figures that the live engine would not produce."},{"n":"Partner programme","d":"Partner applications, approval and rejection, passwordless magic-link sign-in, a partner portal, referral codes and lead attribution. A partner can register a lead and see its progress without ever reaching the main application."},{"n":"Legal pages","d":"Privacy policy, terms, DPA, cookies and a sub-processor list. The sub-processor list is covered by a test that fails if the code starts using a third party the list does not disclose."},{"n":"Accessibility","d":"A dedicated accessibility layer with its own tests covers focus handling, labelling and contrast. It is tested rather than asserted."}],"m365":[{"n":"Microsoft OAuth and admin consent","d":"A full OAuth flow with admin consent against Microsoft Graph, with the consent message and required permissions generated from what the scan actually needs. Asking only for the scopes in use is what gets a client's IT director to approve it."},{"n":"Graph walker","d":"A paged, throttle-aware walker enumerates OneDrive and SharePoint content across a tenant. It handles Graph's rate limits and continuation tokens, which is the whole engineering problem at this scale."},{"n":"Encrypted credential handling","d":"Tokens are stored encrypted, refreshed on demand, and never written to logs. A connection audit records every use."},{"n":"Identity and licence reads","d":"Beyond documents, the integration reads sign-in configuration, admin role assignments and licence allocation. These feed identity posture and the licence sweep."},{"n":"Enumerate, then scan","d":"Connecting runs a cheap enumeration first so a consultant sees scale before committing to a full scan. It avoids starting a multi-hour job against a tenant nobody expected to be that large."},{"n":"Scheduled rescans","d":"Connected tenants rescan on a schedule, with deltas carried forward against the last full picture. The findings list stays current without anyone pressing a button."}],"security":[{"n":"Enforced multi-factor authentication","d":"MFA is mandatory for every consultant, admin and editor, enforced in middleware, with client viewers free to opt in. It is behind an environment flag so enrolment can be switched off in one change if it ever misbehaves, rather than locking everyone out."},{"n":"Tenant isolation at the data layer","d":"Client scoping is applied in the data-access layer and covered by tests, not left to each query. Active-client resolution is explicit, which is how a wrong-tenant defect found in October was fixed properly rather than patched per screen."},{"n":"Role enforcement server-side","d":"Admin, editor, viewer and read-only are checked at the API boundary. The UI hides what a role cannot do, but the API is what refuses it."},{"n":"Append-only audit trail with correlation ids","d":"Every mutation is logged with an actor and a correlation id that threads through related work. A bulk approval of 113 items produces 113 correlated entries, so the trail reflects the decisions made."},{"n":"Rate limiting","d":"Request rate limiting on authenticated routes, with a separate stricter limiter on public share tokens."},{"n":"Redaction before egress","d":"Support message bodies and logged payloads are masked before they leave the system. The redaction layer has its own tests, because this is the sort of thing that silently stops working."},{"n":"Bearer-token service authentication","d":"The agentic support routes authenticate with a token compared by SHA-256 and a timing-safe comparison, with the plain value held only in a vault. No service credential is stored in the repository."},{"n":"Environment integrity checks","d":"A startup check validates that required environment variables exist and are well-formed, including catching trailing newlines pasted into deployment secrets. It turns a class of silent production misconfiguration into a loud failure."},{"n":"Error tracking","d":"Sentry is wired with source maps and release tagging. Runtime log retention on the host is only about 24 hours, so this is the only durable error record."},{"n":"Disclosed sub-processors, tested","d":"Supabase, Vercel, Anthropic, OpenAI, Resend, Sentry, Upstash and Microsoft are declared, and a test fails the build if code reaches a third party the list omits. The legal page and the code cannot drift apart."},{"n":"Storage reconciliation","d":"A scheduled job reconciles the file store against the database and reports orphans in either direction. Uploads and deletions across two systems do not stay consistent on their own."}],"testing":[{"n":"66 end-to-end specs","d":"Playwright covers the real user journeys — auth, MFA, onboarding, scanning, review, reports, sharing, support, privacy — against a real database, with global setup and teardown. A fresh-database run is the acceptance gate before a release."},{"n":"432 unit test files","d":"Vitest covers the scoring, cost engine, matchers, triage, PDF data, email rendering and access control. The engine logic is tested at the function level because a wrong figure in a board report is the worst available failure."},{"n":"Golden-dataset tests for AI output","d":"Model-facing code is tested against a fixed dataset with expected shapes rather than exact strings. It catches prompt and parsing regressions without making the suite depend on a live model."},{"n":"A no-billable-calls guard","d":"A test asserts that the suite cannot reach a paid model or external API. Without it, a test run silently costs money and depends on someone else's uptime."},{"n":"Invariant tests on demo data","d":"The seeded demo tenant is asserted to be internally consistent with the live engine's rules. A demo that shows impossible figures is worse than no demo."},{"n":"Diagnostic suites","d":"Separate diagnostic e2e and unit configurations exist for investigating a failure without running the whole gate. It is the difference between a five-minute and a fifty-minute debug loop."},{"n":"A finance-mutation checker","d":"A standalone script asserts that no code path mutates an approved financial figure outside the approve/override/revert flow. This is a custom guard for the one invariant the product cannot afford to break."}],"resend":[{"n":"Eleven branded transactional templates","d":"Authentication emails, team invites, data requests, partner welcome, lead notifications, support ticket and reply, application notifications, and the notification digest. All render through one shared shell so a change to the brand applies everywhere at once."},{"n":"Email built as its own dialect","d":"Table layout, fully inline styles, absolute PNG logos because Gmail and Outlook drop SVG, and no webfont link — deliberately, because a Google Fonts call would tell a third party who opened which email. The sub-processor list and the rendering code agree, and a test enforces it."},{"n":"Supabase auth emails branded and installed","d":"All four authentication emails were rebranded and installed in the auth provider, not just designed. Most products leave these as the vendor default; it is a visible quality signal to a new user."},{"n":"Unsubscribe without sign-in","d":"The digest's unsubscribe link works from the email alone and is covered end-to-end. Requiring a login to stop receiving email is both a compliance problem and a support ticket generator."}],"engMore":[{"n":"Scheduled automation layer (12 jobs)","d":"Cron routes handle snapshotting, score recalculation, policy extraction, identity posture, licence expiry, rescans, scan resumption, digests, quality profiling, storage reconciliation and purge of deleted organisations. The product does meaningful work with nobody signed in, which is what separates it from a form."},{"n":"LLM guardrails","d":"A guard layer sits between the application and the models with input preprocessing, output validation, budget caps and a model registry. Extraction budgets and failure handling are explicit, so a long document degrades gracefully instead of silently truncating — a real defect of this kind was found and fixed where two stacked caps were hiding 245 of 395 clauses from the extractor."},{"n":"Performance work at real volume","d":"Inventory indexes, batched review decisions and query restructuring were done against a 437,000-item live tenant. One change removed roughly 1,500 redundant whole-organisation reads from a single bulk approval."},{"n":"Server-side PDF generation","d":"A full React-PDF pipeline with charts, branding, logo fetching, figure ledgers and citation printing. Five distinct report types share one layout system."}],"strategy":[{"n":"Research","d":"Market and competitor research including a Vanta benchmark appraisal, sector-by-sector positioning for six verticals, and governance-risk calibration research behind the severity ratings. The calibration work is what lets the product put a defensible number on a gap rather than a colour."},{"n":"Business management","d":"A claims register recording every factual assertion the product and site make with its source, plus a live offer definition, pricing position and roadmap. The claims register is the governance of the marketing itself — nothing goes on the site that is not traceable."},{"n":"Growth","d":"Partner programme design with referral codes and lead attribution, sector landing-page strategy, and a journal content programme. Growth is built into the product surface, not bolted on as a channel."},{"n":"Onboarding","d":"Cost-led self-serve onboarding with a live preview, a guided first-run path, activation event tracking and a first-value story designed around getting a figure on screen in minutes. The design question it answers is \"what is the smallest amount of input that produces something worth paying for\"."}],"stratMore":[{"n":"Launch gating and acceptance","d":"A formal launch-gate plan, acceptance evidence, a one-action acceptance test and a signed-off production re-walk. Shipping was treated as a gate with evidence, not a deploy."},{"n":"Live customer validation","d":"A real customer ran the product unprompted and approved 113 evidence items in three minutes the morning after that capability shipped, moving their score from 4 to 13."}],"brand":[{"n":"Implemented design system","d":"A Bone canvas, white cards, ink type and Signal used only in the mark, expressed as light and dark theme tokens in the application, carried through to email as literal values and to PDFs as a shared colour and layout module. The same brand holds across three rendering engines that share no CSS, which is the hard part."},{"n":"Brand applied to generated artefacts","d":"Reports, emails and the authentication screens all render in brand, including client-uploaded logos on white-labelled PDFs. Most products stop at the web app."},{"n":"Design review record","d":"Three dated whole-application design reviews and a full site-wide UI sweep, with before-and-after screen sets. There is a documented trail of design iteration, not just a finished screenshot."}],"content":[{"n":"Training videos","d":"A 7½-minute Govscape walkthrough film in ten chapters, mastered at full resolution and 720p, with per-chapter cuts so a section can be re-shot without re-recording the whole thing. It was produced with a scripted browser harness driving the live product, so the footage is the real application with real data, not a mockup."},{"n":"Agentic voiceovers","d":"Narration generated from a written script and cut against the footage, with the script version-controlled alongside the video segments. Re-recording a chapter means editing a paragraph and re-rendering one segment, which is why a 7½-minute film could be revised in an afternoon."},{"n":"Help centre","d":"48 guides across 12 categories, each with numbered steps, screenshots and an estimated reading time, held in code and linked from the relevant screen. Because the content lives in the repository, a guide that points at a renamed screen fails the build rather than quietly misleading a user."}],"contentMore":[{"n":"Journal programme","d":"Five long-form articles published on the marketing site, written to the positioning rather than to keywords. They are the content a prospect reads before booking a call."},{"n":"Sample board report","d":"A complete worked example of the client-facing output, produced as a standalone artefact. It is the single most useful thing to show a prospect who asks what they would actually get."}],"marketing":[{"n":"Marketing site","d":"An eleven-page site: home, product, partners, journal, and six sector pages — financial services, legal, healthcare, higher education, professional services, public sector and technology — plus the five journal articles. It went through a full creative reset benchmarked against the category leader, and every factual claim on it is traceable to the claims register."},{"n":"Mailers","d":"Eleven transactional templates in brand, plus the notification digest, all through one shared shell with working unsubscribe. See Resend above for the mechanics."},{"n":"Lead generation","d":"A contact enquiry endpoint with notification, a referral-code system, partner-registered leads with attribution, an admin lead pipeline, and a demo path that lets a prospect see a populated product without a sales call. Attribution is recorded at first touch, so the partner channel can be measured rather than estimated."},{"n":"Agentic customer support","d":"An AI agent works the live support queue: it reads what has changed since it last looked, diagnoses the request against the real system, and writes notes, status changes, proposals and fixes — all attributed to the agent. It cannot email a customer without a human approval recorded since the last reply, and one approval sends exactly one reply, which is the entire safety design."}]};
+window.GX_DATA = {
+  portal: [
+    {
+      n: "Multi-tenant consultancy model",
+      d: "One consultant account holds many client organisations, each with its own data, scores, evidence and reports, and a client-switcher in the header moves between them. Every query is scoped by organisation at the data-access layer, so a consultant never sees two clients' data in one view.",
+    },
+    {
+      n: "Client creation and archiving",
+      d: "A guided wizard creates a client from name, sector and size, and seeds the frameworks that sector normally works towards. Archiving hides a client from the switcher and all counts without deleting anything, so an ended engagement stops cluttering the workspace but stays auditable.",
+    },
+    {
+      n: "Four-area governance cockpit",
+      d: "The home page scores a client across four areas — operational, regulatory, commercial and technical — and shows each as a figure with the contributions that produced it. Scores are computed from approved evidence, accepted clause mappings and confirmed inputs, never from anything a person has not signed off.",
+    },
+    {
+      n: "Governance scorecard",
+      d: "A dedicated screen breaks the headline score into controls covered, controls in progress and controls untouched across every adopted framework. Half credit is given for a control with approved evidence but no accepted mapping, which is why a client can be visibly moving before anything is formally covered.",
+    },
+    {
+      n: "Score history and snapshots",
+      d: "A nightly job writes a snapshot of every area score, and the area pages plot the trend. This exists so a consultant can show a board movement over a quarter rather than a single number with no past.",
+    },
+    {
+      n: "Levers and contributors",
+      d: "Each area page lists what is currently dragging the score down and what single action would move it most. The lever list is generated from the gap between the current state and the next achievable state, ranked by points per unit of effort.",
+    },
+    {
+      n: "Liability register",
+      d: "Every scored weakness carries an annual cost figure, and the register lists them with their basis. Figures come from the cost engine, so each one can be opened to show whether it was measured from the client's own data or derived from a sector benchmark.",
+    },
+    {
+      n: "Cost / liability engine",
+      d: "A four-step assessment turns a handful of stated facts about a client into draft annual exposure figures across the four areas. Inputs, benchmarks, calculations and results are stored separately so a figure can always be traced back to the input and benchmark version that produced it.",
+    },
+    {
+      n: "Benchmark library with sources and history",
+      d: "Sector benchmarks are versioned, each carries a citation, and changing one writes a history row rather than overwriting. The PDF reports print the citation next to the figure, so a client can check the provenance of a number without asking.",
+    },
+    {
+      n: "Draft, override, approve, revert",
+      d: "Every engine figure starts as a draft; a consultant can override it with a reason, must approve it before it counts, and can revert to any earlier state. Nothing a client sees is a raw model or benchmark output — approval is a hard gate.",
+    },
+    {
+      n: "Assessment cloning and templates",
+      d: "An assessment can be cloned from another client or started from a sector template. This takes a repeat engagement from a blank form to a reviewable draft in a couple of minutes.",
+    },
+    {
+      n: "Confidence and freshness",
+      d: "Each figure carries a confidence level based on how much of it was measured versus inferred, and a freshness check flags figures resting on stale inputs. Both are surfaced in the UI and in reports, so an old number cannot quietly keep being presented as current.",
+    },
+    {
+      n: "Frameworks and readiness",
+      d: "Eight standards are modelled clause by clause — ISO/IEC 27001, ISO/IEC 42001, ISO 9001, SOC 2, NIST CSF 2.0, Cyber Essentials, GDPR and the EU AI Act — totalling 395 clauses. A client adopts the ones that apply, and readiness is computed per clause from mappings and evidence rather than from a self-assessment questionnaire.",
+    },
+    {
+      n: "Clause coverage view",
+      d: 'Each framework has a coverage page listing every clause with its status, mapped controls and linked evidence. It is the screen a consultant opens in a client meeting to answer "where exactly are we on 27001".',
+    },
+    {
+      n: "Evidence pack export",
+      d: "One click builds a framework-scoped pack of every approved artefact with its clause references. This is the thing that would otherwise take a consultant two days of folder archaeology before an audit.",
+    },
+    {
+      n: "Policy upload and two-stage extraction",
+      d: "An uploaded policy is read in two stages — a cheap first pass decides whether it is a governing document, then a full pass extracts its clauses and proposes mappings. Nothing is written to the register until a person approves the extraction, and the extraction job can be skipped or restored.",
+    },
+    {
+      n: "Policy discovery from connected systems",
+      d: "A scan of a connected tenant identifies candidate governing documents and queues them, and a prompt on the review page tells the consultant how many are waiting. The scan stores conclusions only — document text is never copied out of the client's tenant until someone chooses to promote a candidate, which is a deliberate consent boundary.",
+    },
+    {
+      n: "Control extraction and mapping register",
+      d: "Controls are extracted from policy text and held as records that can be mapped to clauses across several frameworks at once. A single control satisfying clauses in three standards is stored once and credited three times, which is where most of the time saving comes from.",
+    },
+    {
+      n: "Evidence register with lifecycle",
+      d: "Evidence items carry a status, an owner, an expiry date and links to the clauses they support. Renewal and expiry are tracked by a scheduled job, so evidence that has gone out of date stops counting towards readiness instead of silently inflating it.",
+    },
+    {
+      n: "Review queue with rule-based triage",
+      d: 'Suggested evidence links arrive in a queue ordered by how much each decision unblocks, grouped so that hundreds of similar items become a handful of decisions. The queue counts over the whole backlog rather than the visible page, which was the difference between "335 pending" and a page that looked nearly empty.',
+    },
+    {
+      n: "Bulk review",
+      d: "Strong matches can be approved in batches of a hundred from one button. Each item still records its own decision and correlation id, so a bulk action leaves a trail of individual judgements rather than one opaque event — the customer's 113 approvals are 113 auditable decisions.",
+    },
+    {
+      n: '"No clause suggested" state',
+      d: "Items the matcher could propose nothing for sit in their own state rather than pretending to be pending a human decision. They do not count as coverage, and a consultant can propose a clause by hand to move them into the normal queue.",
+    },
+    {
+      n: "Registers: AI systems, AI risks, business processes, data assets",
+      d: "Four linked registers model what a client actually runs, with every record linkable to controls, evidence, policies and each other. Adding an AI system and linking it to a process and a data asset produces the inventory that the EU AI Act and ISO 42001 both ask for.",
+    },
+    {
+      n: "Exceptions register",
+      d: "Accepted risks are recorded with an owner, a rationale and an expiry date. A job expires them on schedule, so an exception cannot become a permanent silent hole in coverage.",
+    },
+    {
+      n: "AI lifecycle events and requirement checks",
+      d: "Changes to an AI system's lifecycle stage are recorded as events, and each stage has a requirements check. This is what turns a static AI register into something that can show a regulator when a system entered production and what was in place at the time.",
+    },
+    {
+      n: "Discovery and sensing engine",
+      d: "A scan walks a connected tenant, fingerprints what it finds, and produces findings grouped by kind: policies missing essentials or past review, data needing cleaning, unlabelled sensitive information, duplicates, sign-in and admin access, and unused licences. Findings carry forward between scans, so a fixed item is marked fixed rather than reappearing as new.",
+    },
+    {
+      n: "Inventory",
+      d: "Every file and object seen by a scan is held as an inventory item — 437,000 of them for the first live client. Inventory is indexed and queried separately from findings, so the register stays usable at that volume.",
+    },
+    {
+      n: "Asset discovery",
+      d: "Candidate data assets are inferred from inventory patterns and offered for confirmation, with dismissals remembered. This builds the data asset register from what exists rather than from a workshop.",
+    },
+    {
+      n: "Header fingerprinting",
+      d: "Spreadsheet and CSV headers are fingerprinted to recognise the same dataset across copies and locations. It is how duplicate-data findings and asset matching work without reading file contents.",
+    },
+    {
+      n: "Identity posture",
+      d: "A scheduled sweep reads sign-in and admin configuration from the connected tenant and writes a posture snapshot. Findings from it feed the technical area score, so MFA gaps and standing admin rights show up as cost rather than as a security report nobody opens.",
+    },
+    {
+      n: "Licence sweep and estate view",
+      d: "Assigned licences are compared against actual activity to surface what nobody is using. The estate page prices that at the client's own licence rates, which a consultant can set per client.",
+    },
+    {
+      n: "Scan resumption",
+      d: "Long scans tick through work in slices and resume after interruption from a scheduled job. This is what lets a 437,000-item tenant complete on serverless infrastructure with request time limits.",
+    },
+    {
+      n: "Finding triage and promotion",
+      d: 'A finding can be triaged, dismissed with a reason, or promoted into a task, an evidence item or a register record. Promotion is the bridge between "the scan noticed something" and "someone owns fixing it".',
+    },
+    {
+      n: "AI Advisor",
+      d: "A consultant can ask questions about a client in plain language and get an answer with citations back to the client's own records. Answers are built only from that client's data, and the streaming response aborts when the tab closes so an abandoned question stops costing money.",
+    },
+    {
+      n: "Advisor health check",
+      d: 'A scheduled whole-client review produces a dated summary of what needs attention, with history. It is the "what changed since I last looked" view for a consultant running several clients.',
+    },
+    {
+      n: "Advisor recommendations and area summaries",
+      d: "The Advisor writes short per-area summaries and ranked recommendations that appear inline on the cockpit. These are suggestions only — none of them change a score until a person acts on them.",
+    },
+    {
+      n: "90-day plan",
+      d: "Proposals are generated from the open gaps, banded into three 30-day blocks, and applied as a plan with owners and dates. The plan exports as a PDF and a CSV, which is usually the artefact a client's board actually reads.",
+    },
+    {
+      n: "Task management and my list",
+      d: "Tasks carry owners, ordering and status, with a personal list view. Tasks created from findings and plan proposals keep their link back to the source, so closing one updates the thing that raised it.",
+    },
+    {
+      n: "Board and client reporting",
+      d: "Five PDF reports are generated server-side: the cockpit board report, the client value report, the framework readiness report, the discovery pack and the plan report. Each is built from the same approved data as the screens, with charts, a figure ledger and benchmark citations printed in place.",
+    },
+    {
+      n: "Read-only share links",
+      d: "A report or cockpit can be shared with a client as a tokenised read-only page with no account required. Tokens are rate-limited and revocable, and the shared view is a separate render path that cannot reach anything the token does not cover.",
+    },
+    {
+      n: "Firm branding / white label",
+      d: "A consultancy can upload its own logo and colours, which are applied to the portal and fetched into the generated PDFs. It is what lets a firm put a report in front of its own client without Govscape's name on it.",
+    },
+    {
+      n: "Briefing notes with transcription",
+      d: "A consultant can dictate or paste a client briefing, have it transcribed, and have structured records extracted from it for approval. Promoting an extraction creates register records, so a meeting becomes inventory without anyone retyping it.",
+    },
+    {
+      n: "Data requests",
+      d: "Organisation-level and person-level data requests are generated pre-filled from what is already known, sent by email, and tracked to completion with an export. This covers both client onboarding questionnaires and subject access style requests from one mechanism.",
+    },
+    {
+      n: "Consent links",
+      d: "A consultant can send a client a link that lets the client's own administrator authorise a connection, without the consultant ever holding their credentials. Links are single-purpose and expiring, which is the difference between a defensible integration and a shared password.",
+    },
+    {
+      n: "Spreadsheet import and bulk import",
+      d: "Registers accept spreadsheet import with column mapping and a dry-run preview. This matters because every prospective client arrives with a folder of spreadsheets, not an API.",
+    },
+    {
+      n: "Add-data hub",
+      d: "One screen gathers every route in — connect a system, import a sheet, write a brief, upload a policy, upload evidence, answer questions — with a waiting state while work completes. It exists because the single most common failure in this category of product is a user who cannot find where to start.",
+    },
+    {
+      n: "Search",
+      d: "Cross-register search spans controls, evidence, policies, registers and findings. It is scoped to the active client, so results can never leak across tenants.",
+    },
+    {
+      n: "Team, roles and invitations",
+      d: "Members are invited by email with a role of admin, editor or viewer, with resend and status tracking. Read-only is enforced at the API, not just hidden in the UI, so a viewer cannot change anything by calling the endpoint directly.",
+    },
+    {
+      n: "Audit log",
+      d: "Every state change writes an actor, action, target, correlation id and timestamp to an append-only log with its own screen. It is the artefact that makes the rest of the product defensible: a consultant can show who approved a figure and when.",
+    },
+    {
+      n: "Notification digest and unsubscribe",
+      d: "A scheduled digest emails each user what changed, with a one-click unsubscribe that works without signing in. Per-user notification preferences decide what the digest contains.",
+    },
+    {
+      n: "Data privacy controls",
+      d: "A client's data can be exported in full or deleted, with deletion queued and then purged by a scheduled job. The delay is deliberate — it makes an accidental deletion recoverable while still honouring the request.",
+    },
+    {
+      n: "Support desk",
+      d: "Clients raise requests in-app with attachments, see status, and reply in a thread. Attachments are served as short-lived links rather than public URLs, and message bodies are masked before anything leaves the system.",
+    },
+    {
+      n: "Help centre",
+      d: "48 written guides in 12 categories, each with steps and screenshots, reachable from the left menu. Content is held in code rather than a CMS, which means a guide that references a screen breaks the build when that screen is renamed.",
+    },
+    {
+      n: "Onboarding",
+      d: "Self-serve signup runs a cost-led onboarding flow with a live preview, and a guided first run tracks activation events afterwards. The first thing a new user sees is a figure for their own organisation, not an empty dashboard.",
+    },
+    {
+      n: "Demo and sample data",
+      d: "A seeded sample tenant with invariant tests lets anyone see a populated product without touching real client data. The invariant tests exist so a demo cannot drift into showing figures that the live engine would not produce.",
+    },
+    {
+      n: "Partner programme",
+      d: "Partner applications, approval and rejection, passwordless magic-link sign-in, a partner portal, referral codes and lead attribution. A partner can register a lead and see its progress without ever reaching the main application.",
+    },
+    {
+      n: "Legal pages",
+      d: "Privacy policy, terms, DPA, cookies and a sub-processor list. The sub-processor list is covered by a test that fails if the code starts using a third party the list does not disclose.",
+    },
+    {
+      n: "Accessibility",
+      d: "A dedicated accessibility layer with its own tests covers focus handling, labelling and contrast. It is tested rather than asserted.",
+    },
+  ],
+  m365: [
+    {
+      n: "Microsoft OAuth and admin consent",
+      d: "A full OAuth flow with admin consent against Microsoft Graph, with the consent message and required permissions generated from what the scan actually needs. Asking only for the scopes in use is what gets a client's IT director to approve it.",
+    },
+    {
+      n: "Graph walker",
+      d: "A paged, throttle-aware walker enumerates OneDrive and SharePoint content across a tenant. It handles Graph's rate limits and continuation tokens, which is the whole engineering problem at this scale.",
+    },
+    {
+      n: "Encrypted credential handling",
+      d: "Tokens are stored encrypted, refreshed on demand, and never written to logs. A connection audit records every use.",
+    },
+    {
+      n: "Identity and licence reads",
+      d: "Beyond documents, the integration reads sign-in configuration, admin role assignments and licence allocation. These feed identity posture and the licence sweep.",
+    },
+    {
+      n: "Enumerate, then scan",
+      d: "Connecting runs a cheap enumeration first so a consultant sees scale before committing to a full scan. It avoids starting a multi-hour job against a tenant nobody expected to be that large.",
+    },
+    {
+      n: "Scheduled rescans",
+      d: "Connected tenants rescan on a schedule, with deltas carried forward against the last full picture. The findings list stays current without anyone pressing a button.",
+    },
+  ],
+  security: [
+    {
+      n: "Enforced multi-factor authentication",
+      d: "MFA is mandatory for every consultant, admin and editor, enforced in middleware, with client viewers free to opt in. It is behind an environment flag so enrolment can be switched off in one change if it ever misbehaves, rather than locking everyone out.",
+    },
+    {
+      n: "Tenant isolation at the data layer",
+      d: "Client scoping is applied in the data-access layer and covered by tests, not left to each query. Active-client resolution is explicit, which is how a wrong-tenant defect found in October was fixed properly rather than patched per screen.",
+    },
+    {
+      n: "Role enforcement server-side",
+      d: "Admin, editor, viewer and read-only are checked at the API boundary. The UI hides what a role cannot do, but the API is what refuses it.",
+    },
+    {
+      n: "Append-only audit trail with correlation ids",
+      d: "Every mutation is logged with an actor and a correlation id that threads through related work. A bulk approval of 113 items produces 113 correlated entries, so the trail reflects the decisions made.",
+    },
+    { n: "Rate limiting", d: "Request rate limiting on authenticated routes, with a separate stricter limiter on public share tokens." },
+    {
+      n: "Redaction before egress",
+      d: "Support message bodies and logged payloads are masked before they leave the system. The redaction layer has its own tests, because this is the sort of thing that silently stops working.",
+    },
+    {
+      n: "Bearer-token service authentication",
+      d: "The agentic support routes authenticate with a token compared by SHA-256 and a timing-safe comparison, with the plain value held only in a vault. No service credential is stored in the repository.",
+    },
+    {
+      n: "Environment integrity checks",
+      d: "A startup check validates that required environment variables exist and are well-formed, including catching trailing newlines pasted into deployment secrets. It turns a class of silent production misconfiguration into a loud failure.",
+    },
+    {
+      n: "Error tracking",
+      d: "Sentry is wired with source maps and release tagging. Runtime log retention on the host is only about 24 hours, so this is the only durable error record.",
+    },
+    {
+      n: "Disclosed sub-processors, tested",
+      d: "Supabase, Vercel, Anthropic, OpenAI, Resend, Sentry, Upstash and Microsoft are declared, and a test fails the build if code reaches a third party the list omits. The legal page and the code cannot drift apart.",
+    },
+    {
+      n: "Storage reconciliation",
+      d: "A scheduled job reconciles the file store against the database and reports orphans in either direction. Uploads and deletions across two systems do not stay consistent on their own.",
+    },
+  ],
+  testing: [
+    {
+      n: "66 end-to-end specs",
+      d: "Playwright covers the real user journeys — auth, MFA, onboarding, scanning, review, reports, sharing, support, privacy — against a real database, with global setup and teardown. A fresh-database run is the acceptance gate before a release.",
+    },
+    {
+      n: "432 unit test files",
+      d: "Vitest covers the scoring, cost engine, matchers, triage, PDF data, email rendering and access control. The engine logic is tested at the function level because a wrong figure in a board report is the worst available failure.",
+    },
+    {
+      n: "Golden-dataset tests for AI output",
+      d: "Model-facing code is tested against a fixed dataset with expected shapes rather than exact strings. It catches prompt and parsing regressions without making the suite depend on a live model.",
+    },
+    {
+      n: "A no-billable-calls guard",
+      d: "A test asserts that the suite cannot reach a paid model or external API. Without it, a test run silently costs money and depends on someone else's uptime.",
+    },
+    {
+      n: "Invariant tests on demo data",
+      d: "The seeded demo tenant is asserted to be internally consistent with the live engine's rules. A demo that shows impossible figures is worse than no demo.",
+    },
+    {
+      n: "Diagnostic suites",
+      d: "Separate diagnostic e2e and unit configurations exist for investigating a failure without running the whole gate. It is the difference between a five-minute and a fifty-minute debug loop.",
+    },
+    {
+      n: "A finance-mutation checker",
+      d: "A standalone script asserts that no code path mutates an approved financial figure outside the approve/override/revert flow. This is a custom guard for the one invariant the product cannot afford to break.",
+    },
+  ],
+  resend: [
+    {
+      n: "Eleven branded transactional templates",
+      d: "Authentication emails, team invites, data requests, partner welcome, lead notifications, support ticket and reply, application notifications, and the notification digest. All render through one shared shell so a change to the brand applies everywhere at once.",
+    },
+    {
+      n: "Email built as its own dialect",
+      d: "Table layout, fully inline styles, absolute PNG logos because Gmail and Outlook drop SVG, and no webfont link — deliberately, because a Google Fonts call would tell a third party who opened which email. The sub-processor list and the rendering code agree, and a test enforces it.",
+    },
+    {
+      n: "Supabase auth emails branded and installed",
+      d: "All four authentication emails were rebranded and installed in the auth provider, not just designed. Most products leave these as the vendor default; it is a visible quality signal to a new user.",
+    },
+    {
+      n: "Unsubscribe without sign-in",
+      d: "The digest's unsubscribe link works from the email alone and is covered end-to-end. Requiring a login to stop receiving email is both a compliance problem and a support ticket generator.",
+    },
+  ],
+  engMore: [
+    {
+      n: "Scheduled automation layer (12 jobs)",
+      d: "Cron routes handle snapshotting, score recalculation, policy extraction, identity posture, licence expiry, rescans, scan resumption, digests, quality profiling, storage reconciliation and purge of deleted organisations. The product does meaningful work with nobody signed in, which is what separates it from a form.",
+    },
+    {
+      n: "LLM guardrails",
+      d: "A guard layer sits between the application and the models with input preprocessing, output validation, budget caps and a model registry. Extraction budgets and failure handling are explicit, so a long document degrades gracefully instead of silently truncating — a real defect of this kind was found and fixed where two stacked caps were hiding 245 of 395 clauses from the extractor.",
+    },
+    {
+      n: "Performance work at real volume",
+      d: "Inventory indexes, batched review decisions and query restructuring were done against a 437,000-item live tenant. One change removed roughly 1,500 redundant whole-organisation reads from a single bulk approval.",
+    },
+    {
+      n: "Server-side PDF generation",
+      d: "A full React-PDF pipeline with charts, branding, logo fetching, figure ledgers and citation printing. Five distinct report types share one layout system.",
+    },
+  ],
+  strategy: [
+    {
+      n: "Research",
+      d: "Market and competitor research including a Vanta benchmark appraisal, sector-by-sector positioning for six verticals, and governance-risk calibration research behind the severity ratings. The calibration work is what lets the product put a defensible number on a gap rather than a colour.",
+    },
+    {
+      n: "Business management",
+      d: "A claims register recording every factual assertion the product and site make with its source, plus a live offer definition, pricing position and roadmap. The claims register is the governance of the marketing itself — nothing goes on the site that is not traceable.",
+    },
+    {
+      n: "Growth",
+      d: "Partner programme design with referral codes and lead attribution, sector landing-page strategy, and a journal content programme. Growth is built into the product surface, not bolted on as a channel.",
+    },
+    {
+      n: "Onboarding",
+      d: 'Cost-led self-serve onboarding with a live preview, a guided first-run path, activation event tracking and a first-value story designed around getting a figure on screen in minutes. The design question it answers is "what is the smallest amount of input that produces something worth paying for".',
+    },
+  ],
+  stratMore: [
+    {
+      n: "Launch gating and acceptance",
+      d: "A formal launch-gate plan, acceptance evidence, a one-action acceptance test and a signed-off production re-walk. Shipping was treated as a gate with evidence, not a deploy.",
+    },
+    {
+      n: "Live customer validation",
+      d: "A real customer ran the product unprompted and approved 113 evidence items in three minutes the morning after that capability shipped, moving their score from 4 to 13.",
+    },
+  ],
+  brand: [
+    {
+      n: "Implemented design system",
+      d: "A Bone canvas, white cards, ink type and Signal used only in the mark, expressed as light and dark theme tokens in the application, carried through to email as literal values and to PDFs as a shared colour and layout module. The same brand holds across three rendering engines that share no CSS, which is the hard part.",
+    },
+    {
+      n: "Brand applied to generated artefacts",
+      d: "Reports, emails and the authentication screens all render in brand, including client-uploaded logos on white-labelled PDFs. Most products stop at the web app.",
+    },
+    {
+      n: "Design review record",
+      d: "Three dated whole-application design reviews and a full site-wide UI sweep, with before-and-after screen sets. There is a documented trail of design iteration, not just a finished screenshot.",
+    },
+  ],
+  content: [
+    {
+      n: "Training videos",
+      d: "A 7½-minute Govscape walkthrough film in ten chapters, mastered at full resolution and 720p, with per-chapter cuts so a section can be re-shot without re-recording the whole thing. It was produced with a scripted browser harness driving the live product, so the footage is the real application with real data, not a mockup.",
+    },
+    {
+      n: "Agentic voiceovers",
+      d: "Narration generated from a written script and cut against the footage, with the script version-controlled alongside the video segments. Re-recording a chapter means editing a paragraph and re-rendering one segment, which is why a 7½-minute film could be revised in an afternoon.",
+    },
+    {
+      n: "Help centre",
+      d: "48 guides across 12 categories, each with numbered steps, screenshots and an estimated reading time, held in code and linked from the relevant screen. Because the content lives in the repository, a guide that points at a renamed screen fails the build rather than quietly misleading a user.",
+    },
+  ],
+  contentMore: [
+    {
+      n: "Journal programme",
+      d: "Five long-form articles published on the marketing site, written to the positioning rather than to keywords. They are the content a prospect reads before booking a call.",
+    },
+    {
+      n: "Sample board report",
+      d: "A complete worked example of the client-facing output, produced as a standalone artefact. It is the single most useful thing to show a prospect who asks what they would actually get.",
+    },
+  ],
+  marketing: [
+    {
+      n: "Marketing site",
+      d: "An eleven-page site: home, product, partners, journal, and six sector pages — financial services, legal, healthcare, higher education, professional services, public sector and technology — plus the five journal articles. It went through a full creative reset benchmarked against the category leader, and every factual claim on it is traceable to the claims register.",
+    },
+    {
+      n: "Mailers",
+      d: "Eleven transactional templates in brand, plus the notification digest, all through one shared shell with working unsubscribe. See Resend above for the mechanics.",
+    },
+    {
+      n: "Lead generation",
+      d: "A contact enquiry endpoint with notification, a referral-code system, partner-registered leads with attribution, an admin lead pipeline, and a demo path that lets a prospect see a populated product without a sales call. Attribution is recorded at first touch, so the partner channel can be measured rather than estimated.",
+    },
+    {
+      n: "Agentic customer support",
+      d: "An AI agent works the live support queue: it reads what has changed since it last looked, diagnoses the request against the real system, and writes notes, status changes, proposals and fixes — all attributed to the agent. It cannot email a customer without a human approval recorded since the last reply, and one approval sends exactly one reply, which is the entire safety design.",
+    },
+  ],
+};
