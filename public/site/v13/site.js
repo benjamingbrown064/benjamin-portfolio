@@ -33,3 +33,10 @@
   /* Coffee: recorded as a request for a time. It is confirmed by email until the calendar is connected. */
   window.addEventListener('bb:coffee',function(e){post('/api/bookings',e.detail||{}).catch(function(){})});
 })();
+
+/* Keyboard focus ring only while the keyboard is being used to move around. */
+(function(){
+  var h=document.documentElement;
+  document.addEventListener('keydown',function(e){if(e.key==='Tab')h.classList.add('kbd')},true);
+  document.addEventListener('pointerdown',function(){h.classList.remove('kbd')},true);
+})();
