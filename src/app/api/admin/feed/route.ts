@@ -25,7 +25,7 @@ export async function GET(request: Request) {
       select<Row>("discovery_submissions", `select=ref,journey,name,email,company,signals,summary,answers,created_at&created_at=gt.${iso}&order=created_at.asc&limit=200`),
       select<Row>("booking_requests", `select=name,email,format,slot_date,slot_time,time_zone,note,status,created_at&created_at=gt.${iso}&order=created_at.asc&limit=200`),
       select<Row>("subscribers", `select=email,status,source,created_at&created_at=gt.${iso}&order=created_at.asc&limit=500`),
-      select<Row>("chat_sessions", `select=id,name,email,user_messages,voice_seconds,cost_usd,first_page,created_at,last_at&last_at=gt.${iso}&order=last_at.asc&limit=500`),
+      select<Row>("chat_sessions", `select=id,name,email,known_at,user_messages,voice_seconds,cost_usd,first_page,created_at,last_at&last_at=gt.${iso}&order=last_at.asc&limit=500`),
     ]);
 
     const filesByRequest = new Map<string, Row[]>();
