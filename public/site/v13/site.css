@@ -30,8 +30,22 @@ html.kbd .bf-in:focus-visible,html.kbd .dq input:focus-visible,html.kbd .dq text
 .mn-links .t{white-space:nowrap;font-size:clamp(56px,6.2vw,88px)}
 @media(max-width:700px){.mn-links .t{font-size:clamp(34px,11.6vw,56px)}.mn-links .n{padding-top:.7em}}
 
-/* Contact form on phones: tall enough to show all six request types without scrolling inside the card */
-@media(max-width:640px){.bf.bf-inline{height:790px!important}}
+/* Contact form on its own page: tall enough to show all six request types and the "say it" button without scrolling inside the card */
+.bf.bf-inline{height:804px!important}
+@media(max-width:640px){.bf.bf-inline{height:880px!important}}
 
 /* Not-found page: buttons line up with the text */
 .nf .hero-cta{justify-content:flex-start}
+
+/* "Say it" on the request form */
+.bf-say{display:none;align-items:center;gap:14px;width:100%;margin-top:14px;padding:10px 18px 10px 11px;border:1px dashed var(--bf-ln);border-radius:11px;background:transparent;text-align:left;transition:background .3s,border-color .3s}
+html.can-voice .bf-say{display:flex}
+.bf-say:hover{background:var(--bf-cl)}
+.bf-say .ic{flex:none;width:36px;height:36px;border-radius:50%;background:var(--bf-ink);color:var(--bf-on);display:grid;place-items:center}
+.bf-say .ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bf-say b{display:block;font-size:15px;font-weight:600;letter-spacing:-.02em}
+.bf-say .d{display:block;margin-top:1px;font-size:13.5px;line-height:1.35;color:var(--bf-mu)}
+.bf-say.rec{border-style:solid;border-color:var(--bf-sig)}
+.bf-say.rec .ic{background:var(--bf-sig);color:#fff}
+.bf-say.busy{opacity:.7}
+@media(max-height:680px){.bf-say .d{display:none}}

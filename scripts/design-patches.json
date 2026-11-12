@@ -112,5 +112,17 @@
   "old": "<script src=\"v5/voice.js\"></script>\n",
   "new": "",
   "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "<span class=\"k\">'+(j+1)+'</span></button>').join('')+'</div></div></section>';",
+  "new": "<span class=\"k\">'+(j+1)+'</span></button>').join('')+'</div>'+'<button type=\"button\" class=\"bf-say bf-a\" style=\"--d:4\" data-bb-speak><span class=\"ic\">'+svg('<rect x=\"9\" y=\"3\" width=\"6\" height=\"11\" rx=\"3\"></rect><path d=\"M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21\"></path>')+'</span><span class=\"tx\"><b>Or just say it</b><span class=\"d\">Tell me what you need. I will fill the form in for you to check.</span></span></button>'+'</div></section>';",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "return{el,go,pickType};",
+  "new": "/* Fill the form from structured answers (used by \"say it\"). Only values the form itself offers are accepted. */\nconst fill=d=>{d=d||{};const t=TYPES.find(x=>x.id===d.type);if(t)S.t=t;const a=d.answers||{},y=d.you||{};\nS.t.q.concat(YOU).forEach(q=>{let v=q.you?y[q.k]:a[q.k];if(v==null||q.t==='files')return;\nif(q.t==='chips'){const ok=x=>q.o.includes(x);if(q.multi){v=(Array.isArray(v)?v:[v]).filter(ok);if(v.length)setv(q,v)}else if(ok(v))setv(q,v)}\nelse if(q.t==='date'){if(/^\\d{4}-\\d{2}-\\d{2}$/.test(v))setv(q,v)}\nelse if(typeof v==='string'&&v.trim())setv(q,v.trim().slice(0,4000))});\nS.i=0;build();const all=steps();let n=all.findIndex(q=>typeof q!=='string'&&check(q));if(n<0)n=all.length-1;go(n)};\nconst schema=()=>({types:TYPES.map(t=>({id:t.id,name:t.n,about:t.d,fields:t.q.filter(q=>q.t!=='files').map(q=>({key:q.k,question:q.l,kind:q.t,options:q.o&&q.t==='chips'?q.o:undefined,many:q.multi?true:undefined}))}))});\nconst api={el,go,pickType,fill,schema};root.__bbForm=api;return api;",
+  "count": 1
  }
 ]

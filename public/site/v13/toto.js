@@ -27,6 +27,7 @@
       var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16);
     });
   }
+  // One id per visitor conversation, shared with the voice recorder in site.js.
   var session = read(localStorage, KEYS.session);
   if (!session) { session = uuid(); write(localStorage, KEYS.session, session); }
 
@@ -37,7 +38,7 @@
 
   /* ---------- markup ---------- */
   function el(tag, cls, html) { var n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
-  var MARK = '<svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M19 13V38" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none"></path><circle cx="32" cy="38" r="13" fill="none" stroke="currentColor" stroke-width="10"></circle></svg>';
+  var MARK = '<svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M14 38V13L24 8V38Z" fill="currentColor" stroke="none"></path><circle cx="32" cy="38" r="13" fill="none" stroke="currentColor" stroke-width="10"></circle></svg>';
 
   var launch = el('button', 'bba-launch', MARK + '<span class="x" aria-hidden="true">×</span><span class="ping"></span>');
   launch.type = 'button';
@@ -203,17 +204,11 @@
   }
 
   /* ---------- voice ---------- */
-  var canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
-  var MAX_CLIP_MS = 45000;
+  var voice = window.BBVoice;
   var SILENCE = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
-  var recorder = null, chunks = [], startedAt = 0, clipTimer = null, player = null, afterSpeech = null;
-  if (!canRecord) mic.hidden = true;
+  var recording = null, player = null, afterSpeech = null;
+  if (!voice || !voice.supported) mic.hidden = true;
 
-  function clipType() {
-    var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
-    for (var i = 0; i < types.length; i++) if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(types[i])) return types[i];
-    return '';
-  }
   function unlockAudio() {
     // Phones only let a page play sound that started from a tap, so the player is started here, silently.
     if (!player) { player = new Audio(); player.addEventListener('ended', speechDone); player.addEventListener('error', speechDone); }
@@ -239,49 +234,29 @@
 
   function startRecording() {
     unlockAudio(); stopSpeaking();
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-      var type = clipType();
-      recorder = type ? new MediaRecorder(stream, { mimeType: type }) : new MediaRecorder(stream);
-      chunks = [];
-      recorder.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
-      recorder.onstop = function () { stream.getTracks().forEach(function (t) { t.stop(); }); sendClip(); };
-      recorder.start();
-      startedAt = Date.now();
-      mic.classList.add('rec'); mic.setAttribute('aria-pressed', 'true'); mic.setAttribute('aria-label', 'Stop and send');
-      input.placeholder = 'Listening… tap the mic to send';
-      clipTimer = setTimeout(stopRecording, MAX_CLIP_MS);
-    }).catch(function () { note('I need microphone access to listen. You can type instead.'); });
-  }
-  function stopRecording() {
-    clearTimeout(clipTimer);
-    mic.classList.remove('rec'); mic.setAttribute('aria-pressed', 'false'); mic.setAttribute('aria-label', 'Speak your message');
-    input.placeholder = 'Ask anything…';
-    if (recorder && recorder.state !== 'inactive') recorder.stop();
-  }
-  function sendClip() {
-    var seconds = (Date.now() - startedAt) / 1000;
-    var type = ((recorder && recorder.mimeType) || 'audio/webm').split(';')[0];
-    recorder = null;
-    if (seconds < 0.6 || !chunks.length || busy) return;
-    busy = true;
     var typing = el('div', 'bba-typing', '<i></i><i></i><i></i>');
-    log.appendChild(typing); log.scrollTop = log.scrollHeight;
-    fetch('/api/voice/listen', {
-      method: 'POST',
-      headers: { 'Content-Type': type, 'x-toto-session': session, 'x-toto-seconds': seconds.toFixed(1) },
-      body: new Blob(chunks, { type: type })
-    })
-      .then(function (r) { return r.json().catch(function () { return {}; }); })
-      .then(function (j) {
-        busy = false;
-        if (j.text) return ask(j.text, true);
-        history = history.filter(function (m) { return !m.error; });
-        note(j.error || 'I did not catch that. Try again, or type it.');
-        if (j.gate) showGate();
-      })
-      .catch(function () { busy = false; note('I could not hear that just now. Please type it instead.'); });
+    recording = voice.listen({
+      onStart: function () {
+        mic.classList.add('rec'); mic.setAttribute('aria-pressed', 'true'); mic.setAttribute('aria-label', 'Stop and send');
+        input.placeholder = 'Listening… tap the mic to send';
+      },
+      onStop: function () {
+        mic.classList.remove('rec'); mic.setAttribute('aria-pressed', 'false'); mic.setAttribute('aria-label', 'Speak your message');
+        input.placeholder = 'Ask anything…';
+        log.appendChild(typing); log.scrollTop = log.scrollHeight;
+      }
+    });
+    recording.done.then(function (heard) {
+      recording = null;
+      if (typing.parentNode) typing.parentNode.removeChild(typing);
+      if (heard.text) return ask(heard.text, true);
+      history = history.filter(function (m) { return !m.error; });
+      note(heard.error);
+      if (heard.gate) showGate();
+    });
   }
-  mic.addEventListener('click', function () { if (recorder) stopRecording(); else if (!busy) startRecording(); });
+  function stopRecording() { if (recording) recording.stop(); }
+  mic.addEventListener('click', function () { if (recording) stopRecording(); else if (!busy) startRecording(); });
 
   /* ---------- open / close ---------- */
   function isOpen() { return panel.classList.contains('on'); }
@@ -296,7 +271,7 @@
     setTimeout(function () { input.focus({ preventScroll: true }); }, 400);
   }
   function close() {
-    if (recorder) stopRecording();
+    stopRecording();
     stopSpeaking();
     panel.classList.remove('on');
     document.documentElement.classList.remove('bba-open');

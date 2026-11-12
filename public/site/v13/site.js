@@ -47,3 +47,83 @@ document.addEventListener('click',function(e){
   if(!a)return;
   if(document.referrer&&document.referrer.indexOf(location.host)>-1&&history.length>1){e.preventDefault();history.back()}
 });
+
+
+/* Voice capture, shared by the assistant and the request form: record a short clip and get it back as text.
+   BBVoice.listen({onStart, onStop}) returns {stop(), done}; done resolves to {text} or {error, gate}. */
+(function(){
+  var supported=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder);
+  var MAX_MS=45000,active=null;
+  function sessionId(){
+    var k='toto:sid',v=null;
+    try{v=localStorage.getItem(k)}catch(e){}
+    if(!v){v=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)});try{localStorage.setItem(k,v)}catch(e){}}
+    return v;
+  }
+  function clipType(){
+    var t=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
+    for(var i=0;i<t.length;i++)if(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t[i]))return t[i];
+    return '';
+  }
+  function listen(opts){
+    opts=opts||{};
+    if(active)active.stop();
+    var recorder=null,chunks=[],startedAt=0,timer=null,stopped=false,resolve;
+    var done=new Promise(function(r){resolve=r});
+    var ctl={stop:function(){stopped=true;clearTimeout(timer);if(recorder&&recorder.state!=='inactive')recorder.stop()},done:done};
+    active=ctl;
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      var type=clipType();
+      recorder=type?new MediaRecorder(stream,{mimeType:type}):new MediaRecorder(stream);
+      recorder.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+      recorder.onstop=function(){
+        stream.getTracks().forEach(function(t){t.stop()});
+        if(active===ctl)active=null;
+        if(opts.onStop)opts.onStop();
+        var seconds=(Date.now()-startedAt)/1000,mime=(recorder.mimeType||'audio/webm').split(';')[0];
+        if(seconds<0.6||!chunks.length)return resolve({error:'I did not catch that. Try again, or type it.'});
+        fetch('/api/voice/listen',{method:'POST',headers:{'Content-Type':mime,'x-toto-session':sessionId(),'x-toto-seconds':seconds.toFixed(1)},body:new Blob(chunks,{type:mime})})
+          .then(function(r){return r.json().catch(function(){return{}})})
+          .then(function(j){resolve(j.text?{text:j.text}:{error:j.error||'I did not catch that. Try again, or type it.',gate:!!j.gate})})
+          .catch(function(){resolve({error:'I could not hear that just now. Please type it instead.'})});
+      };
+      recorder.start();startedAt=Date.now();
+      if(opts.onStart)opts.onStart();
+      if(stopped)ctl.stop();else timer=setTimeout(ctl.stop,MAX_MS);
+    }).catch(function(){
+      if(active===ctl)active=null;
+      resolve({error:'I need microphone access to listen. You can type instead.'});
+    });
+    return ctl;
+  }
+  window.BBVoice={supported:supported,session:sessionId,listen:listen};
+  if(supported)document.documentElement.classList.add('can-voice');
+})();
+
+/* "Say it" on the request form: speak what you need and the form fills itself in for you to check. */
+(function(){
+  var current=null;
+  function label(btn,title,detail){btn.querySelector('b').textContent=title;btn.querySelector('.d').textContent=detail}
+  function reset(btn){btn.classList.remove('rec','busy');btn.disabled=false;label(btn,'Or just say it','Tell me what you need. I will fill the form in for you to check.')}
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest&&e.target.closest('[data-bb-speak]');
+    if(!btn||!window.BBVoice)return;
+    if(current){current.stop();return}
+    var host=btn.closest('.bf').parentNode,form=host&&host.__bbForm;
+    if(!form)return;
+    current=window.BBVoice.listen({
+      onStart:function(){btn.classList.add('rec');label(btn,'Listening…','Say what you need, then tap here to finish.')},
+      onStop:function(){btn.classList.remove('rec');btn.classList.add('busy');btn.disabled=true;label(btn,'Working it out…','Filling the form in from what you said.')}
+    });
+    current.done.then(function(heard){
+      current=null;
+      if(!heard.text){reset(btn);label(btn,'Or just say it',heard.error);return}
+      return fetch('/api/brief',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({said:heard.text,schema:form.schema()})})
+        .then(function(r){return r.json().catch(function(){return{}})})
+        .then(function(j){
+          if(!j.type){reset(btn);label(btn,'Or just say it',j.error||'I could not work that out. Please fill the form in by hand.');return}
+          form.fill(j); // the form checks every value against its own options
+        });
+    }).catch(function(){current=null;reset(btn)});
+  });
+})();
