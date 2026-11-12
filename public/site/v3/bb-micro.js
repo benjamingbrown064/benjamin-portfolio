@@ -1,0 +1,9 @@
+/* Benjamin Brown V3 · micrographics: seal row, barcode, ruler ticks. window.BBMicro */
+(function(){
+const SEAL='<svg viewBox="0 0 138 44" stroke-width="2"><circle cx="22" cy="22" r="20"></circle><ellipse cx="22" cy="22" rx="9" ry="20"></ellipse><path d="M2 22h40M4.7 12h34.6M4.7 32h34.6"></path><circle cx="69" cy="22" r="20" style="fill:currentColor"></circle><g transform="translate(53 6) scale(.5)" style="fill:none;stroke:var(--bg,#F2EDE3);stroke-width:10"><path d="M19 13V38" stroke-linecap="round"></path><circle cx="32" cy="38" r="13"></circle></g><circle cx="116" cy="22" r="20"></circle><circle cx="116" cy="22" r="8"></circle><path d="M96 22h40M116 2v40"></path></svg>';
+function bars(key){let s=0;for(const c of String(key))s=(s*31+c.charCodeAt(0))>>>0;const r=()=>(s=(s*1103515245+12345)>>>0,s>>>16);let x=0,h='';for(let i=0;i<44;i++){const w=1+r()%3;if(i%2===0)h+='<rect x="'+x+'" y="0" width="'+w+'" height="40"></rect>';x+=w+(i%2?1+r()%2:0)}return '<svg viewBox="0 0 '+x+' 40" preserveAspectRatio="none" fill="currentColor">'+h+'</svg>'}
+function ticks(n){n=n||60;let h='';for(let i=0;i<=n;i++){const l=i%10===0?40:i%5===0?26:14;h+='<path d="M'+(i*5+.5)+' 0v'+l+'"></path>'}return '<svg viewBox="0 0 '+(n*5+1)+' 44" preserveAspectRatio="none" stroke="currentColor" stroke-width="1" fill="none">'+h+'<path d="M0 43h'+(n*5+1)+'" stroke-width="2"></path></svg>'}
+function apply(root){root=root||document;root.querySelectorAll('[data-seal]').forEach(e=>{if(!e.firstChild)e.innerHTML=SEAL});root.querySelectorAll('[data-bars]').forEach(e=>{if(!e.firstChild)e.innerHTML=bars(e.dataset.bars||'BB')});root.querySelectorAll('[data-ticks]').forEach(e=>{if(!e.firstChild)e.innerHTML=ticks(+e.dataset.ticks||60)})}
+window.BBMicro={seal:SEAL,bars,ticks,apply};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>apply());else apply();
+})();

@@ -1,0 +1,15 @@
+/* Radius encodes scale. Nothing carries a border and a shadow at the same time. */
+:root{
+--radius-sm:8px;--radius-md:14px;--radius-lg:18px;--radius-full:999px;--radius-monogram:22%;--radius-swatch:16px;--radius-bar:6px;
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:14px;--space-5:16px;--space-6:20px;--space-7:22px;--space-8:26px;--space-9:28px;--space-10:34px;--space-11:44px;--space-12:56px;--space-13:70px;--space-14:88px;
+--page-pad-y:72px;--page-pad-x:88px;--card-pad:28px;--grid-gap:20px;--cell-pad:20px 24px;
+--shadow-tile:0 1px 3px rgba(0,0,0,.05);--hairline:inset 0 0 0 1px var(--divider);
+--ease:cubic-bezier(.2,.8,.2,1); /* @kind other */
+--dur-hover:120ms; /* @kind other */
+--dur-enter:180ms; /* @kind other */
+--dur-settle:320ms; /* @kind other */
+--travel-enter:6px;
+/* semantic */
+--radius-input:var(--radius-sm);--radius-chip:var(--radius-sm);--radius-tile:var(--radius-md);--radius-card:var(--radius-lg);--radius-button:var(--radius-full);--radius-pill:var(--radius-full);
+}
+@media (prefers-reduced-motion:reduce){:root{--travel-enter:0px}}

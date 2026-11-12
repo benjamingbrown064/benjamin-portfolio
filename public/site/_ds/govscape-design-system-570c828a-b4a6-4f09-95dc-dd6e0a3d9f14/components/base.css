@@ -1,0 +1,6 @@
+*,*::before,*::after{box-sizing:border-box;}
+body{margin:0;color:var(--ink);background:var(--paper);font-family:var(--ff-text);font-size:16px;line-height:1.55;font-weight:500;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+a{color:var(--signal-deep);text-decoration:none;transition:color var(--dur-micro) var(--ease);}
+a:hover{color:var(--ink);}
+::selection{background:var(--signal);color:#fff;}
+.gs-icon{display:block;width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;}

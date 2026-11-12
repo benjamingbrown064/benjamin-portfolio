@@ -1,0 +1,15 @@
+{
+  "_note": "Single source of truth for facts shown on the site and given to the assistant. Change a value here, not in the pages.",
+  "siteUrl": "https://benjaminbrown.co",
+  "name": "Benjamin Brown",
+  "assistantName": "Toto",
+  "email": "hello@benjaminbrown.co",
+  "availability": "Q4 2026",
+  "replyPromise": "a reply within one working day",
+  "prices": {
+    "discovery": { "gbp": "£5,000", "usd": "$6,600", "unit": "fixed fee" },
+    "project": { "gbp": "£18,000", "usd": "$23,800", "unit": "fixed scope" },
+    "subscription": { "gbp": "£9,500", "usd": "$12,500", "unit": "a month" }
+  },
+  "social": []
+}

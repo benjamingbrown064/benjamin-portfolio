@@ -1,0 +1,3 @@
+/* Services page: the home page list on one calm grey surface */
+.sv-page{padding:0 0 clamp(88px,11vw,152px)}
+.sv-page .btn.ghost:hover{background:var(--bone-3)}

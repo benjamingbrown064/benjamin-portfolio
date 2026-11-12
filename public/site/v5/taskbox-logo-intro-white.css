@@ -1,0 +1,33 @@
+/* Taskbox header logo intro: wordmark folds into the T.
+   White version for dark backgrounds. Plays once when .tb-logo is inserted. Total 2.36 s at speed 1.
+   Change --tb-hold to lengthen or shorten the pause on the full word. */
+.tb-logo{--tb-hold:350ms;--tb-p2:calc(750ms + var(--tb-hold));--tb-ink:#FFFFFF;--tb-ember:#FF4D1F;display:block;width:150px;height:auto;overflow:visible}
+.tb-logo.on-light{--tb-ink:#111214}
+.tb-logo path,.tb-logo rect,.tb-logo polygon{fill:var(--tb-ink)}
+.tb-logo circle{fill:var(--tb-ember)}
+.tb-logo g{transform-box:fill-box;transform-origin:center}
+
+.tb-in{animation:tb-letter-in 480ms cubic-bezier(.2,.8,.2,1) calc(var(--i) * 45ms) both}
+.tb-out{animation:tb-letter-out 380ms cubic-bezier(.55,0,.75,.2) calc(var(--tb-p2) + var(--j) * 28ms) both}
+.tb-t{animation:tb-t-out 240ms cubic-bezier(.55,0,.75,.2) calc(var(--tb-p2) + 460ms) both}
+.tb-shift{animation:tb-shift 550ms cubic-bezier(.65,0,.35,1) var(--tb-p2) both}
+.tb-piece{animation:tb-piece-in 340ms cubic-bezier(.2,.9,.3,1.12) calc(var(--tb-p2) + 460ms + var(--k) * 75ms) both}
+.tb-dot{animation:tb-dot 460ms ease-out calc(var(--tb-p2) + 800ms) both}
+
+@keyframes tb-letter-in{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:none}}
+@keyframes tb-letter-out{from{opacity:1;transform:none}to{opacity:0;transform:translateX(var(--dx)) scale(.55)}}
+@keyframes tb-shift{from{transform:none}to{transform:translateX(518.7px)}}
+@keyframes tb-t-out{from{opacity:1;transform:none}to{opacity:0;transform:scale(.92)}}
+@keyframes tb-piece-in{from{opacity:0;transform:translateY(-36px)}to{opacity:1;transform:none}}
+@keyframes tb-dot{0%{opacity:0;transform:scale(0)}60%{opacity:1;transform:scale(1.18)}100%{opacity:1;transform:scale(1)}}
+
+/* Reduce Motion: show the T straight away */
+@media (prefers-reduced-motion: reduce){
+  .tb-logo *{animation:none!important}
+  .tb-out,.tb-t{opacity:0}
+  .tb-shift{transform:translateX(518.7px)}
+  .tb-logo{animation:tb-fade 150ms ease-out both}
+}
+@keyframes tb-fade{from{opacity:0}to{opacity:1}}
+/* Skip on resume: add .tb-static to jump to the end frame */
+.tb-logo.tb-static *{animation-delay:-10s!important;animation-duration:1ms!important}

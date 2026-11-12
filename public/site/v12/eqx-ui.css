@@ -1,0 +1,43 @@
+/* Equation banner 02: Taskbox "Needs you" card over the doorway photo */
+.eqx-tb img{object-position:50% 30%}
+.tbn{position:absolute;z-index:2;top:50%;right:5.5%;width:clamp(280px,31%,420px);padding:clamp(14px,1.4vw,20px);border-radius:clamp(14px,1.3vw,18px);background:rgba(255,255,255,.94);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);color:#111214;font-family:Geist,system-ui,sans-serif;letter-spacing:-.01em;box-shadow:0 0 0 1px rgba(17,18,20,.06),0 40px 80px -24px rgba(0,0,0,.5);transform:translateY(-50%)}
+.tbn-h{display:flex;justify-content:space-between;align-items:baseline;padding:0 4px 10px;font-size:clamp(12px,1vw,13.5px);font-weight:500;color:#6B7076}
+.tbn-h b{font-weight:600;color:#FF4D1F;font-variant-numeric:tabular-nums}
+.tbn-r{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:clamp(10px,.9vw,13px) 4px;border-top:1px solid #EEF0F2}
+.tbn-i{width:clamp(30px,2.6vw,36px);height:clamp(30px,2.6vw,36px);border-radius:9px;display:grid;place-items:center}
+.tbn-i svg{width:55%;height:55%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tbn-i.warn{background:#FFF1D6;color:#B86E00}.tbn-i.ok{background:#E2F5E7;color:#1E8E45}.tbn-i.late{background:#FDE8E6;color:#D2301E}
+.tbn-t{min-width:0;display:grid;gap:2px}
+.tbn-t b{font-size:clamp(13px,1.1vw,15px);font-weight:600;line-height:1.3;letter-spacing:-.015em;text-wrap:pretty}
+.tbn-t small{font-size:clamp(11.5px,.95vw,12.5px);color:#6B7076;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbn-p{padding:4px 9px;border-radius:6px;font-size:clamp(11.5px,.95vw,12.5px);font-weight:600;white-space:nowrap}
+.tbn-p.ok{background:#FFF1D6;color:#9A5A00}.tbn-p.late{background:#FDE8E6;color:#C02A19}
+.eqx .eqx-tb .tbn{opacity:0;transform:translateY(calc(-50% + 18px));transition:opacity .5s var(--ease),transform .7s var(--ease)}
+.eqx .eqx-tb.on .tbn{opacity:1;transform:translateY(-50%);transition:opacity .9s var(--ease) .45s,transform 1.2s var(--ease) .45s}
+.eqx .eqx-tb .tbn-r{opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s}
+.eqx .eqx-tb.on .tbn-r{opacity:1;transform:none;transition:opacity .6s var(--ease),transform .8s var(--ease)}
+.eqx .eqx-tb.on .tbn-r:nth-child(2){transition-delay:.75s}.eqx .eqx-tb.on .tbn-r:nth-child(3){transition-delay:.88s}.eqx .eqx-tb.on .tbn-r:nth-child(4){transition-delay:1.01s}
+@media(max-width:900px){.eqx-tb img{object-position:32% 50%}.tbn{top:6%;right:5%;left:auto;width:min(78%,360px);transform:none}.eqx .eqx-tb .tbn{transform:translateY(18px)}.eqx .eqx-tb.on .tbn{transform:none}.tbn-r:nth-child(4){display:none}}
+@media(prefers-reduced-motion:reduce){.eqx .eqx-tb .tbn,.eqx .eqx-tb .tbn-r{transition:none!important}}
+/* animated version: the Taskbox embed (560:460, transparent, loops every 9 s) */
+.tbn.tbn-anim{width:clamp(300px,38%,500px);aspect-ratio:560/460;padding:0;border-radius:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;pointer-events:none}
+.tbn-anim iframe{display:block;width:100%;height:100%;border:0;background:transparent;color-scheme:normal}
+@media(max-width:900px){.tbn.tbn-anim{top:4%;width:min(80%,380px)}}
+/* Equation banner 03: WarrantyOS phone-sell animation (800:960 canvas, phone sits right of centre) */
+.wos-ph{position:absolute;z-index:2;top:0;bottom:0;right:1%;aspect-ratio:800/960;pointer-events:none}
+.wos-ph iframe{display:block;width:100%;height:100%;border:0;background:transparent;color-scheme:normal}
+.eqx .eqx-wos .wos-ph{opacity:0;transform:translateY(24px);transition:opacity .5s var(--ease),transform .7s var(--ease)}
+.eqx .eqx-wos.on .wos-ph{opacity:1;transform:none;transition:opacity .9s var(--ease) .45s,transform 1.2s var(--ease) .45s}
+@media(max-width:900px){.eqx-wos img{object-position:38% 50%}.wos-ph{top:2%;bottom:auto;height:72%;right:-6%}}
+@media(prefers-reduced-motion:reduce){.eqx .eqx-wos .wos-ph{transition:none!important}}
+/* About: coffee call to action under the intro line */
+.ab-txt{display:grid;gap:clamp(28px,3vw,40px);align-content:center;min-width:0}
+.ab-cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.ab-cta>span{font-size:14px;color:var(--mute,#6E6E73)}
+html[data-theme="dark"] .ab-cta>span{color:#A1A1A6}
+.ab-cta .btn .arr{display:inline-block;transition:transform .35s cubic-bezier(.2,.7,.2,1)}.ab-cta .btn:hover .arr{transform:translateX(4px)}
+/* Testimonials: oversized quotation marks in a muted tone */
+.tcard .q::before,.tcard .q::after{display:inline-block;font-size:1.9em;font-weight:600;line-height:0;vertical-align:-.36em;color:#A1A1A6;letter-spacing:0}
+.tcard .q::before{content:"\201C";margin-right:.06em}
+.tcard .q::after{content:"\201D";margin-left:.04em}
+html[data-theme="dark"] .tcard .q::before,html[data-theme="dark"] .tcard .q::after{color:#6E6E73}

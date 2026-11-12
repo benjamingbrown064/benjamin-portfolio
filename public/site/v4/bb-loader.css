@@ -1,0 +1,17 @@
+/* Benjamin Brown · b loader. Dot, then the bowl, then the stem up to the point.
+   Markup: <svg class="bb-loader" viewBox="0 0 64 64" role="img" aria-label="Loading"><circle class="d" cx="19" cy="38" r="5"/><path class="o" pathLength="100" d="M19 38A13 13 0 1 1 45 38A13 13 0 1 1 19 38"/><path class="s" d="M14 38V13L24 8V38Z"/></svg>
+   Add class "once" to draw a single time and hold. */
+.bb-loader{width:48px;height:48px;color:currentColor;overflow:visible;--t:1.8s;--in:cubic-bezier(.4,.1,.9,.7);--out:cubic-bezier(.1,.45,.3,1)}
+.bb-loader .d{fill:currentColor;transform-box:fill-box;transform-origin:center;animation:bbl-d var(--t) linear infinite both}
+.bb-loader .o{fill:none;stroke:currentColor;stroke-width:10;stroke-dasharray:0 100;opacity:0;animation:bbl-o var(--t) linear infinite both}
+.bb-loader .s{fill:currentColor;transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);opacity:0;animation:bbl-s var(--t) linear infinite both}
+@keyframes bbl-d{0%{transform:scale(0);opacity:1;animation-timing-function:var(--out)}9%{transform:scale(1)}86%{opacity:1;transform:scale(1);animation-timing-function:ease-in}98%,100%{opacity:0;transform:scale(1)}}
+@keyframes bbl-o{0%,9.9%{stroke-dasharray:0 100;opacity:0}10%{stroke-dasharray:0 100;opacity:1;animation-timing-function:var(--in)}50%{stroke-dasharray:100 0;opacity:1}86%{opacity:1;stroke-dasharray:100 0;animation-timing-function:ease-in}98%,100%{opacity:0;stroke-dasharray:100 0}}
+@keyframes bbl-s{0%,48.9%{transform:scaleY(0);opacity:0}49%{transform:scaleY(0);opacity:1;animation-timing-function:var(--out)}64%{transform:scaleY(1);opacity:1}86%{opacity:1;transform:scaleY(1);animation-timing-function:ease-in}98%,100%{opacity:0;transform:scaleY(1)}}
+.bb-loader.once .d,.bb-loader.once .o,.bb-loader.once .s{animation-iteration-count:1;animation-duration:calc(var(--t)*.8)}
+.bb-loader.once .d{animation-name:bbl-d1}.bb-loader.once .o{animation-name:bbl-o1}.bb-loader.once .s{animation-name:bbl-s1}
+@keyframes bbl-d1{0%{transform:scale(0);animation-timing-function:var(--out)}11%,100%{transform:scale(1)}}
+@keyframes bbl-o1{0%,12.4%{stroke-dasharray:0 100;opacity:0}12.5%{stroke-dasharray:0 100;opacity:1;animation-timing-function:var(--in)}62%,100%{stroke-dasharray:100 0;opacity:1}}
+@keyframes bbl-s1{0%,60.9%{transform:scaleY(0);opacity:0}61%{transform:scaleY(0);opacity:1;animation-timing-function:var(--out)}80%,100%{transform:scaleY(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.bb-loader .d,.bb-loader .o,.bb-loader .s{animation:none;transform:none;stroke-dasharray:none;opacity:1}.bb-loader:not(.once){animation:bbl-pulse 1.6s ease-in-out infinite}}
+@keyframes bbl-pulse{50%{opacity:.35}}

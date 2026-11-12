@@ -1,0 +1,133 @@
+[
+ {
+  "file": "contact.html",
+  "old": "<dd>Within one working day, from a person</dd>",
+  "new": "<dd>Within one working day</dd>",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "A reply within one working day, from a person.",
+  "new": "A reply within one working day.",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "Expect a reply within one working day, from a person.",
+  "new": "Expect a reply within one working day.",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "o:['Under $10k','$10–25k','$25–50k','$50–100k','$100k+']",
+  "new": "o:(function(){var c='£';try{if(localStorage.getItem('bb:cur')==='usd')c='$'}catch(e){}return['Under '+c+'10k',c+'10–25k',c+'25–50k',c+'50–100k',c+'100k+']})()",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "{id:'files',n:'Project files'",
+  "new": "{id:'discovery',n:'Discovery',d:'An appraisal of where the business is and where to go next.',ico:'<circle cx=\"11\" cy=\"11\" r=\"6.5\"></circle><path d=\"M16 16l4.5 4.5\"></path>',sec:'The business',q:[\n{k:'brief',t:'area',l:'What is the business, and what prompted this?',s:'Brief',h:'What you do, roughly how many people, and what made you look now.',p:'Start typing…',r:1},\n{k:'size',t:'chips',l:'How big is the team?',s:'Team',o:['Just me','2–10','11–50','51–200','200+']},\n{k:'areas',t:'chips',multi:1,l:'Where do you think the gaps are?',s:'Areas',h:'Pick any that apply.',o:['Strategy','Finance','Operations','Data','Compliance','Product','Marketing','Sales','Support','Technology']},\n{k:'timeline',t:'chips',l:'When do you want to start?',s:'Timeline',o:['ASAP','1–3 months','3+ months','Just exploring']},\n{k:'files',t:'files',l:'Anything useful to share?',s:'Files',h:'Decks, org charts, reports. Optional.'}]},\n{id:'files',n:'Project files'",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "Press <kbd>1</kbd>–<kbd>5</kbd> or <kbd>Enter</kbd>",
+  "new": "Press <kbd>1</kbd>–<kbd>6</kbd> or <kbd>Enter</kbd>",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "/^[1-5]$/.test(e.key)",
+  "new": "/^[1-6]$/.test(e.key)",
+  "count": 1
+ },
+ {
+  "file": "v3/bb-agent.js",
+  "old": "Alex",
+  "new": "Toto"
+ },
+ {
+  "file": "v3/bb-agent.js",
+  "old": "aria-hidden=\"true\">A<span class=\"sq\">",
+  "new": "aria-hidden=\"true\">T<span class=\"sq\">",
+  "count": 1
+ },
+ {
+  "file": "v3/bb-agent.js",
+  "old": "Project work starts at £18,000",
+  "new": "A Discovery starts at £5,000 and ends in a written appraisal. Project work starts at £18,000",
+  "count": 1
+ },
+ {
+  "file": "v3/bb-agent.js",
+  "old": "Pricing: project-based from £18,000",
+  "new": "Pricing: Discovery (a written appraisal of the business) from £5,000; project-based from £18,000",
+  "count": 1
+ },
+ {
+  "file": "v3/bb-agent.js",
+  "old": "Availability: Q2 and Q3 2026",
+  "new": "Availability: Q4 2026",
+  "count": 1
+ },
+ {
+  "file": "v3/bb-agent.js",
+  "old": "available for new work in Q2 and Q3 2026",
+  "new": "available for new work in Q4 2026",
+  "count": 1
+ },
+ {
+  "file": "v3/bb-agent.js",
+  "old": "Zebi (agentic work management, beta)",
+  "new": "Ascra (agentic work management, beta)",
+  "count": 1
+ },
+ {
+  "file": "v11/journal.js",
+  "old": "if(sub)sub.addEventListener('submit',function(e){e.preventDefault();var b=sub.querySelector('button');sub.querySelector('input').value='';b.textContent='Subscribed';setTimeout(function(){b.textContent='Subscribe'},2600)});",
+  "new": "if(sub)sub.addEventListener('submit',function(e){e.preventDefault();var b=sub.querySelector('button'),i=sub.querySelector('input'),v=i.value.trim();if(!v||b.disabled)return;b.disabled=true;b.textContent='Sending…';fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v})}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok,j:j}})}).then(function(x){b.disabled=false;if(x.ok){i.value='';b.textContent='Subscribed'}else{b.textContent='Try again';i.setCustomValidity(x.j.error||'That did not go through.');i.reportValidity();i.setCustomValidity('')}}).catch(function(){b.disabled=false;b.textContent='Try again'})});",
+  "count": 1
+ },
+ {
+  "file": "Ben Brown Portfolio v12.html",
+  "old": "Available Q4 2026",
+  "new": "Available {{availability}}",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}",
+  "new": "let srv=null;if(window.BBSend){try{srv=await window.BBSend(payload,files)}catch(x){}if(srv&&srv.ok){sent=true;if(srv.ref){payload.ref=srv.ref}}}else if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "<span class=\"n\">'+esc(ref)+'</span><span>'+esc(S.t.n)",
+  "new": "<span class=\"n\">'+esc(payload.ref)+'</span><span>'+esc(S.t.n)",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "(sent?'It is in his inbox. Expect a reply within one working day.':",
+  "new": "(sent?'It is with Ben. Expect a reply within one working day.'+(srv&&srv.failed&&srv.failed.length?' '+(srv.failed.length===1?'One file':srv.failed.length+' files')+' did not upload ('+esc(srv.failed.join(', '))+'); reply to the confirmation or email '+EMAIL+' to send '+(srv.failed.length===1?'it':'them')+'.':''):",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "'<span class=\"bf-hint\">Reference '+esc(ref)+'</span>",
+  "new": "'<span class=\"bf-hint\">Reference '+esc(payload.ref)+'</span>",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "const EMAIL='hello@benjaminbrown.co',MAXF=10,",
+  "new": "const EMAIL='hello@benjaminbrown.co',MAXF=5,",
+  "count": 1
+ },
+ {
+  "file": "v12/coffee.js",
+  "old": "<h3>See you then.</h3>",
+  "new": "<h3>'+(ok?'See you then.':'Request sent.')+'</h3>",
+  "count": 1
+ }
+]

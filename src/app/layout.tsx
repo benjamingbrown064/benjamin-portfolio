@@ -1,54 +1,21 @@
-import type { Metadata, Viewport } from "next";
-import { Inter_Tight } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from "next";
 
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
+// The designed pages are served as complete HTML documents by route handlers (see src/lib/site.ts).
+// This layout only wraps the few React-rendered routes, such as the not-found page.
 export const metadata: Metadata = {
   metadataBase: new URL("https://benjaminbrown.co"),
-  title: "Benjamin Brown® — Founder, Builder, Operator",
-  description:
-    "Benjamin Brown — founder, operator and full-stack builder behind five companies and twenty-six shipped products. I design, build and run the thing. No outsourced craft.",
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: "Benjamin Brown® — Founder, Builder, Operator",
-    description:
-      "Design, build, and operate the thing. Five companies, twenty-six shipped products.",
-    type: "website",
-    url: "https://benjaminbrown.co",
-    siteName: "Benjamin Brown",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Benjamin Brown® — Founder, Builder, Operator",
-    description:
-      "Design, build, and operate the thing. Five companies, twenty-six shipped products.",
-  },
+  title: "Benjamin Brown®",
 };
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
-};
-
-const themeFlashScript = `(function(){try{var s=localStorage.getItem('bb:theme');var m=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',s||m);}catch(e){}})();`;
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={interTight.variable}>
+    <html lang="en">
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeFlashScript }} />
+        <link rel="stylesheet" href="/site/fonts/fonts.css" />
+        <link rel="stylesheet" href="/site/v5/site.css" />
+        <link rel="stylesheet" href="/site/v11/theme.css" />
+        <link rel="stylesheet" href="/site/v13/site.css" />
+        <link rel="icon" href="/site/assets/bb-mark-v3.svg" type="image/svg+xml" />
       </head>
       <body>{children}</body>
     </html>

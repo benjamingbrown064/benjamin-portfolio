@@ -1,0 +1,43 @@
+/* Site header (and footer colours) for pages outside the v11 stylesheet stack: the portfolio pieces.
+   Mirrors the header in v11/home.css + v11/theme.css. Load it last. */
+html{scroll-padding-top:76px}
+.nav.on-dark{position:sticky;top:0;z-index:60;height:76px;font-family:"Geist",ui-sans-serif,system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.47;letter-spacing:-.012em;-webkit-font-smoothing:antialiased;background:#000;color:#F5F5F7;border-bottom:1px solid rgba(255,255,255,.08);transition:background .45s cubic-bezier(.2,.7,.2,1),border-color .45s}
+.nav.on-dark.scrolled{background:rgba(0,0,0,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom-color:rgba(255,255,255,.12)}
+.nav a{color:inherit;text-decoration:none;box-shadow:none}
+.nav-in{height:100%;max-width:var(--max,1280px);margin:0 auto;padding:0 var(--gut,40px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:24px}
+.brand{justify-self:start;display:inline-flex;align-items:center;gap:10px;font-size:19px;font-weight:600;letter-spacing:-.03em;white-space:nowrap}
+.brand .mk{display:block;flex:none;width:27px;height:27px}
+.brand sup{font-size:.5em;font-weight:500;margin-left:-5px;align-self:flex-start;margin-top:2px;color:inherit}
+.nav-links{display:flex;gap:clamp(20px,2.6vw,36px);padding:0;border:0;background:none;font-size:15px;font-weight:500;letter-spacing:-.005em}
+.nav-links a{display:flex;align-items:center;height:44px;padding:0;opacity:1;color:rgba(245,245,247,.74);transition:color .25s}
+.nav-links a:hover,.nav-links a.on{color:#fff;background:none}
+.nav-r{justify-self:end;display:flex;align-items:center;gap:4px}
+.clock{display:flex;align-items:center;gap:9px;margin-right:14px;font-size:14px;opacity:.8;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nav .sq{display:inline-block;width:6px;height:6px;border-radius:50%;background:#E04434;flex:none}
+.nav-btn,.th-btn{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:none;color:inherit;opacity:.85;cursor:pointer;transition:opacity .25s,transform .5s cubic-bezier(.2,.7,.2,1)}
+.nav-btn:hover,.th-btn:hover{background:none;color:inherit;opacity:1}
+.nav-btn:active,.th-btn:active{transform:scale(.94)}
+.nb-ic{position:relative;display:block;width:22px;height:22px;flex:none;font-style:normal}
+.nb-ic svg{position:absolute;inset:0;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible;transition:transform .55s cubic-bezier(.2,.7,.2,1),opacity .3s cubic-bezier(.2,.7,.2,1)}
+.nb-ic .s{opacity:0;transform:translate(-9px,9px) scale(.6)}
+.nav-btn:hover .nb-ic .m,.nav-btn:focus-visible .nb-ic .m{opacity:0;transform:translate(9px,-9px) scale(.6)}
+.nav-btn:hover .nb-ic .s,.nav-btn:focus-visible .nb-ic .s{opacity:1;transform:none}
+.th-btn .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
+[data-theme="dark"] .th-btn .sun{opacity:1;transform:none}
+[data-theme="dark"] .th-btn .moon{opacity:0;transform:rotate(90deg) scale(.6)}
+.nav :focus-visible{outline:2px solid #0071E3;outline-offset:3px}
+@media(max-width:960px){.nav-in{display:flex;justify-content:space-between}.nav-links,.clock{display:none}}
+@media(max-width:700px){.nav-in{padding:0 var(--gut,20px)}}
+@media(prefers-reduced-motion:reduce){.nb-ic svg{transition:none}}
+/* light mode: Cloud header and footer, Ink text */
+html:not([data-theme="dark"]) .nav.on-dark{background:#F5F5F7;color:#1D1D1F;border-bottom-color:transparent}
+html:not([data-theme="dark"]) .nav.on-dark.scrolled{background:rgba(255,255,255,.8);border-bottom-color:rgba(0,0,0,.08)}
+html:not([data-theme="dark"]) .nav-links a{color:#6E6E73}
+html:not([data-theme="dark"]) .nav-links a:hover,html:not([data-theme="dark"]) .nav-links a.on{color:#1D1D1F}
+html:not([data-theme="dark"]) .foot.dark{background:#F5F5F7;color:#1D1D1F;border-top:1px solid #D2D2D7}
+html:not([data-theme="dark"]) .foot .foot-brand,html:not([data-theme="dark"]) .foot .foot-brand .bb-loader,html:not([data-theme="dark"]) .foot .foot-grid .t,html:not([data-theme="dark"]) .foot .foot-grid>div{color:#1D1D1F}
+html:not([data-theme="dark"]) .foot .foot-grid{border-top-color:#D2D2D7}
+html:not([data-theme="dark"]) .foot .foot-grid h4,html:not([data-theme="dark"]) .foot .foot-bot,html:not([data-theme="dark"]) .foot .foot-grid a:hover{color:#6E6E73}
+html:not([data-theme="dark"]) .foot .foot-bot a:hover{color:#1D1D1F}
+html:not([data-theme="dark"]) .foot .top{border-color:#D2D2D7;color:#1D1D1F}
+html:not([data-theme="dark"]) .foot .top:hover{background:#1D1D1F;color:#fff}

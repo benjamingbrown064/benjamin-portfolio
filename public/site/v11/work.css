@@ -1,0 +1,6 @@
+/* Work page: the six home page cards, two wide and three high */
+.wk{padding:0 0 clamp(88px,11vw,152px)}
+.cx-work .wk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2vw,24px);align-items:start}
+.cx-work .wk-grid>.card{width:auto;min-width:0;max-width:none}
+.cx-work .wk-grid .media{aspect-ratio:4/3}
+@media(max-width:700px){.cx-work .wk-grid{grid-template-columns:minmax(0,1fr)}}

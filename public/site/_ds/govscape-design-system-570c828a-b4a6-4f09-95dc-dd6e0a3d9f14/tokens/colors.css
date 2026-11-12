@@ -1,0 +1,13 @@
+/* Govscape colour — paper, ink, bone and one red. Roughly 60 paper / 32 ink / under 8 red. */
+:root{
+--ink:#0B0B0C;--paper:#FFFFFF;--bone:#F6F5F2;--graphite:#161618;
+--signal:#F5391B;--signal-deep:#C2260D;--signal-tint:rgba(245,57,27,.08);
+--slate:#54544F;--muted-strong:#6E6E69;--muted:#8C8C88;--line:#EBEAE4;--line-strong:#DFDED7;
+--ink-body:#B7B7B2;--ink-muted:#8C8C88;--ink-line:rgba(255,255,255,.12);
+--surface-page:var(--paper);--surface-tint:var(--bone);--surface-card:var(--paper);--surface-ink:var(--ink);--surface-ink-raised:var(--graphite);
+--text-strong:var(--ink);--text-body:var(--slate);--text-small:var(--muted-strong);--text-label:var(--muted);
+--text-on-ink:#FFFFFF;--text-body-on-ink:var(--ink-body);--text-label-on-ink:var(--ink-muted);
+--accent:var(--signal);--accent-text-on-light:var(--signal-deep);--status-critical:var(--signal-deep);--status-critical-bg:var(--signal-tint);
+--action-primary:var(--ink);--action-marketing:var(--signal);
+--border-default:var(--line);--border-strong:var(--line-strong);--rule-heavy:var(--ink);--border-on-ink:var(--ink-line);
+}
