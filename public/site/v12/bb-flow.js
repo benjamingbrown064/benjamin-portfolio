@@ -4,7 +4,7 @@
    API:     window.BBContact.open({type,brief}) · window.BBContact.endpoint = 'https://…' (POST multipart, 2xx = sent). Without an endpoint the receipt composes the email. */
 (function(){
 if(window.BBContact)return;
-const EMAIL='hello@benjaminbrown.co',MAXF=10,MAXB=25*1024*1024;
+const EMAIL='hello@benjaminbrown.co',MAXF=5,MAXB=25*1024*1024;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const svg=d=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+d+'</svg>';
 const MARK='<svg class="bf-mk" viewBox="0 0 64 64" aria-hidden="true"><path d="M14 38V13L24 8V38Z" fill="currentColor"></path><circle cx="32" cy="38" r="13" fill="none" stroke="currentColor" stroke-width="10"></circle></svg>';
@@ -250,12 +250,12 @@ const files=F().map(x=>x.file);if(files.length)rows.push(['Files',files.map(f=>f
 const dt=new Date(),ref='BB-'+String(dt.getFullYear()).slice(2)+String(dt.getMonth()+1).padStart(2,'0')+'-'+Math.floor(1000+Math.random()*9000);
 const payload=Object.assign({ref,type:S.t.id,typeLabel:S.t.n},data,{files:files.map(f=>f.name).join(', '),at:dt.toISOString(),page:location.href});
 let sent=false;const ep=window.BBContact.endpoint;
-if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}
+let srv=null;if(window.BBSend){try{srv=await window.BBSend(payload,files)}catch(x){}if(srv&&srv.ok){sent=true;if(srv.ref){payload.ref=srv.ref}}}else if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}
 try{const all=JSON.parse(localStorage.getItem('bb3:requests')||'[]');all.push(payload);localStorage.setItem('bb3:requests',JSON.stringify(all.slice(-20)))}catch(x){}
 const mailto='mailto:'+EMAIL+'?subject='+encodeURIComponent('['+ref+'] '+S.t.n+(data.company?' · '+data.company:''))+'&body='+encodeURIComponent(rows.map(r=>r[0]+': '+r[1]).join('\n')+'\n\nRef '+ref);
-const sec=document.createElement('section');sec.className='bf-slide';sec.innerHTML='<div class="bf-c bf-rc"><span class="ok bf-a" style="--d:0">'+CK+'</span><div class="bf-eb bf-a" style="--d:1"><span class="n">'+esc(ref)+'</span><span>'+esc(S.t.n)+'</span></div><h2 class="bf-q bf-a" style="--d:2">'+(sent?'With Ben.':'One more step.')+'</h2><p class="bf-h bf-a" style="--d:3">'+(sent?'It is in his inbox. Expect a reply within one working day.':'No server is wired to this form yet, so it opens your mail app with the request written out.'+(files.length?' Attach your '+(files.length===1?'file':files.length+' files')+' to the email before you send it.':'')+' It lands at '+EMAIL+'.')+'</p></div>';
+const sec=document.createElement('section');sec.className='bf-slide';sec.innerHTML='<div class="bf-c bf-rc"><span class="ok bf-a" style="--d:0">'+CK+'</span><div class="bf-eb bf-a" style="--d:1"><span class="n">'+esc(payload.ref)+'</span><span>'+esc(S.t.n)+'</span></div><h2 class="bf-q bf-a" style="--d:2">'+(sent?'With Ben.':'One more step.')+'</h2><p class="bf-h bf-a" style="--d:3">'+(sent?'It is with Ben. Expect a reply within one working day.'+(srv&&srv.failed&&srv.failed.length?' '+(srv.failed.length===1?'One file':srv.failed.length+' files')+' did not upload ('+esc(srv.failed.join(', '))+'); reply to the confirmation or email '+EMAIL+' to send '+(srv.failed.length===1?'it':'them')+'.':''):'No server is wired to this form yet, so it opens your mail app with the request written out.'+(files.length?' Attach your '+(files.length===1?'file':files.length+' files')+' to the email before you send it.':'')+' It lands at '+EMAIL+'.')+'</p></div>';
 stage.appendChild(sec);slides.push(sec);S.sent=true;go(slides.length-1);
-foot.innerHTML='<span class="bf-hint">Reference '+esc(ref)+'</span><button type="button" class="bf-btn skip bf-again">Send another</button>'+(sent?(opts.modal?'<button type="button" class="bf-btn" data-close>Done</button>':''):'<a class="bf-btn" href="'+mailto+'">Open in mail <span class="arr">→</span></a>');
+foot.innerHTML='<span class="bf-hint">Reference '+esc(payload.ref)+'</span><button type="button" class="bf-btn skip bf-again">Send another</button>'+(sent?(opts.modal?'<button type="button" class="bf-btn" data-close>Done</button>':''):'<a class="bf-btn" href="'+mailto+'">Open in mail <span class="arr">→</span></a>');
 foot.querySelector('.bf-again').addEventListener('click',()=>mount(root,Object.assign({},opts,{type:S.t.id,brief:''})));
 try{window.dispatchEvent(new CustomEvent('bb:request',{detail:payload}))}catch(x){}}
 if(opts.brief){const q=S.t.q.find(x=>x.t==='area');if(q)A()[q.k]=opts.brief}

@@ -1,72 +1,19 @@
 import { NextResponse } from "next/server";
+import { insertIgnore } from "@/lib/db";
+import { EMAIL_RE, fail, guard, str } from "@/lib/guard";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-// Every Resend key on this account is send-only restricted, so the Contacts
-// API (POST /audiences/:id/contacts) is not available — it 401s with
-// "restricted_api_key". Signups are therefore delivered as a notification
-// email instead. NEWSLETTER_FROM must be a Resend-verified domain — use
-// noreply@benjaminbrown.co, not a sender on another brand's domain.
-// If a full-access key is ever issued, switching to a real
-// audience is the better shape.
-const RESEND_ENDPOINT = "https://api.resend.com/emails";
-
+// Saves a newsletter sign-up. New addresses are stored as "unconfirmed"; the confirmation email is
+// sent once outgoing mail is set up for the domain. Signing up twice is not an error.
 export async function POST(request: Request) {
-  let email: unknown;
+  const g = await guard(request, { table: "subscribers", perHour: 5, perDay: 500, maxBytes: 2000 });
+  if (!g.ok) return g.response;
+  const email = str(g.body.email, 200);
+  if (!email || !EMAIL_RE.test(email)) return fail(400, "Please enter a valid email address.");
   try {
-    ({ email } = await request.json());
-  } catch {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    await insertIgnore("subscribers", { email: email.toLowerCase(), source: str(g.body.source, 60) ?? "journal", ip_hash: g.ip });
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    console.error("subscribe: save failed", e);
+    return fail(502, "Something went wrong. Please email instead.");
   }
-
-  if (typeof email !== "string" || !EMAIL_RE.test(email.trim())) {
-    return NextResponse.json(
-      { error: "Please enter a valid email address." },
-      { status: 400 }
-    );
-  }
-
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.NEWSLETTER_FROM;
-  const to = process.env.NEWSLETTER_TO;
-
-  // Fail loudly rather than pretending to succeed — the original version of
-  // this form told everyone "Sent" and dropped the address on the floor.
-  if (!apiKey || !from || !to) {
-    console.error(
-      "subscribe: RESEND_API_KEY, NEWSLETTER_FROM or NEWSLETTER_TO is not set"
-    );
-    return NextResponse.json(
-      { error: "Signup is temporarily unavailable. Please email instead." },
-      { status: 503 }
-    );
-  }
-
-  const address = email.trim();
-
-  const res = await fetch(RESEND_ENDPOINT, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to: [to],
-      reply_to: address,
-      subject: `Newsletter signup: ${address}`,
-      text: `${address} signed up via the benjaminbrown.co footer form.`,
-    }),
-  });
-
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    console.error("subscribe: resend rejected the send", res.status, detail);
-    return NextResponse.json(
-      { error: "Something went wrong. Please email instead." },
-      { status: 502 }
-    );
-  }
-
-  return NextResponse.json({ ok: true });
 }

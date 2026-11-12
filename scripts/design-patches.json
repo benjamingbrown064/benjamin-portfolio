@@ -93,5 +93,41 @@
   "old": "Available Q4 2026",
   "new": "Available {{availability}}",
   "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}",
+  "new": "let srv=null;if(window.BBSend){try{srv=await window.BBSend(payload,files)}catch(x){}if(srv&&srv.ok){sent=true;if(srv.ref){payload.ref=srv.ref}}}else if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "<span class=\"n\">'+esc(ref)+'</span><span>'+esc(S.t.n)",
+  "new": "<span class=\"n\">'+esc(payload.ref)+'</span><span>'+esc(S.t.n)",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "(sent?'It is in his inbox. Expect a reply within one working day.':",
+  "new": "(sent?'It is with Ben. Expect a reply within one working day.'+(srv&&srv.failed&&srv.failed.length?' '+(srv.failed.length===1?'One file':srv.failed.length+' files')+' did not upload ('+esc(srv.failed.join(', '))+'); reply to the confirmation or email '+EMAIL+' to send '+(srv.failed.length===1?'it':'them')+'.':''):",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "'<span class=\"bf-hint\">Reference '+esc(ref)+'</span>",
+  "new": "'<span class=\"bf-hint\">Reference '+esc(payload.ref)+'</span>",
+  "count": 1
+ },
+ {
+  "file": "v12/bb-flow.js",
+  "old": "const EMAIL='hello@benjaminbrown.co',MAXF=10,",
+  "new": "const EMAIL='hello@benjaminbrown.co',MAXF=5,",
+  "count": 1
+ },
+ {
+  "file": "v12/coffee.js",
+  "old": "<h3>See you then.</h3>",
+  "new": "<h3>'+(ok?'See you then.':'Request sent.')+'</h3>",
+  "count": 1
  }
 ]
