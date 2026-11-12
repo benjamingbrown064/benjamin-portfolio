@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Files read at run time by the page renderer and the assistant.
+  outputFileTracingIncludes: {
+    "/api/chat": ["./site/assistant.md"],
+  },
   async redirects() {
     return [
       // Addresses from the previous site. Case studies that exist keep their address; the rest and the
