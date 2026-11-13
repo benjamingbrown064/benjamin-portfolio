@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { JOURNAL } from "./src/lib/journal";
 
 const nextConfig: NextConfig = {
   // Files read at run time by the page renderer and the assistant.
@@ -11,7 +12,8 @@ const nextConfig: NextConfig = {
       // old journal entries land on the nearest index page instead of a 404.
       { source: "/services", destination: "/method", permanent: true },
       { source: "/work/:slug((?!warrantyos$|taskbox$|govscape$)[^/]+)", destination: "/work", permanent: false },
-      { source: "/journal/:slug", destination: "/journal", permanent: false },
+      // Real entries are left alone; every other /journal/... address (the old site's entries) goes to the index.
+      { source: `/journal/:slug((?!(?:${JOURNAL.map((e) => e.slug).join("|") || "-"})$).*)`, destination: "/journal", permanent: false },
       // The journal has never lived at /blog, but people type it and old links use it.
       { source: "/blog", destination: "/journal", permanent: true },
       { source: "/blog/:path*", destination: "/journal", permanent: false },

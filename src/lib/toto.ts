@@ -3,6 +3,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import facts from "../../site/facts.json";
+import { JOURNAL, journalDate } from "./journal";
 
 export const CHAT_MODEL = process.env.CHAT_MODEL || "claude-sonnet-5-5";
 
@@ -46,6 +47,14 @@ export type Action =
 
 export type Turn = { role: "user" | "assistant"; text: string };
 
+/** What is in the journal, so the assistant can point to it without inventing entries. */
+function journalFacts(): string {
+  if (!JOURNAL.length) return "- The journal at /journal has no entries yet.";
+  return `- The journal at /journal is Ben's own writing. Entries, newest first:\n${JOURNAL.map(
+    (e) => `  - "${e.title}" (${e.issue ? `${e.category} ${e.issue}, ` : ""}${journalDate(e.date)}): ${e.excerpt} You have not read the full text, so do not summarise beyond this line; send them to /journal to read it.`,
+  ).join("\n")}${JOURNAL.some((e) => e.category === "The Handover") ? "\n  - The Handover is Ben's weekly AI roundup for business owners." : ""}`;
+}
+
 let knowledge: string | null = null;
 function loadKnowledge(): string {
   if (knowledge === null) knowledge = readFileSync(path.join(process.cwd(), "site", "assistant.md"), "utf8");
@@ -87,7 +96,7 @@ Facts you may state:
 - Availability for new work: ${facts.availability}.
 - Starting prices: Discovery from ${p.discovery.gbp} (${p.discovery.usd}), fixed fee. Project from ${p.project.gbp} (${p.project.usd}), fixed scope. Subscription from ${p.subscription.gbp} (${p.subscription.usd}) a month.
 - Contact: ${facts.email}.
-
+${journalFacts()}
 ${loadKnowledge()}`;
 }
 
