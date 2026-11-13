@@ -316,8 +316,8 @@
       list.forEach(function (s) {
         if (s.k !== "q" || s.st.n !== st.n) return;
         var v = S.a[s.id];
-        if (v == null) return;
-        (Array.isArray(v) ? v : [v]).forEach(function (x) {
+        if (v == null || !s.q.o) return;
+        /* typed answers have no options to score */ (Array.isArray(v) ? v : [v]).forEach(function (x) {
           var o = s.q.o.filter(function (o) {
             return o[0] === x;
           })[0];
@@ -421,6 +421,7 @@
   }
   function go(d) {
     if (busy) return;
+    /* the list of screens depends on the answers so far (the first choice adds the questions), so it is rebuilt before checking there is a next screen */ build();
     var n = S.i + d;
     if (n < 0 || n >= list.length) return;
     busy = true;

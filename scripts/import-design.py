@@ -238,6 +238,28 @@ def wrap(name):
     return lambda m: "<!--block:%s-->%s<!--/block:%s-->" % (name, m.group(0), name)
 
 
+SOON_TAG = '<span class="soon-tag">Coming soon</span>'
+GO_RE = re.compile(r'<span class="go">.*?</span>', re.S)
+
+
+def coming_soon_cards(html, src_rel):
+    """Project cards whose case study is not written yet (WilboLaw, Ascra, Ghost Mode) carry a "Coming soon"
+    label and are not links. In the design they are the cards that point at the unpublished case-study
+    template, plus the Ghost Mode card. When a case study is published, give its card a real link in the
+    design and it drops out of this automatically."""
+    def unlink(m):
+        inner = GO_RE.sub("", m.group(1), count=1)  # no arrow: there is nowhere to go yet
+        inner = inner.replace('<div class="media img">', '<div class="media img">' + SOON_TAG, 1)
+        return '<div class="card has-ov soon">' + inner + "</div>"
+    html, n = re.subn(r'<a class="card has-ov" href="(?:work/)?case-study\.html[^"]*">(.*?)</a>', unlink, html, flags=re.S)
+    if n != 2:
+        raise SystemExit("expected 2 unpublished case-study cards in %s, found %d" % (src_rel, n))
+    ghost = '<div class="card gx-card"><div class="media solo">'
+    if html.count(ghost) != 1:
+        raise SystemExit("Ghost Mode card not found in " + src_rel)
+    return html.replace(ghost, '<div class="card gx-card soon"><div class="media solo">' + SOON_TAG)
+
+
 def structural_edits(src_rel, html):
     """Edits that depend on page structure rather than exact text. Blocks wrapped in
     <!--block:name--> markers are kept, removed or replaced by src/lib/site.ts."""
@@ -245,9 +267,16 @@ def structural_edits(src_rel, html):
     html = re.sub(r'<div><h4>Elsewhere</h4>(?:<a href="#">[^<]*</a>)+</div>', "{{footer_social}}", html)
     html = html.replace('<nav><a href="#">Privacy</a><a href="#">Terms</a></nav>',
                         '<nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>')
+    if src_rel in ("Ben Brown Portfolio v12.html", "work.html"):
+        html = coming_soon_cards(html, src_rel)
     if src_rel == "Ben Brown Portfolio v12.html":
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
         html = must_sub(r'<section class="sec grey" id="pricing".*?</section>', pricing, html, "home pricing")
+        # "Latest project" tile: the Taskbox "Talk it through" animation sits over the right of the photo.
+        # It is decoration inside a link, so it is hidden from assistive technology and ignores the pointer.
+        html = must_sub(r'(<a class="lt-c" href="work/taskbox-v2\.html" data-ov>\s*<img[^>]*>)',
+                        lambda m: m.group(1) + '<iframe class="lt-film" src="/site/v13/films/taskbox-talk-half/index.html" title="" aria-hidden="true" tabindex="-1" loading="lazy" allowtransparency="true"></iframe>',
+                        html, "latest project tile")
         html = must_sub(r'<section class="sec" id="journal".*?</section>', wrap("home_journal"), html, "home journal")
         html = must_sub(r'<a class="lt-c bw" href="journal-article\.html">.*?</a>', wrap("home_latest_journal"), html, "home latest journal tile")
     if src_rel == "journal.html":
@@ -367,6 +396,9 @@ def bundle_css():
         text = "\n".join(parts) + "\n"
         if "@import" in text:
             raise SystemExit("bundle for %s contains @import, which must come first in a stylesheet" % name)
+        # The design's blue focus rings: invisible for mouse and touch, and drawn in the text colour while the
+        # keyboard is in use (v13/site.css sets --focus-ring on html.kbd).
+        text = text.replace("#0071E3", "var(--focus-ring,transparent)")
         before += len(text)
         if OPTIMISE_CSS:
             text = optimise_css(text)

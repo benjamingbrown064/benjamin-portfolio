@@ -23,6 +23,7 @@
    with the keyboard (html.kbd, set in v13/site.js) get a quiet ring in the text colour instead. */
 *{-webkit-tap-highlight-color:transparent}
 :focus,:focus-visible{outline:none!important}
+html.kbd{--focus-ring:currentColor}
 html.kbd :focus-visible{outline:1.5px solid currentColor!important;outline-offset:3px!important}
 html.kbd .bf-in:focus-visible,html.kbd .dq input:focus-visible,html.kbd .dq textarea:focus-visible{outline:none!important}
 
@@ -54,3 +55,16 @@ html.can-voice .bf-say{display:flex}
    whole centred stack (pill, headline, text, buttons) to the right. The column now stays put and the
    headline is centred over it. */
 .hero .hero-txt{grid-template-columns:minmax(0,1fr)}
+
+/* Project cards whose case study is not published yet: a "Coming soon" label, and not clickable */
+.soon-tag{position:absolute;left:16px;top:16px;z-index:3;padding:6px 13px;border-radius:980px;background:rgba(255,255,255,.94);color:#1D1D1F;font-size:12.5px;font-weight:500;line-height:1.3;letter-spacing:-.005em;white-space:nowrap;pointer-events:none}
+.card.soon{cursor:default}
+
+/* Home, methods intro: the headline sits on one line where there is room for it, as in the design */
+#services .head.c{grid-template-columns:minmax(0,1fr)}
+#services .head.c h2{max-width:none;justify-self:center}
+@media(min-width:1180px){#services .head.c h2{white-space:nowrap}}
+
+/* Home, "Latest project" tile: the Taskbox animation over the right of the photo (wide screens only) */
+.lt-film{position:absolute;z-index:1;right:9%;top:50%;height:76%;aspect-ratio:390/520;transform:translateY(-50%);border:0;background:transparent;border-radius:7.18%/5.38%;box-shadow:0 0 0 1px rgba(17,18,20,.08),0 40px 80px -30px rgba(17,18,20,.45);pointer-events:none}
+@media(max-width:760px){.lt-film{display:none}}
