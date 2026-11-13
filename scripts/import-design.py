@@ -260,6 +260,35 @@ def coming_soon_cards(html, src_rel):
     return html.replace(ghost, '<div class="card gx-card soon"><div class="media solo">' + SOON_TAG)
 
 
+def home_method_panel(html):
+    """Home page: the ten method rows open the area panel over the page (the same panel the method page
+    uses) instead of leaving for /method. The row keeps its link as the fallback when scripts are off."""
+    method = open(os.path.join(SRC, "services.html"), encoding="utf-8").read()
+    data = re.search(r'<script type="application/json" id="sk-data">.*?</script>', method, re.S)
+    if not data:
+        raise SystemExit("method page area data (sk-data) not found")
+    order = [a["id"] for a in json.loads(re.search(r">(.*)</script>", data.group(0), re.S).group(1))]
+    seen = []
+    def row(m):
+        slug = m.group(1)
+        if slug not in order:
+            raise SystemExit("home method row points at an unknown area: " + slug)
+        seen.append(slug)
+        return '<a class="svc" href="services.html#%s" data-sk data-i="%d"' % (slug, order.index(slug))
+    html = re.sub(r'<a class="svc" href="services\.html#([a-z-]+)"', row, html)
+    if len(seen) != len(order):
+        raise SystemExit("expected %d method rows on the home page, found %d" % (len(order), len(seen)))
+    html = html.replace("</head>", '<link rel="stylesheet" href="v12/skills.css">\n<link rel="stylesheet" href="v12/route.css">\n</head>', 1)
+    return html.replace("</body>", data.group(0) + '\n<script src="v12/skills.js"></script>\n</body>', 1)
+
+
+def home_what_changes(html):
+    """Home page: the "What changes" dialog (Agile, Agentic, Fast...) is rebuilt in public/site/v13/what-changes.js.
+    The design's own dialog is removed, which also leaves its script with nothing to attach to."""
+    html = must_sub(r'<dialog class="oc-dlg" id="oc-dlg".*?</dialog>\s*', "", html, "what-changes dialog")
+    return html.replace("</body>", '<script src="/site/v13/what-changes.js" defer></script>\n</body>', 1)
+
+
 def structural_edits(src_rel, html):
     """Edits that depend on page structure rather than exact text. Blocks wrapped in
     <!--block:name--> markers are kept, removed or replaced by src/lib/site.ts."""
@@ -270,12 +299,14 @@ def structural_edits(src_rel, html):
     if src_rel in ("Ben Brown Portfolio v12.html", "work.html"):
         html = coming_soon_cards(html, src_rel)
     if src_rel == "Ben Brown Portfolio v12.html":
+        html = home_method_panel(html)
+        html = home_what_changes(html)
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
         html = must_sub(r'<section class="sec grey" id="pricing".*?</section>', pricing, html, "home pricing")
         # "Latest project" tile: the Taskbox "Talk it through" animation sits over the right of the photo.
         # It is decoration inside a link, so it is hidden from assistive technology and ignores the pointer.
         html = must_sub(r'(<a class="lt-c" href="work/taskbox-v2\.html" data-ov>\s*<img[^>]*>)',
-                        lambda m: m.group(1) + '<iframe class="lt-film" src="/site/v13/films/taskbox-talk-half/index.html" title="" aria-hidden="true" tabindex="-1" loading="lazy" allowtransparency="true"></iframe>',
+                        lambda m: m.group(1).replace(' data-ov', '') + '<iframe class="lt-film" src="/site/v13/films/taskbox-talk-half/index.html" title="" aria-hidden="true" tabindex="-1" loading="lazy" allowtransparency="true"></iframe>',
                         html, "latest project tile")
         html = must_sub(r'<section class="sec" id="journal".*?</section>', wrap("home_journal"), html, "home journal")
         html = must_sub(r'<a class="lt-c bw" href="journal-article\.html">.*?</a>', wrap("home_latest_journal"), html, "home latest journal tile")

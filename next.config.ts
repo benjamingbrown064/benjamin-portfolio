@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
       { source: "/services", destination: "/method", permanent: true },
       { source: "/work/:slug((?!warrantyos$|taskbox$|govscape$)[^/]+)", destination: "/work", permanent: false },
       { source: "/journal/:slug", destination: "/journal", permanent: false },
+      // The journal has never lived at /blog, but people type it and old links use it.
+      { source: "/blog", destination: "/journal", permanent: true },
+      { source: "/blog/:path*", destination: "/journal", permanent: false },
     ];
   },
   async headers() {
