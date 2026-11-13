@@ -391,6 +391,9 @@ def bundle_css():
         text = "\n".join(parts) + "\n"
         if "@import" in text:
             raise SystemExit("bundle for %s contains @import, which must come first in a stylesheet" % name)
+        # The design's blue focus rings: invisible for mouse and touch, and drawn in the text colour while the
+        # keyboard is in use (v13/site.css sets --focus-ring on html.kbd).
+        text = text.replace("#0071E3", "var(--focus-ring,transparent)")
         before += len(text)
         if OPTIMISE_CSS:
             text = optimise_css(text)

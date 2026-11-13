@@ -23,6 +23,7 @@
    with the keyboard (html.kbd, set in v13/site.js) get a quiet ring in the text colour instead. */
 *{-webkit-tap-highlight-color:transparent}
 :focus,:focus-visible{outline:none!important}
+html.kbd{--focus-ring:currentColor}
 html.kbd :focus-visible{outline:1.5px solid currentColor!important;outline-offset:3px!important}
 html.kbd .bf-in:focus-visible,html.kbd .dq input:focus-visible,html.kbd .dq textarea:focus-visible{outline:none!important}
 
