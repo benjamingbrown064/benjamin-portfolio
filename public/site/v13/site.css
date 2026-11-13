@@ -64,3 +64,7 @@ html.can-voice .bf-say{display:flex}
 #services .head.c{grid-template-columns:minmax(0,1fr)}
 #services .head.c h2{max-width:none;justify-self:center}
 @media(min-width:1180px){#services .head.c h2{white-space:nowrap}}
+
+/* Home, "Latest project" tile: the Taskbox animation over the right of the photo (wide screens only) */
+.lt-film{position:absolute;z-index:1;right:9%;top:50%;height:76%;aspect-ratio:390/520;transform:translateY(-50%);border:0;background:transparent;border-radius:7.18%/5.38%;box-shadow:0 0 0 1px rgba(17,18,20,.08),0 40px 80px -30px rgba(17,18,20,.45);pointer-events:none}
+@media(max-width:760px){.lt-film{display:none}}

@@ -272,6 +272,11 @@ def structural_edits(src_rel, html):
     if src_rel == "Ben Brown Portfolio v12.html":
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
         html = must_sub(r'<section class="sec grey" id="pricing".*?</section>', pricing, html, "home pricing")
+        # "Latest project" tile: the Taskbox "Talk it through" animation sits over the right of the photo.
+        # It is decoration inside a link, so it is hidden from assistive technology and ignores the pointer.
+        html = must_sub(r'(<a class="lt-c" href="work/taskbox-v2\.html" data-ov>\s*<img[^>]*>)',
+                        lambda m: m.group(1) + '<iframe class="lt-film" src="/site/v13/films/taskbox-talk-half/index.html" title="" aria-hidden="true" tabindex="-1" loading="lazy" allowtransparency="true"></iframe>',
+                        html, "latest project tile")
         html = must_sub(r'<section class="sec" id="journal".*?</section>', wrap("home_journal"), html, "home journal")
         html = must_sub(r'<a class="lt-c bw" href="journal-article\.html">.*?</a>', wrap("home_latest_journal"), html, "home latest journal tile")
     if src_rel == "journal.html":
