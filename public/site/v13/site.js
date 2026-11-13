@@ -127,3 +127,26 @@ document.addEventListener('click',function(e){
     }).catch(function(){current=null;reset(btn)});
   });
 })();
+
+/* Home page "equation" pictures: swipe left or right on a touch screen to move between them. */
+(function(){
+  var stage=document.querySelector('.eqx .eqx-stage');
+  if(!stage)return;
+  var prev=document.querySelector('.eqx [data-eqx="-1"]'),next=document.querySelector('.eqx [data-eqx="1"]');
+  if(!prev||!next)return;
+  var x0=null,y0=0,id=null;
+  stage.addEventListener('touchstart',function(e){
+    if(e.touches.length!==1){x0=null;return}
+    var t=e.touches[0];x0=t.clientX;y0=t.clientY;id=t.identifier;
+  },{passive:true});
+  stage.addEventListener('touchend',function(e){
+    if(x0===null)return;
+    var t=null;for(var i=0;i<e.changedTouches.length;i++)if(e.changedTouches[i].identifier===id)t=e.changedTouches[i];
+    var sx=x0;x0=null;
+    if(!t)return;
+    var dx=t.clientX-sx,dy=t.clientY-y0;
+    if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)*1.5)return; // a tap, or a scroll down the page
+    (dx<0?next:prev).click();
+  },{passive:true});
+  stage.addEventListener('touchcancel',function(){x0=null},{passive:true});
+})();

@@ -143,3 +143,6 @@ html[data-theme="dark"] .why-dlg::backdrop{background:rgba(0,0,0,.6)}
 .bf-top{padding-top:8px;padding-bottom:8px}
 .bf-foot{padding-top:8px;padding-bottom:8px}
 }
+
+/* Home page "equation" pictures: sideways swipes change the picture; up and down still scrolls the page */
+.eqx-stage{touch-action:pan-y}
