@@ -105,3 +105,41 @@ html[data-theme="dark"] .why-dlg::backdrop{background:rgba(0,0,0,.6)}
 .why-nv.nx:hover svg{transform:translateX(4px)}
 @media(max-width:760px){.why-dlg{border-radius:22px}.why-l{grid-template-columns:minmax(0,1fr);gap:8px}}
 @media(prefers-reduced-motion:reduce){.why-dlg[open]{animation:none}}
+
+/* Request form: the first screen fits its panel at every screen height, so nothing scrolls inside it */
+@media(min-width:641px){.bf-panel{height:min(828px,calc(100dvh - 48px))}}
+@media(max-width:640px){.bf-panel{height:calc(100dvh - 20px)}}
+@media(max-height:880px){
+.bf-slide[data-i="0"]{padding-top:22px;padding-bottom:14px}
+.bf-slide[data-i="0"] .bf-types{margin-top:18px}
+.bf-type{min-height:52px;padding-top:6px;padding-bottom:6px}
+.bf-say{margin-top:10px;padding-top:7px;padding-bottom:7px}
+}
+@media(max-height:820px){
+.bf-slide[data-i="0"] .bf-h{display:none}
+.bf-slide[data-i="0"] .bf-q{font-size:32px}
+}
+@media(max-height:775px){
+.bf-type{min-height:46px;padding-top:5px;padding-bottom:5px}
+.bf-type .d,.bf-say .d{display:none}
+.bf-type .ic,.bf-say .ic{width:32px;height:32px}
+}
+@media(max-height:720px){
+.bf-top{padding-top:12px;padding-bottom:12px}
+.bf-foot{padding-top:10px;padding-bottom:12px}
+.bf-slide[data-i="0"]{padding-top:16px;padding-bottom:12px}
+.bf-slide[data-i="0"] .bf-eb{display:none}
+.bf-slide[data-i="0"] .bf-q{font-size:28px}
+.bf-slide[data-i="0"] .bf-types{margin-top:14px}
+.bf-type{min-height:44px;padding:4px 16px 4px 8px}
+.bf-say{margin-top:8px;padding:5px 16px 5px 8px}
+}
+@media(max-height:650px) and (min-width:560px){
+.bf-slide[data-i="0"] .bf-types{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-height:520px) and (min-width:560px){
+.bf-slide[data-i="0"]{padding-top:10px;padding-bottom:8px}
+.bf-slide[data-i="0"] .bf-types{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bf-top{padding-top:8px;padding-bottom:8px}
+.bf-foot{padding-top:8px;padding-bottom:8px}
+}
