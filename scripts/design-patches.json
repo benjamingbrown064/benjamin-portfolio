@@ -1,146 +1,152 @@
 [
- {
-  "file": "contact.html",
-  "old": "<dd>Within one working day, from a person</dd>",
-  "new": "<dd>Within one working day</dd>",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "A reply within one working day, from a person.",
-  "new": "A reply within one working day.",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "Expect a reply within one working day, from a person.",
-  "new": "Expect a reply within one working day.",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "o:['Under $10k','$10–25k','$25–50k','$50–100k','$100k+']",
-  "new": "o:(function(){var c='£';try{if(localStorage.getItem('bb:cur')==='usd')c='$'}catch(e){}return['Under '+c+'10k',c+'10–25k',c+'25–50k',c+'50–100k',c+'100k+']})()",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "{id:'files',n:'Project files'",
-  "new": "{id:'discovery',n:'Discovery',d:'An appraisal of where the business is and where to go next.',ico:'<circle cx=\"11\" cy=\"11\" r=\"6.5\"></circle><path d=\"M16 16l4.5 4.5\"></path>',sec:'The business',q:[\n{k:'brief',t:'area',l:'What is the business, and what prompted this?',s:'Brief',h:'What you do, roughly how many people, and what made you look now.',p:'Start typing…',r:1},\n{k:'size',t:'chips',l:'How big is the team?',s:'Team',o:['Just me','2–10','11–50','51–200','200+']},\n{k:'areas',t:'chips',multi:1,l:'Where do you think the gaps are?',s:'Areas',h:'Pick any that apply.',o:['Strategy','Finance','Operations','Data','Compliance','Product','Marketing','Sales','Support','Technology']},\n{k:'timeline',t:'chips',l:'When do you want to start?',s:'Timeline',o:['ASAP','1–3 months','3+ months','Just exploring']},\n{k:'files',t:'files',l:'Anything useful to share?',s:'Files',h:'Decks, org charts, reports. Optional.'}]},\n{id:'files',n:'Project files'",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "Press <kbd>1</kbd>–<kbd>5</kbd> or <kbd>Enter</kbd>",
-  "new": "Press <kbd>1</kbd>–<kbd>6</kbd> or <kbd>Enter</kbd>",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "/^[1-5]$/.test(e.key)",
-  "new": "/^[1-6]$/.test(e.key)",
-  "count": 1
- },
- {
-  "file": "v11/journal.js",
-  "old": "if(sub)sub.addEventListener('submit',function(e){e.preventDefault();var b=sub.querySelector('button');sub.querySelector('input').value='';b.textContent='Subscribed';setTimeout(function(){b.textContent='Subscribe'},2600)});",
-  "new": "if(sub)sub.addEventListener('submit',function(e){e.preventDefault();var b=sub.querySelector('button'),i=sub.querySelector('input'),v=i.value.trim();if(!v||b.disabled)return;b.disabled=true;b.textContent='Sending…';fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v})}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok,j:j}})}).then(function(x){b.disabled=false;if(x.ok){i.value='';b.textContent='Subscribed'}else{b.textContent='Try again';i.setCustomValidity(x.j.error||'That did not go through.');i.reportValidity();i.setCustomValidity('')}}).catch(function(){b.disabled=false;b.textContent='Try again'})});",
-  "count": 1
- },
- {
-  "file": "Ben Brown Portfolio v12.html",
-  "old": "Available Q4 2026",
-  "new": "Available {{availability}}",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}",
-  "new": "let srv=null;if(window.BBSend){try{srv=await window.BBSend(payload,files)}catch(x){}if(srv&&srv.ok){sent=true;if(srv.ref){payload.ref=srv.ref}}}else if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "<span class=\"n\">'+esc(ref)+'</span><span>'+esc(S.t.n)",
-  "new": "<span class=\"n\">'+esc(payload.ref)+'</span><span>'+esc(S.t.n)",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "(sent?'It is in his inbox. Expect a reply within one working day.':",
-  "new": "(sent?'It is with Ben. Expect a reply within one working day.'+(srv&&srv.failed&&srv.failed.length?' '+(srv.failed.length===1?'One file':srv.failed.length+' files')+' did not upload ('+esc(srv.failed.join(', '))+'); reply to the confirmation or email '+EMAIL+' to send '+(srv.failed.length===1?'it':'them')+'.':''):",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "'<span class=\"bf-hint\">Reference '+esc(ref)+'</span>",
-  "new": "'<span class=\"bf-hint\">Reference '+esc(payload.ref)+'</span>",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "const EMAIL='hello@benjaminbrown.co',MAXF=10,",
-  "new": "const EMAIL='hello@benjaminbrown.co',MAXF=5,",
-  "count": 1
- },
- {
-  "file": "v12/coffee.js",
-  "old": "<h3>See you then.</h3>",
-  "new": "<h3>'+(ok?'See you then.':'Request sent.')+'</h3>",
-  "count": 1
- },
- {
-  "file": "Ben Brown Portfolio v12.html",
-  "old": "<a class=\"lnk\" href=\"#\" onclick=\"event.preventDefault();window.BBAgentDesk&&window.BBAgentDesk.open()\">Ask the agent</a>",
-  "new": "<a class=\"lnk\" href=\"#\" data-agent-open>Ask Toto</a>",
-  "count": 1
- },
- {
-  "file": "discovery.html",
-  "old": " onclick=\"if(document.referrer&&document.referrer.indexOf(location.host)>-1&&history.length>1){event.preventDefault();history.back()}\"",
-  "new": " data-back",
-  "count": 1
- },
- {
-  "file": "Ben Brown Portfolio v12.html",
-  "old": "<script src=\"v3/bb-agent.js\" defer></script>\n",
-  "new": "",
-  "count": 1
- },
- {
-  "file": "Ben Brown Portfolio v12.html",
-  "old": "<script src=\"v5/voice.js\"></script>\n",
-  "new": "",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "<span class=\"k\">'+(j+1)+'</span></button>').join('')+'</div></div></section>';",
-  "new": "<span class=\"k\">'+(j+1)+'</span></button>').join('')+'</div>'+'<button type=\"button\" class=\"bf-say bf-a\" style=\"--d:4\" data-bb-speak><span class=\"ic\">'+svg('<rect x=\"9\" y=\"3\" width=\"6\" height=\"11\" rx=\"3\"></rect><path d=\"M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21\"></path>')+'</span><span class=\"tx\"><b>Or just say it</b><span class=\"d\">Tell me what you need. I will fill the form in for you to check.</span></span></button>'+'</div></section>';",
-  "count": 1
- },
- {
-  "file": "v12/bb-flow.js",
-  "old": "return{el,go,pickType};",
-  "new": "/* Fill the form from structured answers (used by \"say it\"). Only values the form itself offers are accepted. */\nconst fill=d=>{d=d||{};const t=TYPES.find(x=>x.id===d.type);if(t)S.t=t;const a=d.answers||{},y=d.you||{};\nS.t.q.concat(YOU).forEach(q=>{let v=q.you?y[q.k]:a[q.k];if(v==null||q.t==='files')return;\nif(q.t==='chips'){const ok=x=>q.o.includes(x);if(q.multi){v=(Array.isArray(v)?v:[v]).filter(ok);if(v.length)setv(q,v)}else if(ok(v))setv(q,v)}\nelse if(q.t==='date'){if(/^\\d{4}-\\d{2}-\\d{2}$/.test(v))setv(q,v)}\nelse if(typeof v==='string'&&v.trim())setv(q,v.trim().slice(0,4000))});\nS.i=0;build();const all=steps();let n=all.findIndex(q=>typeof q!=='string'&&check(q));if(n<0)n=all.length-1;go(n)};\nconst schema=()=>({types:TYPES.map(t=>({id:t.id,name:t.n,about:t.d,fields:t.q.filter(q=>q.t!=='files').map(q=>({key:q.k,question:q.l,kind:q.t,options:q.o&&q.t==='chips'?q.o:undefined,many:q.multi?true:undefined}))}))});\nconst api={el,go,pickType,fill,schema};root.__bbForm=api;return api;",
-  "count": 1
- },
- {
-  "file": "Ben Brown Portfolio v12.html",
-  "old": "<div class=\"head rv\"><span class=\"eyebrow\">Methods</span><h2 class=\"h-l\">Ten questions, asked in order.</h2></div>",
-  "new": "<div class=\"head c rv\"><span class=\"eyebrow\">Methods</span><h2 class=\"h-l\">Strategy first. Software last.</h2><p class=\"lede\">Most AI projects start with the tool. Mine start with how the business makes money, then work through ten areas, each one resting on the one before. The technology comes last, once it has something solid to sit on.</p></div>",
-  "count": 1
- },
- {
-  "file": "v12/discovery.js",
-  "old": "function go(d){if(busy)return;var n=S.i+d;",
-  "new": "function go(d){if(busy)return;/* the list of screens depends on the answers so far (the first choice adds the questions), so it is rebuilt before checking there is a next screen */build();var n=S.i+d;",
-  "count": 1
- },
- {
-  "file": "v12/discovery.js",
-  "old": "var v=S.a[s.id];if(v==null)return;",
-  "new": "var v=S.a[s.id];if(v==null||!s.q.o)return;/* typed answers have no options to score */",
-  "count": 1
- }
+  {
+    "file": "contact.html",
+    "old": "<dd>Within one working day, from a person</dd>",
+    "new": "<dd>Within one working day</dd>",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "A reply within one working day, from a person.",
+    "new": "A reply within one working day.",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "Expect a reply within one working day, from a person.",
+    "new": "Expect a reply within one working day.",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "o:['Under $10k','$10–25k','$25–50k','$50–100k','$100k+']",
+    "new": "o:(function(){var c='£';try{if(localStorage.getItem('bb:cur')==='usd')c='$'}catch(e){}return['Under '+c+'10k',c+'10–25k',c+'25–50k',c+'50–100k',c+'100k+']})()",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "{id:'files',n:'Project files'",
+    "new": "{id:'discovery',n:'Discovery',d:'An appraisal of where the business is and where to go next.',ico:'<circle cx=\"11\" cy=\"11\" r=\"6.5\"></circle><path d=\"M16 16l4.5 4.5\"></path>',sec:'The business',q:[\n{k:'brief',t:'area',l:'What is the business, and what prompted this?',s:'Brief',h:'What you do, roughly how many people, and what made you look now.',p:'Start typing…',r:1},\n{k:'size',t:'chips',l:'How big is the team?',s:'Team',o:['Just me','2–10','11–50','51–200','200+']},\n{k:'areas',t:'chips',multi:1,l:'Where do you think the gaps are?',s:'Areas',h:'Pick any that apply.',o:['Strategy','Finance','Operations','Data','Compliance','Product','Marketing','Sales','Support','Technology']},\n{k:'timeline',t:'chips',l:'When do you want to start?',s:'Timeline',o:['ASAP','1–3 months','3+ months','Just exploring']},\n{k:'files',t:'files',l:'Anything useful to share?',s:'Files',h:'Decks, org charts, reports. Optional.'}]},\n{id:'files',n:'Project files'",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "Press <kbd>1</kbd>–<kbd>5</kbd> or <kbd>Enter</kbd>",
+    "new": "Press <kbd>1</kbd>–<kbd>6</kbd> or <kbd>Enter</kbd>",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "/^[1-5]$/.test(e.key)",
+    "new": "/^[1-6]$/.test(e.key)",
+    "count": 1
+  },
+  {
+    "file": "v11/journal.js",
+    "old": "if(sub)sub.addEventListener('submit',function(e){e.preventDefault();var b=sub.querySelector('button');sub.querySelector('input').value='';b.textContent='Subscribed';setTimeout(function(){b.textContent='Subscribe'},2600)});",
+    "new": "if(sub)sub.addEventListener('submit',function(e){e.preventDefault();var b=sub.querySelector('button'),i=sub.querySelector('input'),v=i.value.trim();if(!v||b.disabled)return;b.disabled=true;b.textContent='Sending…';fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v})}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok,j:j}})}).then(function(x){b.disabled=false;if(x.ok){i.value='';b.textContent='Subscribed'}else{b.textContent='Try again';i.setCustomValidity(x.j.error||'That did not go through.');i.reportValidity();i.setCustomValidity('')}}).catch(function(){b.disabled=false;b.textContent='Try again'})});",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Available Q4 2026",
+    "new": "Available {{availability}}",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}",
+    "new": "let srv=null;if(window.BBSend){try{srv=await window.BBSend(payload,files)}catch(x){}if(srv&&srv.ok){sent=true;if(srv.ref){payload.ref=srv.ref}}}else if(ep){try{const fd=new FormData();Object.entries(payload).forEach(([k,v])=>fd.append(k,v));files.forEach(f=>fd.append('files',f,f.name));const r=await fetch(ep,{method:'POST',body:fd});sent=r.ok}catch(x){}}",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "<span class=\"n\">'+esc(ref)+'</span><span>'+esc(S.t.n)",
+    "new": "<span class=\"n\">'+esc(payload.ref)+'</span><span>'+esc(S.t.n)",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "(sent?'It is in his inbox. Expect a reply within one working day.':",
+    "new": "(sent?'It is with Ben. Expect a reply within one working day.'+(srv&&srv.failed&&srv.failed.length?' '+(srv.failed.length===1?'One file':srv.failed.length+' files')+' did not upload ('+esc(srv.failed.join(', '))+'); reply to the confirmation or email '+EMAIL+' to send '+(srv.failed.length===1?'it':'them')+'.':''):",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "'<span class=\"bf-hint\">Reference '+esc(ref)+'</span>",
+    "new": "'<span class=\"bf-hint\">Reference '+esc(payload.ref)+'</span>",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "const EMAIL='hello@benjaminbrown.co',MAXF=10,",
+    "new": "const EMAIL='hello@benjaminbrown.co',MAXF=5,",
+    "count": 1
+  },
+  {
+    "file": "v12/coffee.js",
+    "old": "<h3>See you then.</h3>",
+    "new": "<h3>'+(ok?'See you then.':'Request sent.')+'</h3>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<a class=\"lnk\" href=\"#\" onclick=\"event.preventDefault();window.BBAgentDesk&&window.BBAgentDesk.open()\">Ask the agent</a>",
+    "new": "<a class=\"lnk\" href=\"#\" data-agent-open>Ask Toto</a>",
+    "count": 1
+  },
+  {
+    "file": "discovery.html",
+    "old": " onclick=\"if(document.referrer&&document.referrer.indexOf(location.host)>-1&&history.length>1){event.preventDefault();history.back()}\"",
+    "new": " data-back",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<script src=\"v3/bb-agent.js\" defer></script>\n",
+    "new": "",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<script src=\"v5/voice.js\"></script>\n",
+    "new": "",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "<span class=\"k\">'+(j+1)+'</span></button>').join('')+'</div></div></section>';",
+    "new": "<span class=\"k\">'+(j+1)+'</span></button>').join('')+'</div>'+'<button type=\"button\" class=\"bf-say bf-a\" style=\"--d:4\" data-bb-speak><span class=\"ic\">'+svg('<rect x=\"9\" y=\"3\" width=\"6\" height=\"11\" rx=\"3\"></rect><path d=\"M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21\"></path>')+'</span><span class=\"tx\"><b>Or just say it</b><span class=\"d\">Tell me what you need. I will fill the form in for you to check.</span></span></button>'+'</div></section>';",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "return{el,go,pickType};",
+    "new": "/* Fill the form from structured answers (used by \"say it\"). Only values the form itself offers are accepted. */\nconst fill=d=>{d=d||{};const t=TYPES.find(x=>x.id===d.type);if(t)S.t=t;const a=d.answers||{},y=d.you||{};\nS.t.q.concat(YOU).forEach(q=>{let v=q.you?y[q.k]:a[q.k];if(v==null||q.t==='files')return;\nif(q.t==='chips'){const ok=x=>q.o.includes(x);if(q.multi){v=(Array.isArray(v)?v:[v]).filter(ok);if(v.length)setv(q,v)}else if(ok(v))setv(q,v)}\nelse if(q.t==='date'){if(/^\\d{4}-\\d{2}-\\d{2}$/.test(v))setv(q,v)}\nelse if(typeof v==='string'&&v.trim())setv(q,v.trim().slice(0,4000))});\nS.i=0;build();const all=steps();let n=all.findIndex(q=>typeof q!=='string'&&check(q));if(n<0)n=all.length-1;go(n)};\nconst schema=()=>({types:TYPES.map(t=>({id:t.id,name:t.n,about:t.d,fields:t.q.filter(q=>q.t!=='files').map(q=>({key:q.k,question:q.l,kind:q.t,options:q.o&&q.t==='chips'?q.o:undefined,many:q.multi?true:undefined}))}))});\nconst api={el,go,pickType,fill,schema};root.__bbForm=api;return api;",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<div class=\"head rv\"><span class=\"eyebrow\">Methods</span><h2 class=\"h-l\">Ten questions, asked in order.</h2></div>",
+    "new": "<div class=\"head c rv\"><span class=\"eyebrow\">Methods</span><h2 class=\"h-l\">Strategy first. Software last.</h2><p class=\"lede\">Most AI projects start with the tool. Mine start with how the business makes money, then work through ten areas, each one resting on the one before. The technology comes last, once it has something solid to sit on.</p></div>",
+    "count": 1
+  },
+  {
+    "file": "v12/discovery.js",
+    "old": "function go(d){if(busy)return;var n=S.i+d;",
+    "new": "function go(d){if(busy)return;/* the list of screens depends on the answers so far (the first choice adds the questions), so it is rebuilt before checking there is a next screen */build();var n=S.i+d;",
+    "count": 1
+  },
+  {
+    "file": "v12/discovery.js",
+    "old": "var v=S.a[s.id];if(v==null)return;",
+    "new": "var v=S.a[s.id];if(v==null||!s.q.o)return;/* typed answers have no options to score */",
+    "count": 1
+  },
+  {
+    "file": "journal.html",
+    "old": "<h2 class=\"h-m\">One note a month. No cadence for the sake of it.</h2>\n<p class=\"lede\">What I shipped, what broke, and what I would do differently. Unsubscribe in one click.</p>",
+    "new": "<h2 class=\"h-m\">The Handover, in your inbox each week.</h2>\n<p class=\"lede\">The AI news that matters to a business, in plain English, with one thing to do about each. Unsubscribe in one click.</p>",
+    "count": 1
+  }
 ]
