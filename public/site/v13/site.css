@@ -54,3 +54,7 @@ html.can-voice .bf-say{display:flex}
    whole centred stack (pill, headline, text, buttons) to the right. The column now stays put and the
    headline is centred over it. */
 .hero .hero-txt{grid-template-columns:minmax(0,1fr)}
+
+/* Project cards whose case study is not published yet: a "Coming soon" label, and not clickable */
+.soon-tag{position:absolute;left:16px;top:16px;z-index:3;padding:6px 13px;border-radius:980px;background:rgba(255,255,255,.94);color:#1D1D1F;font-size:12.5px;font-weight:500;line-height:1.3;letter-spacing:-.005em;white-space:nowrap;pointer-events:none}
+.card.soon{cursor:default}

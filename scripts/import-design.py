@@ -238,6 +238,28 @@ def wrap(name):
     return lambda m: "<!--block:%s-->%s<!--/block:%s-->" % (name, m.group(0), name)
 
 
+SOON_TAG = '<span class="soon-tag">Coming soon</span>'
+GO_RE = re.compile(r'<span class="go">.*?</span>', re.S)
+
+
+def coming_soon_cards(html, src_rel):
+    """Project cards whose case study is not written yet (WilboLaw, Ascra, Ghost Mode) carry a "Coming soon"
+    label and are not links. In the design they are the cards that point at the unpublished case-study
+    template, plus the Ghost Mode card. When a case study is published, give its card a real link in the
+    design and it drops out of this automatically."""
+    def unlink(m):
+        inner = GO_RE.sub("", m.group(1), count=1)  # no arrow: there is nowhere to go yet
+        inner = inner.replace('<div class="media img">', '<div class="media img">' + SOON_TAG, 1)
+        return '<div class="card has-ov soon">' + inner + "</div>"
+    html, n = re.subn(r'<a class="card has-ov" href="(?:work/)?case-study\.html[^"]*">(.*?)</a>', unlink, html, flags=re.S)
+    if n != 2:
+        raise SystemExit("expected 2 unpublished case-study cards in %s, found %d" % (src_rel, n))
+    ghost = '<div class="card gx-card"><div class="media solo">'
+    if html.count(ghost) != 1:
+        raise SystemExit("Ghost Mode card not found in " + src_rel)
+    return html.replace(ghost, '<div class="card gx-card soon"><div class="media solo">' + SOON_TAG)
+
+
 def structural_edits(src_rel, html):
     """Edits that depend on page structure rather than exact text. Blocks wrapped in
     <!--block:name--> markers are kept, removed or replaced by src/lib/site.ts."""
@@ -245,6 +267,8 @@ def structural_edits(src_rel, html):
     html = re.sub(r'<div><h4>Elsewhere</h4>(?:<a href="#">[^<]*</a>)+</div>', "{{footer_social}}", html)
     html = html.replace('<nav><a href="#">Privacy</a><a href="#">Terms</a></nav>',
                         '<nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>')
+    if src_rel in ("Ben Brown Portfolio v12.html", "work.html"):
+        html = coming_soon_cards(html, src_rel)
     if src_rel == "Ben Brown Portfolio v12.html":
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
         html = must_sub(r'<section class="sec grey" id="pricing".*?</section>', pricing, html, "home pricing")
