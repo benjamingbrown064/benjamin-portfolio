@@ -124,5 +124,11 @@
   "old": "return{el,go,pickType};",
   "new": "/* Fill the form from structured answers (used by \"say it\"). Only values the form itself offers are accepted. */\nconst fill=d=>{d=d||{};const t=TYPES.find(x=>x.id===d.type);if(t)S.t=t;const a=d.answers||{},y=d.you||{};\nS.t.q.concat(YOU).forEach(q=>{let v=q.you?y[q.k]:a[q.k];if(v==null||q.t==='files')return;\nif(q.t==='chips'){const ok=x=>q.o.includes(x);if(q.multi){v=(Array.isArray(v)?v:[v]).filter(ok);if(v.length)setv(q,v)}else if(ok(v))setv(q,v)}\nelse if(q.t==='date'){if(/^\\d{4}-\\d{2}-\\d{2}$/.test(v))setv(q,v)}\nelse if(typeof v==='string'&&v.trim())setv(q,v.trim().slice(0,4000))});\nS.i=0;build();const all=steps();let n=all.findIndex(q=>typeof q!=='string'&&check(q));if(n<0)n=all.length-1;go(n)};\nconst schema=()=>({types:TYPES.map(t=>({id:t.id,name:t.n,about:t.d,fields:t.q.filter(q=>q.t!=='files').map(q=>({key:q.k,question:q.l,kind:q.t,options:q.o&&q.t==='chips'?q.o:undefined,many:q.multi?true:undefined}))}))});\nconst api={el,go,pickType,fill,schema};root.__bbForm=api;return api;",
   "count": 1
+ },
+ {
+  "file": "Ben Brown Portfolio v12.html",
+  "old": "<div class=\"head rv\"><span class=\"eyebrow\">Methods</span><h2 class=\"h-l\">Ten questions, asked in order.</h2></div>",
+  "new": "<div class=\"head c rv\"><span class=\"eyebrow\">Methods</span><h2 class=\"h-l\">Strategy first. Software last.</h2><p class=\"lede\">Most AI projects start with the tool. Mine start with how the business makes money, then work through ten areas, each one resting on the one before. The technology comes last, once it has something solid to sit on.</p></div>",
+  "count": 1
  }
 ]
