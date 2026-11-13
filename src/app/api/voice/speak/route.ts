@@ -6,11 +6,32 @@ export const maxDuration = 30;
 
 const VOICE_NAME = process.env.TOTO_VOICE || "ash";
 const STYLE = "Calm, warm and unhurried. British English. Conversational, like a thoughtful colleague, never a salesperson.";
+// The ElevenLabs voice is used when its key is set; the OpenAI voice above is the fallback.
+const ELEVEN_VOICE = process.env.TOTO_ELEVEN_VOICE || "DPSolStDPHwmw34akfe3";
+const ELEVEN_MODEL = process.env.TOTO_ELEVEN_MODEL || "eleven_v3_conversational";
+
+async function elevenSpeech(text: string): Promise<ArrayBuffer | null> {
+  const key = process.env.ELEVENLABS_API_KEY;
+  if (!key) return null;
+  try {
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}?output_format=mp3_44100_128`, {
+      method: "POST",
+      headers: { "xi-api-key": key, "Content-Type": "application/json" },
+      body: JSON.stringify({ text, model_id: ELEVEN_MODEL }),
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok) throw new Error(`${res.status}: ${(await res.text().catch(() => "")).slice(0, 200)}`);
+    return await res.arrayBuffer();
+  } catch (e) {
+    console.error("voice/speak: ElevenLabs failed, using the fallback voice", e);
+    return null;
+  }
+}
 
 // Reads Toto's latest reply aloud. It will only speak the reply the server itself gave in this
 // conversation, so the endpoint cannot be used to voice arbitrary text.
 export async function POST(request: Request) {
-  if (!process.env.OPENAI_API_KEY) return fail(503, "Voice is not connected yet.");
+  if (!process.env.OPENAI_API_KEY && !process.env.ELEVENLABS_API_KEY) return fail(503, "Voice is not connected yet.");
   const g = await guard(request, { maxBytes: 4000 });
   if (!g.ok) return g.response;
   const session = str(g.body.session, 40) ?? "";
@@ -24,6 +45,14 @@ export async function POST(request: Request) {
     if (!text) return fail(404, "Nothing to say.");
     const spoken = text.slice(0, VOICE.maxSpeakChars);
 
+    const seconds = Math.max(1, spoken.length / 15);
+    const eleven = await elevenSpeech(spoken);
+    if (eleven) {
+      await rpc("voice_log", { p_session: session, p_ip: ip, p_kind: "speak", p_seconds: seconds, p_cost: seconds * VOICE.elevenSpeakPerSecond });
+      return new Response(eleven, { headers: { "content-type": "audio/mpeg", "cache-control": "no-store" } });
+    }
+
+    if (!process.env.OPENAI_API_KEY) return fail(502, "I could not speak that just now.");
     const res = await fetch("https://api.openai.com/v1/audio/speech", {
       method: "POST",
       headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
@@ -32,7 +61,6 @@ export async function POST(request: Request) {
     });
     if (!res.ok) throw new Error(`speech failed (${res.status}): ${(await res.text().catch(() => "")).slice(0, 200)}`);
     const audio = await res.arrayBuffer();
-    const seconds = Math.max(1, spoken.length / 15);
     await rpc("voice_log", { p_session: session, p_ip: ip, p_kind: "speak", p_seconds: seconds, p_cost: seconds * VOICE.speakPerSecond });
     return new Response(audio, { headers: { "content-type": "audio/mpeg", "cache-control": "no-store" } });
   } catch (e) {

@@ -13,6 +13,10 @@ export const VOICE = {
   // Estimates in USD, used only for the cap.
   listenPerSecond: 0.006 / 60,
   speakPerSecond: 0.015 / 60,
+  // Live transcription and the ElevenLabs voice. A live session is counted as a typical spoken message.
+  liveClipSeconds: 15,
+  liveListenPerSecond: 0.008 / 60,
+  elevenSpeakPerSecond: 0.18 / 60,
 };
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
