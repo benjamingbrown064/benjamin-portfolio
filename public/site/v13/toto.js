@@ -206,7 +206,12 @@
         attachReport(j.actions);
         if (j.gate) { showGate(); return; }
         // A spoken question gets a spoken answer; any move to another page waits until he has finished.
-        if (spoken && !j.limited) speak(function () { run(j.actions); });
+        // Hands-free: once he has finished speaking, and nothing is about to move the visitor elsewhere, listen for the next question.
+        if (spoken && !j.limited) speak(function (finished) {
+          run(j.actions);
+          var moving = (j.actions || []).some(function (a) { return a.type !== 'report'; });
+          if (finished && !moving && isOpen() && !busy && !recording && !gate) startRecording(true);
+        });
         else run(j.actions);
       })
       .catch(function (e) {
@@ -269,10 +274,12 @@
 
   function unlockAudio() {
     // Phones only let a page play sound that started from a tap, so the player is started here, silently.
-    if (!player) { player = new Audio(); player.addEventListener('ended', speechDone); player.addEventListener('error', speechDone); }
+    if (!player) { player = new Audio(); player.addEventListener('ended', function () { if (afterSpeech && player.src.indexOf('blob:') === 0) heardOut = true; speechDone(); }); player.addEventListener('error', speechDone); }
     try { player.src = SILENCE; var p = player.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
   }
-  function speechDone() { var next = afterSpeech; afterSpeech = null; launch.classList.remove('speaking'); if (panel.getAttribute('data-state') === 'speaking') setState('idle'); if (next) next(); }
+  var heardOut = false; // true only when a spoken reply played to its end, rather than being stopped
+  var speechTimer = null;
+  function speechDone() { var next = afterSpeech, finished = heardOut; afterSpeech = null; heardOut = false; clearTimeout(speechTimer); launch.classList.remove('speaking'); if (panel.getAttribute('data-state') === 'speaking') setState('idle'); if (next) next(finished); }
   function stopSpeaking() { if (player && !player.paused) { try { player.pause(); } catch (e) {} } speechDone(); }
   function speak(then) {
     afterSpeech = then || null;
@@ -286,7 +293,8 @@
         launch.classList.add('speaking'); setState('speaking');
         var p = player.play();
         if (p && p.catch) p.catch(finish);
-        setTimeout(finish, 60000); // never hold a page move for longer than a minute
+        clearTimeout(speechTimer);
+        speechTimer = setTimeout(function () { if (player && !player.paused) { try { player.pause(); } catch (e) {} } finish(); }, 60000); // never hold a page move for longer than a minute
       })
       .catch(finish);
   }
@@ -302,15 +310,18 @@
     mic.setAttribute('aria-label', on ? 'Send what you said' : 'Speak your message');
     if (!on) { bars.forEach(function (b) { b.style.transform = ''; }); if (liveBubble && liveBubble.parentNode) liveBubble.parentNode.removeChild(liveBubble); liveBubble = null; }
   }
-  function startRecording() {
-    unlockAudio(); stopSpeaking();
+  var QUIET_MS = 8000; // hands-free listening gives up quietly if nobody speaks
+  function startRecording(handsFree) {
+    if (!handsFree) unlockAudio();
+    stopSpeaking();
     history = history.filter(function (m) { return !m.error; }); render();
-    var waiting = thinkingBubble('Working out what you said'), heardWords = false;
+    var waiting = thinkingBubble('Working out what you said'), heardWords = false, quiet = null;
     recording = voice.listen({
       onStart: function () {
         listeningUI(true); setState('listening');
         liveBubble = el('div', 'bba-msg u live'); liveBubble.textContent = 'Listening…';
         log.appendChild(liveBubble); log.scrollTop = log.scrollHeight;
+        if (handsFree) quiet = setTimeout(function () { if (!heardWords) stopRecording(true); }, QUIET_MS);
       },
       onWords: function (text) {
         if (!liveBubble || !text) return;
@@ -321,6 +332,7 @@
         bars.forEach(function (b, i) { b.style.transform = 'scaleY(' + (0.25 + Math.min(1, v * (0.6 + 0.4 * Math.sin(i * 1.9 + Date.now() / 140) + 0.4)) * 0.75).toFixed(2) + ')'; });
       },
       onStop: function () {
+        clearTimeout(quiet);
         listeningUI(false); ear.querySelector('.t').textContent = 'Listening…';
         if (!heardWords && recording) { setState('hearing'); log.appendChild(waiting); log.scrollTop = log.scrollHeight; }
       }

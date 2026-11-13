@@ -146,6 +146,7 @@ document.addEventListener('click',function(e){
     var ctx=null;try{var AC=window.AudioContext||window.webkitAudioContext;if(AC){ctx=new AC();if(ctx.resume)ctx.resume()}}catch(e){ctx=null}
     navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(function(stream){
       var type=clipType();
+      try{if(ctx&&ctx.state==='suspended'&&ctx.resume)ctx.resume()}catch(e){} // a context made without a tap (hands-free) can start once the microphone is live
       recorder=type?new MediaRecorder(stream,{mimeType:type}):new MediaRecorder(stream);
       recorder.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
       recorder.onstop=function(){
