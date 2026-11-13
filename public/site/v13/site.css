@@ -173,3 +173,11 @@ html[data-theme="dark"] .why-dlg::backdrop{background:rgba(0,0,0,.6)}
 .ax-body .ax-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:1.8em 0}
 .ax-body .ax-pair figure{margin:0}
 @media(max-width:640px){.ax-body .ax-pair{grid-template-columns:minmax(0,1fr);gap:1.4em}}
+
+/* Home page journal tile showing the weekly roundup artwork: the whole picture is shown, with nothing laid over it.
+   Wide screens use the 2:1 header inside the 16:9 tile, on a blurred copy of itself so the thin bands above and below
+   blend in; phones use the 4:3 thumbnail, which fits the tile exactly. */
+.lt-c.art::after{display:none}
+.lt-c.art::before{content:"";position:absolute;inset:-24px;background:var(--art) center/cover no-repeat;filter:blur(22px) brightness(.72)}
+.lt-c.art img{object-fit:contain;filter:none}
+@media(max-width:760px){.lt-c.art::before{display:none}.lt-c.art img{object-fit:cover}}

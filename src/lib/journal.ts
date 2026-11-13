@@ -15,8 +15,8 @@ export type JournalEntry = {
   coverAlt: string;
   /** 4:3 picture for the smaller cards. */
   thumb: string;
-  /** A picture with no lettering in it, for the home page tile, which lays its own text over the top. */
-  tile: string;
+  /** A picture with no lettering in it. Only used on the home page tile when there is no weekly roundup to show there. */
+  tile?: string;
 };
 
 const HANDOVER_1 = "/media/journal/the-handover-1";
