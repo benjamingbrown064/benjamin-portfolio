@@ -1,9 +1,11 @@
 /* v13: additions made during the build. Hand-written; scripts/import-design.py never overwrites this folder. */
 
 /* Pricing: three cards (from the November home page design) */
-.prices.three{grid-template-columns:repeat(3,minmax(0,1fr))}
-.prices.three .price{padding:clamp(28px,3vw,44px)}
-@media(max-width:1080px){.prices.three{grid-template-columns:minmax(0,1fr)}}
+.price.wide{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px clamp(40px,6vw,96px);align-items:stretch}
+.price.wide .pw-l{display:flex;flex-direction:column;gap:30px}
+.price.wide ul{align-self:start}
+.price.wide li:last-child{border-bottom:1px solid var(--line)}
+@media(max-width:860px){.price.wide{grid-template-columns:minmax(0,1fr)}.price.wide .price-foot{order:3}.price.wide .pw-l{display:contents}}
 
 /* Pricing: pounds / dollars switch */
 .cur-btn{margin-top:18px;font:inherit;font-size:14px;font-weight:500;letter-spacing:-.01em;color:inherit;background:transparent;border:1px solid currentColor;border-radius:980px;padding:9px 18px;cursor:pointer;opacity:.72;transition:opacity .25s}
