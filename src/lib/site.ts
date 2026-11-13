@@ -86,10 +86,16 @@ function journalIndex(): string {
   return html;
 }
 
-/** Home page: the "Latest journal entry" tile. */
+/** Home page: the journal tile. It always shows the newest weekly roundup (The Handover), whose artwork carries
+ *  its own lettering, so nothing is laid over it. With no roundup yet, the newest entry is shown with its title over a plain picture. */
 function homeLatestJournal(): string {
+  const roundup = JOURNAL.find((e) => e.category === "The Handover");
+  if (roundup) {
+    const label = `Latest journal entry: ${kind(roundup)}, ${roundup.title}, ${journalDate(roundup.date)}`;
+    return `<a class="lt-c art" href="/journal/${roundup.slug}" aria-label="${esc(label)}" style="--art:url('${roundup.cover}')"><picture><source media="(max-width:760px)" srcset="${roundup.thumb}"><img src="${roundup.cover}" alt="" loading="lazy" decoding="async"></picture></a>`;
+  }
   const e = JOURNAL[0];
-  return `<a class="lt-c bw" href="/journal/${e.slug}"><img src="${e.tile}" alt="" loading="lazy" decoding="async"><span class="lt-k">Latest journal entry</span><span class="lt-b"><span class="lt-x"><span class="lt-t">${esc(e.title)}</span><span class="lt-s">${esc(kind(e))} · ${journalDate(e.date)}</span></span><span class="go" aria-hidden="true">${ARROW}</span></span></a>`;
+  return `<a class="lt-c bw" href="/journal/${e.slug}"><img src="${e.tile ?? e.thumb}" alt="" loading="lazy" decoding="async"><span class="lt-k">Latest journal entry</span><span class="lt-b"><span class="lt-x"><span class="lt-t">${esc(e.title)}</span><span class="lt-s">${esc(kind(e))} · ${journalDate(e.date)}</span></span><span class="go" aria-hidden="true">${ARROW}</span></span></a>`;
 }
 
 /** Home page: the three-card journal section. Shown once there are three entries to fill it. */
