@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Import the static design export into the Next.js site.
 
-Usage:  python3 -I scripts/import-design.py "<path to 'Benjamin Brown Website v12' folder>"
+Usage:  python3 scripts/import-design.py "<path to 'Benjamin Brown Website v12' folder>"
 
 Writes:
   site/pages/<name>.html   full HTML documents with clean links, absolute asset paths and {{tokens}}
@@ -448,6 +448,66 @@ def bundle_css():
     print("css bundles: %d, %d KB -> %d KB" % (len(os.listdir(out_dir)), before // 1024, after // 1024))
 
 
+# Case studies drawn by React in the browser. Their full markup is also written into the page, so search
+# engines, AI crawlers and anything else that does not run scripts can read them.
+PRERENDER = {"work-warrantyos": "wx-root", "work-govscape": "gx-root"}
+
+
+def prerender_case_studies():
+    """Open each React case study in headless Chrome (served from the files just written, no network),
+    take the markup React produced and place it inside the page's root element. A one-line script after
+    the root empties it again before the first paint, so visitors with scripts see exactly what they did
+    before (React draws into an empty root), while readers without scripts get the whole case study."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        raise SystemExit("prerender needs Playwright for Python (pip install playwright). Set PRERENDER=0 to skip.")
+    import mimetypes
+    origin = "http://prerender.invalid"
+    with sync_playwright() as p:
+        browser = p.chromium.launch(channel="chrome")
+        for name, root_id in PRERENDER.items():
+            path = os.path.join(PAGES_OUT, name + ".html")
+            html = open(path, encoding="utf-8").read()
+            empty = re.search(r'<main([^>]*)id="%s"([^>]*)></main>' % root_id, html)
+            if not empty:
+                raise SystemExit("prerender: empty root #%s not found in %s" % (root_id, name))
+            doc = re.sub(r"\{\{[a-z_.]+\}\}", "", html)
+
+            def serve(route, request, doc=doc):
+                url = urllib.parse.urlparse(route.request.url)
+                if url.path == "/":
+                    return route.fulfill(status=200, content_type="text/html; charset=utf-8", body=doc)
+                if url.path.startswith("/site/"):
+                    f = os.path.join(ROOT, "public", urllib.parse.unquote(url.path).lstrip("/"))
+                    if os.path.isfile(f):
+                        return route.fulfill(status=200, content_type=mimetypes.guess_type(f)[0] or "application/octet-stream", body=open(f, "rb").read())
+                return route.fulfill(status=404, body="")
+
+            page = browser.new_page(viewport={"width": 1440, "height": 900})
+            errors = []
+            page.on("pageerror", lambda e: errors.append(str(e)))
+            page.route("**/*", serve)
+            page.goto(origin + "/", wait_until="load")
+            page.wait_for_function("document.getElementById('%s').children.length > 0" % root_id, timeout=20000)
+            page.wait_for_timeout(1200)
+            inner = page.evaluate("document.getElementById('%s').innerHTML" % root_id)
+            page.close()
+            if errors:
+                raise SystemExit("prerender: %s raised %s" % (name, errors[0][:200]))
+            words = len(re.sub(r"<[^>]+>", " ", inner).split())
+            if words < 300:
+                raise SystemExit("prerender: %s produced only %d words" % (name, words))
+            inner = inner.replace(origin, "")
+            # Embedded films are not started from the static copy (it is emptied before paint); React loads them.
+            inner = re.sub(r"(<iframe\b[^>]*?)\ssrc=", r"\1 data-src=", inner)
+            filled = ('<main%sid="%s"%s data-prerendered>' % (empty.group(1), root_id, empty.group(2)) + inner + "</main>"
+                      + "<script>document.getElementById('%s').textContent=''</script>" % root_id)
+            open(path, "w", encoding="utf-8").write(html[:empty.start()] + filled + html[empty.end():])
+            print("prerendered %s: %d words" % (name, words))
+        browser.close()
+
+
 def main():
     if os.path.isdir(PAGES_OUT):
         shutil.rmtree(PAGES_OUT)
@@ -519,6 +579,8 @@ def main():
 
     format_scripts()
     bundle_css()
+    if os.environ.get("PRERENDER", "1") != "0":
+        prerender_case_studies()
     total = sum(os.path.getsize(os.path.join(d, f)) for d, _, fs in os.walk(PUB) for f in fs)
     print("pages:", sorted(os.listdir(PAGES_OUT)))
     print("renamed images:", len(RENAMED))
