@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Import the static design export into the Next.js site.
 
-Usage:  python3 -I scripts/import-design.py "<path to 'Benjamin Brown Website v12' folder>"
+Usage:  python3 scripts/import-design.py "<path to 'Benjamin Brown Website v12' folder>"
 
 Writes:
   site/pages/<name>.html   full HTML documents with clean links, absolute asset paths and {{tokens}}
@@ -260,6 +260,47 @@ def coming_soon_cards(html, src_rel):
     return html.replace(ghost, '<div class="card gx-card soon"><div class="media solo">' + SOON_TAG)
 
 
+def home_method_panel(html):
+    """Home page: the ten method rows open the area panel over the page (the same panel the method page
+    uses) instead of leaving for /method. The row keeps its link as the fallback when scripts are off."""
+    method = open(os.path.join(SRC, "services.html"), encoding="utf-8").read()
+    data = re.search(r'<script type="application/json" id="sk-data">.*?</script>', method, re.S)
+    if not data:
+        raise SystemExit("method page area data (sk-data) not found")
+    order = [a["id"] for a in json.loads(re.search(r">(.*)</script>", data.group(0), re.S).group(1))]
+    seen = []
+    def row(m):
+        slug = m.group(1)
+        if slug not in order:
+            raise SystemExit("home method row points at an unknown area: " + slug)
+        seen.append(slug)
+        return '<a class="svc" href="services.html#%s" data-sk data-i="%d"' % (slug, order.index(slug))
+    html = re.sub(r'<a class="svc" href="services\.html#([a-z-]+)"', row, html)
+    if len(seen) != len(order):
+        raise SystemExit("expected %d method rows on the home page, found %d" % (len(order), len(seen)))
+    html = html.replace("</head>", '<link rel="stylesheet" href="v12/skills.css">\n<link rel="stylesheet" href="v12/route.css">\n</head>', 1)
+    return html.replace("</body>", data.group(0) + '\n<script src="v12/skills.js"></script>\n</body>', 1)
+
+
+def home_what_changes(html):
+    """Home page: the "What changes" dialog (Agile, Agentic, Fast...) is rebuilt in public/site/v13/what-changes.js.
+    The design's own dialog is removed, which also leaves its script with nothing to attach to."""
+    html = must_sub(r'<dialog class="oc-dlg" id="oc-dlg".*?</dialog>\s*', "", html, "what-changes dialog")
+    return html.replace("</body>", '<script src="/site/v13/what-changes.js" defer></script>\n</body>', 1)
+
+
+def home_side_project(html):
+    """Home page banner: a pill in the bottom-right corner linking to the BomberBot side project."""
+    pill = ('<a class="hero-game" href="https://www.bomberbot.app" target="_blank" rel="noopener">'
+            '<span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="14.5" cy="18.5" r="8.5" fill="#1d1d1f"/>'
+            '<path d="M19.6 11.6l2.1-2.1" stroke="#1d1d1f" stroke-width="3.2" stroke-linecap="round"/>'
+            '<path d="M22.2 9.2c.9-1.6 2.3-2.1 3.6-1.5" fill="none" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round"/>'
+            '<circle cx="26.4" cy="7.6" r="1.7" fill="#ff6b1f"/><circle cx="11.6" cy="15.6" r="1.6" fill="#fff" opacity=".35"/></svg></span>'
+            '<span class="tx"><span class="k2">Side project</span><b>Want to play a game?</b></span>'
+            '<span class="arr" aria-hidden="true">→</span><span class="sr-only"> (opens bomberbot.app in a new tab)</span></a>')
+    return must_sub(r'(<div class="w hero-cap"><div>.*?</div>)(</div>)', lambda m: m.group(1) + pill + m.group(2), html, "home banner side-project pill")
+
+
 def structural_edits(src_rel, html):
     """Edits that depend on page structure rather than exact text. Blocks wrapped in
     <!--block:name--> markers are kept, removed or replaced by src/lib/site.ts."""
@@ -270,12 +311,15 @@ def structural_edits(src_rel, html):
     if src_rel in ("Ben Brown Portfolio v12.html", "work.html"):
         html = coming_soon_cards(html, src_rel)
     if src_rel == "Ben Brown Portfolio v12.html":
+        html = home_method_panel(html)
+        html = home_what_changes(html)
+        html = home_side_project(html)
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
         html = must_sub(r'<section class="sec grey" id="pricing".*?</section>', pricing, html, "home pricing")
         # "Latest project" tile: the Taskbox "Talk it through" animation sits over the right of the photo.
         # It is decoration inside a link, so it is hidden from assistive technology and ignores the pointer.
         html = must_sub(r'(<a class="lt-c" href="work/taskbox-v2\.html" data-ov>\s*<img[^>]*>)',
-                        lambda m: m.group(1) + '<iframe class="lt-film" src="/site/v13/films/taskbox-talk-half/index.html" title="" aria-hidden="true" tabindex="-1" loading="lazy" allowtransparency="true"></iframe>',
+                        lambda m: m.group(1).replace(' data-ov', '') + '<iframe class="lt-film" src="/site/v13/films/taskbox-talk-half/index.html" title="" aria-hidden="true" tabindex="-1" loading="lazy" allowtransparency="true"></iframe>',
                         html, "latest project tile")
         html = must_sub(r'<section class="sec" id="journal".*?</section>', wrap("home_journal"), html, "home journal")
         html = must_sub(r'<a class="lt-c bw" href="journal-article\.html">.*?</a>', wrap("home_latest_journal"), html, "home latest journal tile")
@@ -417,6 +461,66 @@ def bundle_css():
     print("css bundles: %d, %d KB -> %d KB" % (len(os.listdir(out_dir)), before // 1024, after // 1024))
 
 
+# Case studies drawn by React in the browser. Their full markup is also written into the page, so search
+# engines, AI crawlers and anything else that does not run scripts can read them.
+PRERENDER = {"work-warrantyos": "wx-root", "work-govscape": "gx-root"}
+
+
+def prerender_case_studies():
+    """Open each React case study in headless Chrome (served from the files just written, no network),
+    take the markup React produced and place it inside the page's root element. A one-line script after
+    the root empties it again before the first paint, so visitors with scripts see exactly what they did
+    before (React draws into an empty root), while readers without scripts get the whole case study."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        raise SystemExit("prerender needs Playwright for Python (pip install playwright). Set PRERENDER=0 to skip.")
+    import mimetypes
+    origin = "http://prerender.invalid"
+    with sync_playwright() as p:
+        browser = p.chromium.launch(channel="chrome")
+        for name, root_id in PRERENDER.items():
+            path = os.path.join(PAGES_OUT, name + ".html")
+            html = open(path, encoding="utf-8").read()
+            empty = re.search(r'<main([^>]*)id="%s"([^>]*)></main>' % root_id, html)
+            if not empty:
+                raise SystemExit("prerender: empty root #%s not found in %s" % (root_id, name))
+            doc = re.sub(r"\{\{[a-z_.]+\}\}", "", html)
+
+            def serve(route, request, doc=doc):
+                url = urllib.parse.urlparse(route.request.url)
+                if url.path == "/":
+                    return route.fulfill(status=200, content_type="text/html; charset=utf-8", body=doc)
+                if url.path.startswith("/site/"):
+                    f = os.path.join(ROOT, "public", urllib.parse.unquote(url.path).lstrip("/"))
+                    if os.path.isfile(f):
+                        return route.fulfill(status=200, content_type=mimetypes.guess_type(f)[0] or "application/octet-stream", body=open(f, "rb").read())
+                return route.fulfill(status=404, body="")
+
+            page = browser.new_page(viewport={"width": 1440, "height": 900})
+            errors = []
+            page.on("pageerror", lambda e: errors.append(str(e)))
+            page.route("**/*", serve)
+            page.goto(origin + "/", wait_until="load")
+            page.wait_for_function("document.getElementById('%s').children.length > 0" % root_id, timeout=20000)
+            page.wait_for_timeout(1200)
+            inner = page.evaluate("document.getElementById('%s').innerHTML" % root_id)
+            page.close()
+            if errors:
+                raise SystemExit("prerender: %s raised %s" % (name, errors[0][:200]))
+            words = len(re.sub(r"<[^>]+>", " ", inner).split())
+            if words < 300:
+                raise SystemExit("prerender: %s produced only %d words" % (name, words))
+            inner = inner.replace(origin, "")
+            # Embedded films are not started from the static copy (it is emptied before paint); React loads them.
+            inner = re.sub(r"(<iframe\b[^>]*?)\ssrc=", r"\1 data-src=", inner)
+            filled = ('<main%sid="%s"%s data-prerendered>' % (empty.group(1), root_id, empty.group(2)) + inner + "</main>"
+                      + "<script>document.getElementById('%s').textContent=''</script>" % root_id)
+            open(path, "w", encoding="utf-8").write(html[:empty.start()] + filled + html[empty.end():])
+            print("prerendered %s: %d words" % (name, words))
+        browser.close()
+
+
 def main():
     if os.path.isdir(PAGES_OUT):
         shutil.rmtree(PAGES_OUT)
@@ -488,6 +592,8 @@ def main():
 
     format_scripts()
     bundle_css()
+    if os.environ.get("PRERENDER", "1") != "0":
+        prerender_case_studies()
     total = sum(os.path.getsize(os.path.join(d, f)) for d, _, fs in os.walk(PUB) for f in fs)
     print("pages:", sorted(os.listdir(PAGES_OUT)))
     print("renamed images:", len(RENAMED))

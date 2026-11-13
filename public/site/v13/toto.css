@@ -22,10 +22,11 @@
 .bba-msg .act{display:inline-flex;margin-top:10px;font-family:var(--sans);font-weight:600;font-size:13px;padding:9px 13px;border-radius:6px;background:var(--ink);color:var(--bone);cursor:pointer;border:0;transition:background .25s,color .25s;white-space:nowrap}
 .bba-msg .act:hover{background:var(--signal);color:var(--ink)}
 @keyframes bbain{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.bba-typing{display:inline-flex;gap:5px;padding:15px;background:var(--bone-2);border-radius:12px 12px 12px 4px;align-self:flex-start}
-.bba-typing i{width:6px;height:6px;border-radius:2px;background:var(--ink);animation:bbadot 1s infinite}
-.bba-typing i:nth-child(2){animation-delay:.15s}.bba-typing i:nth-child(3){animation-delay:.3s}
-@keyframes bbadot{0%,100%{opacity:.2}50%{opacity:1}}
+.bba-think{display:inline-flex;align-items:center;gap:10px;padding:12px 15px;background:var(--bone-2);border-radius:11px 11px 11px 4px;align-self:flex-start;font-size:13.5px;line-height:1.3;color:var(--mute);animation:bbain .4s var(--ease) both}
+.bba-think-d{display:inline-flex;gap:4px;flex:none}
+.bba-think-d i{display:block;width:6px;height:6px;border-radius:50%;background:#ff6b1f;animation:bbadot 1.1s ease-in-out infinite}
+.bba-think-d i:nth-child(2){animation-delay:.15s}.bba-think-d i:nth-child(3){animation-delay:.3s}
+@keyframes bbadot{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
 .bba-starters{display:flex;flex-wrap:wrap;gap:8px;padding:0 18px 14px}
 .bba-starters button{font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:-.005em;padding:8px 12px;border:1.5px solid var(--ink);border-radius:6px;transition:background .25s,color .25s}
 .bba-starters button:hover{background:var(--ink);color:var(--bone)}
@@ -40,7 +41,7 @@
 .bba-foot button{color:var(--ink);font:inherit;letter-spacing:inherit;text-transform:inherit;transition:color .25s}
 .bba-foot button:hover{color:var(--signal)}
 @media(max-width:600px){.bba{right:12px;left:12px;bottom:84px;width:auto;height:min(560px,calc(100vh - 100px))}.bba-launch{right:14px;bottom:14px}}
-@media(prefers-reduced-motion:reduce){.bba-launch .ping,.bba-head .sq,.bba-typing i{animation:none}}
+@media(prefers-reduced-motion:reduce){.bba-launch .ping,.bba-head .sq,.bba-think-d i{animation:none}}
 
 .bba-x{width:32px;height:32px;margin-left:6px;border-radius:8px;display:grid;place-items:center;color:var(--mute)}
 .bba-x:hover{color:var(--ink)}
@@ -89,3 +90,43 @@
 .bba-report .bt button{font:inherit;font-weight:600;font-size:13px;padding:10px 14px;border-radius:8px;background:var(--ink);color:var(--bone)}
 .bba-report .bt button.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
 .bba-report .bt button:hover{background:var(--signal);color:var(--ink);box-shadow:none}
+
+/* What Toto is doing: the line under his name, and the square on his avatar */
+.bba-head .bba-who{flex:1;min-width:0}
+.bba-head .s{transition:color .3s}
+.bba[data-state=listening] .bba-head .s,.bba[data-state=hearing] .bba-head .s,.bba[data-state=thinking] .bba-head .s,.bba[data-state=speaking] .bba-head .s{color:#ff6b1f}
+.bba[data-state=listening] .av .sq,.bba[data-state=thinking] .av .sq,.bba[data-state=hearing] .av .sq,.bba[data-state=speaking] .av .sq{animation-duration:.8s}
+.bba-head .hush{font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:980px;background:var(--bone-2);color:var(--ink);margin-left:auto}
+.bba-head .hush:hover{background:var(--ink);color:var(--bone)}
+.bba-head .hush[hidden]{display:none}
+html body .bba-head .hush{margin-left:0}
+html body .bba-head .clr{margin-left:6px}
+
+/* The visitor's words, as they are spoken */
+.bba-msg.u.live{background:transparent;color:var(--mute);box-shadow:inset 0 0 0 1.5px var(--bone-2);font-style:italic}
+.bba-msg.u.live.has{color:var(--ink);font-style:normal;box-shadow:inset 0 0 0 1.5px var(--ink)}
+.bba-msg.u.live.has::after{content:"";display:inline-block;width:6px;height:6px;margin-left:6px;border-radius:50%;background:#ff6b1f;animation:bbablink 1s ease-in-out infinite;vertical-align:middle}
+
+/* Composer while listening: a level meter and Cancel take the place of the text box; the mic becomes send */
+.bba-comp textarea[hidden],.bba-ear[hidden]{display:none}
+.bba-ear{flex:1;min-width:0;min-height:44px;display:flex;align-items:center;gap:12px;padding:0 6px 0 14px;border-radius:10px;background:var(--bone-2);font-size:14px;color:var(--ink)}
+.bba-ear .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bba-ear .lv{display:inline-flex;align-items:center;gap:3px;height:22px;flex:none}
+.bba-ear .lv i{width:3px;height:22px;border-radius:2px;background:#ff6b1f;transform:scaleY(.25);transition:transform .09s linear}
+.bba-comp .bba-ear .cancel{width:auto;height:32px;padding:0 12px;border-radius:8px;background:transparent;color:var(--mute);font-size:13px;font-weight:500;flex:none}
+.bba-comp .bba-ear .cancel:hover{background:transparent;color:var(--ink)}
+.bba-comp .mic .i-send{display:none}
+.bba-comp .mic.rec .i-mic{display:none}.bba-comp .mic.rec .i-send{display:block}
+.bba-comp.listening .send{display:none}
+.bba[data-state=thinking] .bba-comp .mic,.bba[data-state=hearing] .bba-comp .mic{opacity:.45;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.bba-msg.u.live.has::after,.bba-ear .lv i{animation:none;transition:none}}
+
+/* Voice uses the launcher's orange: the mic invites a tap, turns dark with a send arrow while listening */
+html body .bba-comp .mic{background:#ff6b1f;color:#fff;transition:background .3s,transform .4s var(--ease)}
+html body .bba-comp .mic:hover{background:#ff6b1f;color:#fff;transform:scale(1.06)}
+html body .bba-comp .mic.rec{background:var(--ink);color:var(--bone);animation:none}
+html body .bba-comp .bba-ear{border-radius:var(--pill,980px)}
+html body .bba-comp .bba-ear .cancel{border-radius:var(--pill,980px);background:transparent;color:var(--mute)}
+html body .bba-comp .bba-ear .cancel:hover{color:var(--ink)}
+html[data-theme=dark] body .bba-comp .mic{background:#ff6b1f;color:#fff}
+html[data-theme=dark] body .bba-comp .mic.rec{background:var(--ink);color:var(--bone)}

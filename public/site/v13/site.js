@@ -50,7 +50,7 @@ document.addEventListener('click',function(e){
 
 
 /* Voice capture, shared by the assistant and the request form: record a short clip and get it back as text.
-   BBVoice.listen({onStart, onStop}) returns {stop(), done}; done resolves to {text} or {error, gate}. */
+   BBVoice.listen({onStart, onStop, onWords, onLevel, auto}) returns {stop(), cancel(), done}; done resolves to {text}, {error, gate} or {cancelled}. */
 (function(){
   var supported=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder);
   var MAX_MS=45000,active=null;
@@ -65,33 +65,123 @@ document.addEventListener('click',function(e){
     for(var i=0;i<t.length;i++)if(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t[i]))return t[i];
     return '';
   }
+  /* Live words: the microphone is also streamed to a transcription service so the text can be shown as it is spoken.
+     The server hands out a single-use token; if that fails, the recorded clip is sent the old way when the visitor stops. */
+  var LIVE_URL='wss://api.elevenlabs.io/v1/speech-to-text/realtime';
+  function b64(int16){var b=new Uint8Array(int16.buffer),o='';for(var i=0;i<b.length;i+=0x8000)o+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(o)}
+  function live(stream,ctx,on){
+    var ws=null,ready=false,queue=[],parts=[],partial='',closed=false,src=null,proc=null,carry=new Float32Array(0),waiter=null,started=false;
+    function text(){return (parts.join(' ')+' '+partial).replace(/\s+/g,' ').trim()}
+    function send(pcm,commit){
+      var msg=JSON.stringify({message_type:'input_audio_chunk',audio_base_64:b64(pcm),commit:!!commit,sample_rate:16000});
+      if(ready&&ws&&ws.readyState===1)ws.send(msg);else if(queue.length<60)queue.push(msg);
+    }
+    try{
+      src=ctx.createMediaStreamSource(stream);proc=ctx.createScriptProcessor(4096,1,1);
+      var ratio=ctx.sampleRate/16000;
+      proc.onaudioprocess=function(e){
+        if(closed)return;
+        var inp=e.inputBuffer.getChannelData(0),sum=0,i;
+        for(i=0;i<inp.length;i++)sum+=inp[i]*inp[i];
+        if(on.level)on.level(Math.min(1,Math.sqrt(sum/inp.length)*6));
+        var all=new Float32Array(carry.length+inp.length);all.set(carry);all.set(inp,carry.length);
+        var n=Math.floor(all.length/ratio),out=new Int16Array(n);
+        for(i=0;i<n;i++){ // average each run of samples down to 16 kHz
+          var a=Math.floor(i*ratio),b=Math.min(all.length,Math.floor((i+1)*ratio)),t=0,k;
+          for(k=a;k<b;k++)t+=all[k];
+          var v=Math.max(-1,Math.min(1,t/Math.max(1,b-a)));out[i]=v<0?v*32768:v*32767;
+        }
+        carry=all.subarray(Math.floor(n*ratio));
+        if(n)send(out,false);
+      };
+      src.connect(proc);proc.connect(ctx.destination);
+    }catch(e){}
+    fetch('/api/voice/live',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:sessionId()})})
+      .then(function(r){return r.json().catch(function(){return{}}).then(function(j){j.status=r.status;return j})})
+      .then(function(j){
+        if(closed)return;
+        if(!j.token){if(j.status===429&&on.refused)on.refused(j);return} // 429: the voice allowance is used up; anything else: fall back to the recorded clip
+        ws=new WebSocket(LIVE_URL+'?model_id=scribe_v2_realtime&audio_format=pcm_16000&language_code=en&commit_strategy=vad&vad_silence_threshold_secs=1.6&token='+encodeURIComponent(j.token));
+        ws.onmessage=function(e){
+          var m={};try{m=JSON.parse(e.data)}catch(x){}
+          if(m.message_type==='session_started'){ready=true;started=true;queue.forEach(function(q){ws.send(q)});queue=[]}
+          else if(m.message_type==='partial_transcript'){partial=m.text||'';if(on.words)on.words(text())}
+          else if(m.message_type==='committed_transcript'||m.message_type==='committed_transcript_with_timestamps'){
+            if(m.message_type==='committed_transcript'&&m.text)parts.push(m.text);
+            partial='';if(on.words)on.words(text());
+            if(waiter){var w=waiter;waiter=null;w()}
+            else if(text()&&on.pause)on.pause(); // the visitor stopped talking
+          }
+        };
+        ws.onerror=ws.onclose=function(){ready=false;if(waiter){var w=waiter;waiter=null;w()}};
+      }).catch(function(){});
+    return {
+      started:function(){return started},
+      text:text,
+      /* Ask for the final words, then shut everything down. Calls back once, within about a second. */
+      finish:function(cb){
+        var done=false,end=function(){if(done)return;done=true;waiter=null;close();cb(text())};
+        if(!ready||!ws||ws.readyState!==1)return end();
+        waiter=end;send(new Int16Array(1600),true);setTimeout(end,1300);
+      },
+      close:close
+    };
+    function close(){
+      if(closed)return;closed=true;
+      try{proc&&proc.disconnect();src&&src.disconnect()}catch(e){}
+      try{ws&&ws.close()}catch(e){}
+      try{ctx&&ctx.close&&ctx.close()}catch(e){}
+    }
+  }
+
+  /* opts: onStart(), onStop(), onWords(text) as the visitor speaks, onLevel(0..1), auto (default true: send when they stop talking). */
   function listen(opts){
     opts=opts||{};
     if(active)active.stop();
-    var recorder=null,chunks=[],startedAt=0,timer=null,stopped=false,resolve;
+    var recorder=null,chunks=[],startedAt=0,timer=null,stopped=false,cancelled=false,resolve,feed=null,refused=null;
     var done=new Promise(function(r){resolve=r});
-    var ctl={stop:function(){stopped=true;clearTimeout(timer);if(recorder&&recorder.state!=='inactive')recorder.stop()},done:done};
+    var ctl={stop:function(){stopped=true;clearTimeout(timer);if(recorder&&recorder.state!=='inactive')recorder.stop()},cancel:function(){cancelled=true;ctl.stop()},done:done};
     active=ctl;
-    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    // The audio context has to be created inside the tap that started this, or phones keep it silent.
+    var ctx=null;try{var AC=window.AudioContext||window.webkitAudioContext;if(AC){ctx=new AC();if(ctx.resume)ctx.resume()}}catch(e){ctx=null}
+    navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(function(stream){
       var type=clipType();
+      try{if(ctx&&ctx.state==='suspended'&&ctx.resume)ctx.resume()}catch(e){} // a context made without a tap (hands-free) can start once the microphone is live
       recorder=type?new MediaRecorder(stream,{mimeType:type}):new MediaRecorder(stream);
       recorder.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
       recorder.onstop=function(){
-        stream.getTracks().forEach(function(t){t.stop()});
         if(active===ctl)active=null;
-        if(opts.onStop)opts.onStop();
         var seconds=(Date.now()-startedAt)/1000,mime=(recorder.mimeType||'audio/webm').split(';')[0];
-        if(seconds<0.6||!chunks.length)return resolve({error:'I did not catch that. Try again, or type it.'});
-        fetch('/api/voice/listen',{method:'POST',headers:{'Content-Type':mime,'x-toto-session':sessionId(),'x-toto-seconds':seconds.toFixed(1)},body:new Blob(chunks,{type:mime})})
-          .then(function(r){return r.json().catch(function(){return{}})})
-          .then(function(j){resolve(j.text?{text:j.text}:{error:j.error||'I did not catch that. Try again, or type it.',gate:!!j.gate})})
-          .catch(function(){resolve({error:'I could not hear that just now. Please type it instead.'})});
+        var release=function(){stream.getTracks().forEach(function(t){t.stop()})};
+        var upload=function(){
+          if(seconds<0.6||!chunks.length)return resolve({error:'I did not catch that. Try again, or type it.'});
+          fetch('/api/voice/listen',{method:'POST',headers:{'Content-Type':mime,'x-toto-session':sessionId(),'x-toto-seconds':seconds.toFixed(1)},body:new Blob(chunks,{type:mime})})
+            .then(function(r){return r.json().catch(function(){return{}})})
+            .then(function(j){resolve(j.text?{text:j.text}:{error:j.error||'I did not catch that. Try again, or type it.',gate:!!j.gate})})
+            .catch(function(){resolve({error:'I could not hear that just now. Please type it instead.'})});
+        };
+        if(cancelled){if(feed)feed.close();release();if(opts.onStop)opts.onStop();return resolve({cancelled:true})}
+        if(refused){if(feed)feed.close();release();if(opts.onStop)opts.onStop();return resolve({error:refused.error,gate:!!refused.gate})}
+        if(!feed){release();if(opts.onStop)opts.onStop();return upload()}
+        feed.finish(function(text){
+          release();if(opts.onStop)opts.onStop();
+          if(text)return resolve({text:text.slice(0,1200)});
+          if(feed.started())return resolve({error:'I did not catch that. Try again, or type it.'}); // it was listening and heard nothing
+          upload();
+        });
       };
       recorder.start();startedAt=Date.now();
+      if(ctx)feed=live(stream,ctx,{
+        words:function(t){if(opts.onWords&&!stopped)opts.onWords(t)},
+        level:function(v){if(opts.onLevel&&!stopped)opts.onLevel(v)},
+        pause:function(){if(opts.auto!==false&&!stopped)ctl.stop()},
+        refused:function(j){refused=j;ctl.stop()}
+      });
       if(opts.onStart)opts.onStart();
       if(stopped)ctl.stop();else timer=setTimeout(ctl.stop,MAX_MS);
     }).catch(function(){
       if(active===ctl)active=null;
+      try{ctx&&ctx.close&&ctx.close()}catch(e){}
       resolve({error:'I need microphone access to listen. You can type instead.'});
     });
     return ctl;
@@ -113,11 +203,13 @@ document.addEventListener('click',function(e){
     if(!form)return;
     current=window.BBVoice.listen({
       onStart:function(){btn.classList.add('rec');label(btn,'Listening…','Say what you need, then tap here to finish.')},
+      onWords:function(t){if(t)label(btn,'Listening…',t.length>110?'…'+t.slice(-110):t)},
+      auto:false,
       onStop:function(){btn.classList.remove('rec');btn.classList.add('busy');btn.disabled=true;label(btn,'Working it out…','Filling the form in from what you said.')}
     });
     current.done.then(function(heard){
       current=null;
-      if(!heard.text){reset(btn);label(btn,'Or just say it',heard.error);return}
+      if(!heard.text){reset(btn);if(heard.error)label(btn,'Or just say it',heard.error);return}
       return fetch('/api/brief',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({said:heard.text,schema:form.schema()})})
         .then(function(r){return r.json().catch(function(){return{}})})
         .then(function(j){
@@ -126,4 +218,27 @@ document.addEventListener('click',function(e){
         });
     }).catch(function(){current=null;reset(btn)});
   });
+})();
+
+/* Home page "equation" pictures: swipe left or right on a touch screen to move between them. */
+(function(){
+  var stage=document.querySelector('.eqx .eqx-stage');
+  if(!stage)return;
+  var prev=document.querySelector('.eqx [data-eqx="-1"]'),next=document.querySelector('.eqx [data-eqx="1"]');
+  if(!prev||!next)return;
+  var x0=null,y0=0,id=null;
+  stage.addEventListener('touchstart',function(e){
+    if(e.touches.length!==1){x0=null;return}
+    var t=e.touches[0];x0=t.clientX;y0=t.clientY;id=t.identifier;
+  },{passive:true});
+  stage.addEventListener('touchend',function(e){
+    if(x0===null)return;
+    var t=null;for(var i=0;i<e.changedTouches.length;i++)if(e.changedTouches[i].identifier===id)t=e.changedTouches[i];
+    var sx=x0;x0=null;
+    if(!t)return;
+    var dx=t.clientX-sx,dy=t.clientY-y0;
+    if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)*1.5)return; // a tap, or a scroll down the page
+    (dx<0?next:prev).click();
+  },{passive:true});
+  stage.addEventListener('touchcancel',function(){x0=null},{passive:true});
 })();

@@ -1,8 +1,9 @@
 /* Toto, the site assistant.
    A chat panel that talks to /api/chat. The server holds the model, the facts and the limits; this
    script shows the conversation and carries out the actions the server returns (move to a page,
-   open the request form, open the coffee booking). Voice: a spoken message is recorded in the browser,
-   turned into text by /api/voice/listen, and the reply to a spoken message is read aloud by /api/voice/speak.
+   open the request form, open the coffee booking). Voice: the visitor's words appear in the conversation as they
+   speak (BBVoice in site.js), and the reply to a spoken message is read aloud by /api/voice/speak.
+   The line under Toto's name always says what is happening: listening, thinking or speaking.
    API kept from the design: window.BBAgentDesk.open() / close() / ask(text), and any element with
    [data-agent-open] opens the panel. */
 (function () {
@@ -47,14 +48,16 @@
 
   var panel = el('aside', 'bba',
     '<div class="bba-head"><span class="av" aria-hidden="true">T<span class="sq"></span></span>' +
-    '<div><b>' + NAME + '</b><span class="s">Ben’s AI assistant</span></div>' +
+    '<div class="bba-who"><b>' + NAME + '</b><span class="s" aria-live="polite">Ben’s AI assistant</span></div>' +
+    '<button type="button" class="hush" hidden>Stop</button>' +
     '<button type="button" class="clr">Clear</button>' +
     '<button type="button" class="bba-x" aria-label="Close chat"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>' +
     '<div class="bba-log" role="log" aria-live="polite"></div>' +
     '<div class="bba-starters"></div>' +
-    '<form class="bba-comp"><textarea rows="1" maxlength="1200" placeholder="Ask anything…" aria-label="Message"></textarea>' +
-    '<button type="button" class="mic" aria-label="Speak your message" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg></button>' +
-    '<button type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg></button></form>' +
+    '<form class="bba-comp"><textarea rows="1" maxlength="1200" placeholder="' + (window.BBVoice && window.BBVoice.supported ? 'Type, or tap the mic to talk…' : 'Ask anything…') + '" aria-label="Message"></textarea>' +
+    '<div class="bba-ear" hidden><span class="lv" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="t">Listening…</span><button type="button" class="cancel">Cancel</button></div>' +
+    '<button type="button" class="mic" aria-label="Speak your message" aria-pressed="false"><svg class="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg><svg class="i-send" viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg></button>' +
+    '<button type="submit" class="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg></button></form>' +
     '<div class="bba-foot"><span>' + NAME + ' is AI · hands over to Ben</span><button type="button" class="form">Request form ↗</button></div>');
   panel.setAttribute('aria-label', 'Chat with ' + NAME);
 
@@ -63,6 +66,25 @@
   var form = panel.querySelector('.bba-comp');
   var starters = panel.querySelector('.bba-starters');
   var mic = panel.querySelector('.mic');
+  var ear = panel.querySelector('.bba-ear');
+  var statusLine = panel.querySelector('.bba-head .s');
+  var hush = panel.querySelector('.hush');
+  var bars = [].slice.call(ear.querySelectorAll('.lv i'));
+
+  /* What Toto is doing right now, shown under his name and used to style the panel. */
+  var STATES = { idle: 'Ben’s AI assistant', listening: 'Listening…', hearing: 'Working out what you said…', thinking: 'Thinking…', speaking: 'Speaking…' };
+  function setState(name) {
+    panel.setAttribute('data-state', name);
+    statusLine.textContent = STATES[name] || STATES.idle;
+    hush.hidden = name !== 'speaking';
+  }
+  function thinkingBubble(label) {
+    // Its own class names: the design's stylesheet and scripts already use "bba-typing", "dots" and "who" for other things.
+    var n = el('div', 'bba-think', '<span class="bba-think-d"><i></i><i></i><i></i></span><span class="bba-think-l"></span>');
+    n.querySelector('.bba-think-l').textContent = label;
+    n.setAttribute('role', 'status');
+    return n;
+  }
   STARTERS.forEach(function (text) {
     var b = el('button'); b.type = 'button'; b.textContent = text;
     b.addEventListener('click', function () { ask(text); });
@@ -161,8 +183,8 @@
     history.push({ role: 'user', text: text });
     save(); render();
     input.value = ''; input.style.height = '';
-    var typing = el('div', 'bba-typing', '<i></i><i></i><i></i>');
-    log.appendChild(typing); log.scrollTop = log.scrollHeight;
+    log.appendChild(thinkingBubble(NAME + ' is thinking')); log.scrollTop = log.scrollHeight;
+    setState('thinking');
 
     fetch('/api/chat', {
       method: 'POST',
@@ -180,17 +202,22 @@
         if (!j.reply) throw new Error(j.error || 'no reply');
         if (j.known) write(localStorage, KEYS.known, '1');
         history.push({ role: 'assistant', text: j.reply, local: !!j.limited });
-        save(); render();
+        save(); render(); setState('idle');
         attachReport(j.actions);
         if (j.gate) { showGate(); return; }
         // A spoken question gets a spoken answer; any move to another page waits until he has finished.
-        if (spoken && !j.limited) speak(function () { run(j.actions); });
+        // Hands-free: once he has finished speaking, and nothing is about to move the visitor elsewhere, listen for the next question.
+        if (spoken && !j.limited) speak(function (finished) {
+          run(j.actions);
+          var moving = (j.actions || []).some(function (a) { return a.type !== 'report'; });
+          if (finished && !moving && isOpen() && !busy && !recording && !gate) startRecording(true);
+        });
         else run(j.actions);
       })
       .catch(function (e) {
         var msg = e && e.message && e.message !== 'no reply' && e.message.length < 200 ? e.message : 'I could not answer that just now. Please try again, or use the request form.';
         history.push({ role: 'assistant', text: msg, error: true });
-        render();
+        render(); setState('idle');
       })
       .then(function () { busy = false; });
   }
@@ -201,7 +228,7 @@
   panel.querySelector('.clr').addEventListener('click', function () {
     history = [{ role: 'assistant', text: GREETING }];
     session = uuid(); write(localStorage, KEYS.session, session);
-    remove(localStorage, KEYS.known); gate = null; stopSpeaking();
+    remove(localStorage, KEYS.known); gate = null; stopRecording(true); stopSpeaking();
     save(); render();
   });
   panel.querySelector('.form').addEventListener('click', function () { openRequest(); });
@@ -247,52 +274,82 @@
 
   function unlockAudio() {
     // Phones only let a page play sound that started from a tap, so the player is started here, silently.
-    if (!player) { player = new Audio(); player.addEventListener('ended', speechDone); player.addEventListener('error', speechDone); }
+    if (!player) { player = new Audio(); player.addEventListener('ended', function () { if (afterSpeech && player.src.indexOf('blob:') === 0) heardOut = true; speechDone(); }); player.addEventListener('error', speechDone); }
     try { player.src = SILENCE; var p = player.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
   }
-  function speechDone() { var next = afterSpeech; afterSpeech = null; launch.classList.remove('speaking'); if (next) next(); }
+  var heardOut = false; // true only when a spoken reply played to its end, rather than being stopped
+  var speechTimer = null;
+  function speechDone() { var next = afterSpeech, finished = heardOut; afterSpeech = null; heardOut = false; clearTimeout(speechTimer); launch.classList.remove('speaking'); if (panel.getAttribute('data-state') === 'speaking') setState('idle'); if (next) next(finished); }
   function stopSpeaking() { if (player && !player.paused) { try { player.pause(); } catch (e) {} } speechDone(); }
   function speak(then) {
     afterSpeech = then || null;
     var done = false, finish = function () { if (!done) { done = true; speechDone(); } };
+    setState('speaking'); // from the moment the voice is being fetched, so there is no silent gap with nothing showing
     fetch('/api/voice/speak', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session: session }) })
       .then(function (r) { return r.ok ? r.blob() : null; })
       .then(function (blob) {
-        if (!blob || !player) return finish();
+        if (!blob || !player || !isOpen()) return finish();
         player.src = URL.createObjectURL(blob);
-        launch.classList.add('speaking');
+        launch.classList.add('speaking'); setState('speaking');
         var p = player.play();
         if (p && p.catch) p.catch(finish);
-        setTimeout(finish, 60000); // never hold a page move for longer than a minute
+        clearTimeout(speechTimer);
+        speechTimer = setTimeout(function () { if (player && !player.paused) { try { player.pause(); } catch (e) {} } finish(); }, 60000); // never hold a page move for longer than a minute
       })
       .catch(finish);
   }
+  hush.addEventListener('click', stopSpeaking);
 
-  function startRecording() {
-    unlockAudio(); stopSpeaking();
-    var typing = el('div', 'bba-typing', '<i></i><i></i><i></i>');
+  /* Listening: the words go into a bubble as they are spoken. It sends when the visitor pauses, or when they tap send. */
+  var liveBubble = null;
+  function listeningUI(on) {
+    form.classList.toggle('listening', on);
+    ear.hidden = !on; input.hidden = on;
+    mic.classList.toggle('rec', on);
+    mic.setAttribute('aria-pressed', on ? 'true' : 'false');
+    mic.setAttribute('aria-label', on ? 'Send what you said' : 'Speak your message');
+    if (!on) { bars.forEach(function (b) { b.style.transform = ''; }); if (liveBubble && liveBubble.parentNode) liveBubble.parentNode.removeChild(liveBubble); liveBubble = null; }
+  }
+  var QUIET_MS = 8000; // hands-free listening gives up quietly if nobody speaks
+  function startRecording(handsFree) {
+    if (!handsFree) unlockAudio();
+    stopSpeaking();
+    history = history.filter(function (m) { return !m.error; }); render();
+    var waiting = thinkingBubble('Working out what you said'), heardWords = false, quiet = null;
     recording = voice.listen({
       onStart: function () {
-        mic.classList.add('rec'); mic.setAttribute('aria-pressed', 'true'); mic.setAttribute('aria-label', 'Stop and send');
-        input.placeholder = 'Listening… tap the mic to send';
+        listeningUI(true); setState('listening');
+        liveBubble = el('div', 'bba-msg u live'); liveBubble.textContent = 'Listening…';
+        log.appendChild(liveBubble); log.scrollTop = log.scrollHeight;
+        if (handsFree) quiet = setTimeout(function () { if (!heardWords) stopRecording(true); }, QUIET_MS);
+      },
+      onWords: function (text) {
+        if (!liveBubble || !text) return;
+        heardWords = true; liveBubble.classList.add('has'); liveBubble.textContent = text; log.scrollTop = log.scrollHeight;
+        ear.querySelector('.t').textContent = 'Pause or tap send';
+      },
+      onLevel: function (v) {
+        bars.forEach(function (b, i) { b.style.transform = 'scaleY(' + (0.25 + Math.min(1, v * (0.6 + 0.4 * Math.sin(i * 1.9 + Date.now() / 140) + 0.4)) * 0.75).toFixed(2) + ')'; });
       },
       onStop: function () {
-        mic.classList.remove('rec'); mic.setAttribute('aria-pressed', 'false'); mic.setAttribute('aria-label', 'Speak your message');
-        input.placeholder = 'Ask anything…';
-        log.appendChild(typing); log.scrollTop = log.scrollHeight;
+        clearTimeout(quiet);
+        listeningUI(false); ear.querySelector('.t').textContent = 'Listening…';
+        if (!heardWords && recording) { setState('hearing'); log.appendChild(waiting); log.scrollTop = log.scrollHeight; }
       }
     });
     recording.done.then(function (heard) {
       recording = null;
-      if (typing.parentNode) typing.parentNode.removeChild(typing);
+      if (waiting.parentNode) waiting.parentNode.removeChild(waiting);
+      setState('idle');
+      if (heard.cancelled) return;
       if (heard.text) return ask(heard.text, true);
-      history = history.filter(function (m) { return !m.error; });
       note(heard.error);
       if (heard.gate) showGate();
     });
   }
-  function stopRecording() { if (recording) recording.stop(); }
+  function stopRecording(cancel) { if (recording) { if (cancel) recording.cancel(); else recording.stop(); } }
   mic.addEventListener('click', function () { if (recording) stopRecording(); else if (!busy) startRecording(); });
+  ear.querySelector('.cancel').addEventListener('click', function () { stopRecording(true); });
 
   /* ---------- open / close ---------- */
   function isOpen() { return panel.classList.contains('on'); }
@@ -307,7 +364,7 @@
     setTimeout(function () { input.focus({ preventScroll: true }); }, 400);
   }
   function close() {
-    stopRecording();
+    stopRecording(true);
     stopSpeaking();
     panel.classList.remove('on');
     document.documentElement.classList.remove('bba-open');

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { insert } from "@/lib/db";
 import { EMAIL_RE, fail, guard, str } from "@/lib/guard";
+import { sendReceipt } from "@/lib/mail";
 
 function obj(v: unknown): Record<string, unknown> {
   return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {};
@@ -29,6 +30,7 @@ export async function POST(request: Request) {
       summary: str(b.text, 40_000),
       ip_hash: g.ip,
     });
+    await sendReceipt({ kind: "discovery", to: email, name: str(c.name, 120), ref });
     return NextResponse.json({ ok: true, ref });
   } catch (e) {
     console.error("discovery: save failed", e);
