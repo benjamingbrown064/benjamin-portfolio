@@ -49,3 +49,8 @@ html.can-voice .bf-say{display:flex}
 .bf-say.rec .ic{background:var(--bf-sig);color:#fff}
 .bf-say.busy{opacity:.7}
 @media(max-height:680px){.bf-say .d{display:none}}
+
+/* Hero: on screens wider than about 1500px the headline grows wider than the page column, which pushed the
+   whole centred stack (pill, headline, text, buttons) to the right. The column now stays put and the
+   headline is centred over it. */
+.hero .hero-txt{grid-template-columns:minmax(0,1fr)}
