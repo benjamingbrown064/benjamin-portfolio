@@ -289,6 +289,18 @@ def home_what_changes(html):
     return html.replace("</body>", '<script src="/site/v13/what-changes.js" defer></script>\n</body>', 1)
 
 
+def home_side_project(html):
+    """Home page banner: a pill in the bottom-right corner linking to the BomberBot side project."""
+    pill = ('<a class="hero-game" href="https://www.bomberbot.app" target="_blank" rel="noopener">'
+            '<span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="14.5" cy="18.5" r="8.5" fill="#1d1d1f"/>'
+            '<path d="M19.6 11.6l2.1-2.1" stroke="#1d1d1f" stroke-width="3.2" stroke-linecap="round"/>'
+            '<path d="M22.2 9.2c.9-1.6 2.3-2.1 3.6-1.5" fill="none" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round"/>'
+            '<circle cx="26.4" cy="7.6" r="1.7" fill="#ff6b1f"/><circle cx="11.6" cy="15.6" r="1.6" fill="#fff" opacity=".35"/></svg></span>'
+            '<span class="tx"><span class="k2">Side project</span><b>Want to play a game?</b></span>'
+            '<span class="arr" aria-hidden="true">→</span><span class="sr-only"> (opens bomberbot.app in a new tab)</span></a>')
+    return must_sub(r'(<div class="w hero-cap"><div>.*?</div>)(</div>)', lambda m: m.group(1) + pill + m.group(2), html, "home banner side-project pill")
+
+
 def structural_edits(src_rel, html):
     """Edits that depend on page structure rather than exact text. Blocks wrapped in
     <!--block:name--> markers are kept, removed or replaced by src/lib/site.ts."""
@@ -301,6 +313,7 @@ def structural_edits(src_rel, html):
     if src_rel == "Ben Brown Portfolio v12.html":
         html = home_method_panel(html)
         html = home_what_changes(html)
+        html = home_side_project(html)
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
         html = must_sub(r'<section class="sec grey" id="pricing".*?</section>', pricing, html, "home pricing")
         # "Latest project" tile: the Taskbox "Talk it through" animation sits over the right of the photo.
