@@ -182,6 +182,8 @@
     stopSpeaking();
     history = history.filter(function (m) { return !m.error; });
     var mark = history.length, aborted = false, wire = window.AbortController ? new AbortController() : null;
+    // Counted once per visit and per way of asking, so analytics shows how many people used the chat, not how chatty they were.
+    try { var tk = 'toto:tracked:' + (spoken ? 'voice' : 'typed'); if (!sessionStorage.getItem(tk)) { sessionStorage.setItem(tk, '1'); track('toto_message', { method: spoken ? 'voice' : 'typed' }); } } catch (e) {}
     history.push({ role: 'user', text: text });
     save(); render();
     input.value = ''; input.style.height = '';
@@ -481,7 +483,9 @@
 
   /* ---------- open / close ---------- */
   function isOpen() { return panel.classList.contains('on'); }
+  function track(name, params) { if (window.BBTrack) window.BBTrack(name, params); }
   function open() {
+    if (!isOpen()) track('toto_open');
     panel.classList.add('on');
     document.documentElement.classList.add('bba-open');
     launch.classList.add('on', 'seen');
