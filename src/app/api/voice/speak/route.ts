@@ -10,6 +10,8 @@ const STYLE = "Calm, warm and unhurried. British English. Conversational, like a
 const ELEVEN_VOICE = process.env.TOTO_ELEVEN_VOICE || "DPSolStDPHwmw34akfe3";
 // Turbo starts speaking in about 0.2s; the more expressive "eleven_v3_conversational" takes about 0.7s.
 const ELEVEN_MODEL = process.env.TOTO_ELEVEN_MODEL || "eleven_turbo_v2_5";
+// A touch slower than the voice's natural pace (1 = natural; ElevenLabs accepts 0.7 to 1.2).
+const ELEVEN_SPEED = Math.min(1.2, Math.max(0.7, Number(process.env.TOTO_ELEVEN_SPEED) || 0.9));
 
 async function elevenSpeech(text: string): Promise<ArrayBuffer | null> {
   const key = process.env.ELEVENLABS_API_KEY;
@@ -18,7 +20,7 @@ async function elevenSpeech(text: string): Promise<ArrayBuffer | null> {
     const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}?output_format=mp3_44100_128`, {
       method: "POST",
       headers: { "xi-api-key": key, "Content-Type": "application/json" },
-      body: JSON.stringify({ text, model_id: ELEVEN_MODEL }),
+      body: JSON.stringify({ text, model_id: ELEVEN_MODEL, voice_settings: { speed: ELEVEN_SPEED } }),
       signal: AbortSignal.timeout(15_000),
     });
     if (!res.ok) throw new Error(`${res.status}: ${(await res.text().catch(() => "")).slice(0, 200)}`);
@@ -90,7 +92,7 @@ export async function GET(request: Request) {
       fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}/stream?output_format=mp3_44100_128`, {
         method: "POST",
         headers: { "xi-api-key": key, "Content-Type": "application/json" },
-        body: JSON.stringify({ text, model_id: ELEVEN_MODEL }),
+        body: JSON.stringify({ text, model_id: ELEVEN_MODEL, voice_settings: { speed: ELEVEN_SPEED } }),
         signal: AbortSignal.timeout(20_000),
       }),
     ]);

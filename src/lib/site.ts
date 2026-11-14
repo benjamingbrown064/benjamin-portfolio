@@ -1,6 +1,7 @@
 // Serves the designed pages. The design is plain HTML, CSS and JS; scripts/import-design.py turns the
 // design export into site/pages/*.html with {{tokens}} and <!--block:name--> markers, and this module
 // fills them in from site/facts.json and the journal.
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import facts from "../../site/facts.json";
@@ -24,6 +25,22 @@ export type PageOptions = {
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/** A short fingerprint of a script in public/, added to its address so a changed script is fetched at once
+ *  and is not held back by the browser's copy of the old one. */
+const versions = new Map<string, string>();
+function versioned(src: string): string {
+  let v = versions.get(src);
+  if (v === undefined) {
+    try {
+      v = createHash("md5").update(readFileSync(path.join(process.cwd(), "public", src))).digest("hex").slice(0, 10);
+    } catch {
+      v = "";
+    }
+    versions.set(src, v);
+  }
+  return v ? `${src}?v=${v}` : src;
 }
 
 function readPage(name: string): string {
@@ -147,7 +164,7 @@ export function renderPage(name: string, opts: PageOptions): string {
     .join("\n");
   // The assistant is on every page except the discovery questionnaire, which is a focused full-screen flow.
   const bodyEnd =
-    `<script src="/site/v13/site.js" defer></script>` + (name === "discovery" ? "" : `\n<script src="/site/v13/toto.js" defer></script>`);
+    `<script src="${versioned("/site/v13/site.js")}" defer></script>` + (name === "discovery" ? "" : `\n<script src="${versioned("/site/v13/toto.js")}" defer></script>`);
 
   const tokens: Record<string, string> = {
     head,
@@ -160,6 +177,8 @@ export function renderPage(name: string, opts: PageOptions): string {
     tokens[`price.${k}.usd`] = v.usd;
   }
   html = html.replace(/\{\{([a-z_.]+)\}\}/g, (m, key: string) => (key in tokens ? tokens[key] : m));
+  // Hand-written scripts already in the page (for example the "What changes" dialog) get the same fingerprint.
+  html = html.replace(/(<script src=")(\/site\/v13\/[a-z0-9-]+\.js)(")/g, (_m, pre: string, src: string, post: string) => pre + versioned(src) + post);
 
   const left = html.match(/\{\{[a-z_.]+\}\}/);
   if (left) throw new Error(`Unfilled token ${left[0]} in page "${name}"`);
