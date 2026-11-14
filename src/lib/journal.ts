@@ -35,6 +35,17 @@ export const JOURNAL: JournalEntry[] = [
     thumb: `${HANDOVER_1}/thumb.jpg`,
     tile: `${HANDOVER_1}/portrait.jpg`,
   },
+  {
+    slug: "enterprise-agent-small-company",
+    title: "An enterprise agent a small company can afford to try",
+    date: "2026-11-11",
+    category: "Essay",
+    excerpt: "What OpenClaw changed, where it stands today, and four ways a smaller company can put an agent to work. With a 30-day plan for trying one.",
+    minutes: 7,
+    cover: "/media/journal/enterprise-agent-small-company/cover.jpg",
+    coverAlt: "A lobster rests one claw on a closed book on a steel kitchen counter at night.",
+    thumb: "/media/journal/enterprise-agent-small-company/thumb.jpg",
+  },
 ];
 
 export function journalDate(iso: string): string {
