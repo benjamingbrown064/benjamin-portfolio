@@ -243,3 +243,26 @@ document.addEventListener('click',function(e){
   },{passive:true});
   stage.addEventListener('touchcancel',function(){x0=null},{passive:true});
 })();
+
+/* Analytics consent. Google Analytics runs without cookies until the visitor accepts here; the choice is kept in
+   the browser and can be reopened from any [data-cookie-settings] link (there is one on the privacy page). */
+(function(){
+  var KEY='bb:consent',bar=null;
+  function get(){try{return localStorage.getItem(KEY)}catch(e){return null}}
+  function set(v){
+    try{localStorage.setItem(KEY,v)}catch(e){}
+    if(typeof window.gtag==='function')window.gtag('consent','update',{analytics_storage:v==='granted'?'granted':'denied'});
+    if(bar){bar.classList.remove('on');var b=bar;bar=null;setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b)},400)}
+  }
+  function show(){
+    if(bar)return;
+    bar=document.createElement('div');bar.className='ck';bar.setAttribute('role','dialog');bar.setAttribute('aria-label','Analytics cookies');
+    bar.innerHTML='<p>OK to use analytics cookies? They show which pages are useful. Nothing is used for advertising. <a href="/privacy">Privacy</a></p><div class="ck-b"><button type="button" class="no">No thanks</button><button type="button" class="yes">Accept</button></div>';
+    bar.querySelector('.yes').addEventListener('click',function(){set('granted')});
+    bar.querySelector('.no').addEventListener('click',function(){set('denied')});
+    document.body.appendChild(bar);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){if(bar)bar.classList.add('on')})});
+  }
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-cookie-settings]');if(a){e.preventDefault();show()}});
+  if(!get()&&typeof window.gtag==='function'){if(document.body)setTimeout(show,1200);else document.addEventListener('DOMContentLoaded',function(){setTimeout(show,1200)})}
+})();
