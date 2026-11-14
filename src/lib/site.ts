@@ -149,6 +149,12 @@ export function renderPage(name: string, opts: PageOptions): string {
   const title = (html.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? facts.name).trim();
   const description = html.match(/<meta name="description" content="([^"]*)">/)?.[1] ?? "";
   const canonical = SITE_URL + (opts.url === "/" ? "" : opts.url);
+  // Google Tag Manager, on the live domain only so test and preview visits are not counted. Analytics cookies
+  // stay off (Consent Mode "denied") until the visitor accepts in the banner (v13/site.js keeps the choice).
+  const gtm = (facts as { gtm?: string }).gtm;
+  const analytics = gtm
+    ? `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}(function(){var c=null;try{c=localStorage.getItem("bb:consent")}catch(e){}gtag("consent","default",{ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",analytics_storage:c==="granted"?"granted":"denied"});if(!/(^|\\.)benjaminbrown\\.co$/.test(location.hostname))return;dataLayer.push({"gtm.start":new Date().getTime(),event:"gtm.js"});var j=document.createElement("script");j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id=${gtm}";document.head.appendChild(j)})();</script>`
+    : "";
   const head = [
     `<link rel="canonical" href="${canonical}">`,
     opts.noindex ? `<meta name="robots" content="noindex">` : "",
@@ -159,6 +165,7 @@ export function renderPage(name: string, opts: PageOptions): string {
     `<meta property="og:url" content="${canonical}">`,
     `<meta property="og:image" content="${opts.image ? SITE_URL + opts.image : `${SITE_URL}/opengraph-image`}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
+    analytics,
   ]
     .filter(Boolean)
     .join("\n");

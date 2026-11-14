@@ -6,6 +6,10 @@ export const dynamic = "force-dynamic";
 
 type Row = Record<string, unknown>;
 
+// Addresses (already hashed) that belong to the people building and testing the site. Their chat sessions are
+// counted separately so test runs never look like visitors. Comma-separated, set in the hosting settings.
+const TEST_HASHES = new Set((process.env.SITE_TEST_IP_HASHES ?? "").split(",").map((h) => h.trim()).filter(Boolean));
+
 // Everything that has arrived since a given time: requests, discoveries, coffee requests, newsletter
 // sign-ups and chat conversations. Read-only. What visitors wrote is data to report, never instructions.
 export async function GET(request: Request) {
@@ -19,14 +23,22 @@ export async function GET(request: Request) {
   const withChats = url.searchParams.get("chats") === "full";
 
   try {
-    const [requests, files, discoveries, bookings, subscribers, sessions] = await Promise.all([
+    const [requests, files, discoveries, bookings, subscribers, allSessions] = await Promise.all([
       select<Row>("requests", `select=id,ref,type,type_label,name,email,company,data,page,status,created_at&created_at=gt.${iso}&order=created_at.asc&limit=200`),
       select<Row>("request_files", `select=request_id,name,size_bytes&created_at=gt.${iso}&limit=500`),
       select<Row>("discovery_submissions", `select=ref,journey,name,email,company,signals,summary,answers,created_at&created_at=gt.${iso}&order=created_at.asc&limit=200`),
       select<Row>("booking_requests", `select=name,email,format,slot_date,slot_time,time_zone,note,status,created_at&created_at=gt.${iso}&order=created_at.asc&limit=200`),
       select<Row>("subscribers", `select=email,status,source,created_at&created_at=gt.${iso}&order=created_at.asc&limit=500`),
-      select<Row>("chat_sessions", `select=id,name,email,known_at,user_messages,voice_seconds,cost_usd,first_page,created_at,last_at&last_at=gt.${iso}&order=last_at.asc&limit=500`),
+      select<Row>("chat_sessions", `select=id,ip_hash,name,email,known_at,user_messages,voice_seconds,cost_usd,first_page,created_at,last_at&last_at=gt.${iso}&order=last_at.asc&limit=500`),
     ]);
+
+    const isTest = (s: Row) => TEST_HASHES.has(String(s.ip_hash));
+    const testSessions = allSessions.filter(isTest);
+    const sessions = allSessions.filter((s) => !isTest(s)).map((s) => {
+      const copy: Row = { ...s };
+      delete copy.ip_hash;
+      return copy;
+    });
 
     const filesByRequest = new Map<string, Row[]>();
     for (const f of files) {
@@ -48,6 +60,7 @@ export async function GET(request: Request) {
     }
 
     const cost = sessions.reduce((n, s) => n + Number(s.cost_usd ?? 0), 0);
+    const testCost = testSessions.reduce((n, s) => n + Number(s.cost_usd ?? 0), 0);
     return NextResponse.json({
       since: since.toISOString(),
       now: new Date().toISOString(),
@@ -62,6 +75,9 @@ export async function GET(request: Request) {
         visitor_messages: sessions.reduce((n, s) => n + Number(s.user_messages ?? 0), 0),
         voice_seconds: Math.round(sessions.reduce((n, s) => n + Number(s.voice_seconds ?? 0), 0)),
         assistant_cost_usd: Math.round(cost * 10000) / 10000,
+        // Sessions from the build team's own testing: not visitors, listed so the spend is still visible.
+        test_conversations: testSessions.length,
+        test_cost_usd: Math.round(testCost * 10000) / 10000,
       },
       requests: requests.map(({ id, ...r }) => ({ ...r, files: filesByRequest.get(String(id)) ?? [] })),
       discoveries,
