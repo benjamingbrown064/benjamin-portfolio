@@ -282,3 +282,32 @@ document.addEventListener('click',function(e){
   document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-cookie-settings]');if(a){e.preventDefault();show()}});
   if(!get()&&typeof window.gtag==='function'){if(document.body)setTimeout(show,1200);else document.addEventListener('DOMContentLoaded',function(){setTimeout(show,1200)})}
 })();
+
+/* Analytics events. Tells Google Analytics that an action happened (a form sent, the chat opened), never what
+   was written in it. window.BBTrack(name, params) is used by the chat; the forms are picked up here by watching
+   for their saves succeeding, so the form scripts themselves do not need to know about analytics. */
+(function(){
+  function track(name,params){try{if(typeof window.gtag==='function')window.gtag('event',name,params||{})}catch(e){}}
+  window.BBTrack=track;
+  var FORMS={'/api/requests':'request','/api/discovery':'discovery','/api/bookings':'coffee','/api/subscribe':'newsletter'};
+  var realFetch=window.fetch;
+  if(realFetch)window.fetch=function(input,init){
+    var p=realFetch.apply(this,arguments);
+    try{
+      var url=typeof input==='string'?input:(input&&input.url)||'',path=url.replace(/^https?:\/\/[^/]+/,'').split('?')[0],kind=FORMS[path];
+      if(kind&&init&&String(init.method||'').toUpperCase()==='POST'){
+        var type='';try{type=String(JSON.parse(init.body).type||'').replace(/[^a-z]/g,'').slice(0,20)}catch(e){}
+        p.then(function(r){
+          if(!r||!r.ok)return;
+          if(kind==='newsletter')track('newsletter_signup');
+          else track('generate_lead',type?{lead_type:kind,request_type:type}:{lead_type:kind});
+        }).catch(function(){});
+      }
+    }catch(e){}
+    return p;
+  };
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a.hero-game');
+    if(a)track('side_project_click',{link_url:a.href});
+  });
+})();
