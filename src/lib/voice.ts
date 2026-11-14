@@ -76,9 +76,9 @@ export function sayChunker(maxChars: number) {
       if (spoken >= maxChars) { pending = ""; break; }
       let cut = -1;
       if (first) {
-        // First piece: one sentence, as long as it is a real one.
-        const m = /[.!?…]["’”)]?(\s|$)/.exec(pending);
-        if (m && m.index >= 24) cut = m.index + m[0].length;
+        // First piece: up to the first natural break (a comma will do), so the voice can start as early as possible.
+        const m = /[.!?…]["’”)]?(\s|$)|[,;:–—]\s/.exec(pending.slice(18));
+        if (m) cut = 18 + m.index + m[0].length;
       } else {
         // Later pieces: break at a paragraph, or at the last sentence end once there is a good amount of text.
         const para = pending.indexOf("\n\n");

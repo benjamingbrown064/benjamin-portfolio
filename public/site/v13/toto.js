@@ -174,12 +174,14 @@
 
   /* ---------- sending ---------- */
   var busy = false;
+  var asking = null; // the question being answered right now; abort() withdraws it (see phone-call mode in the voice section)
   function ask(text, spoken) {
     text = (text || '').trim();
     if (!text || busy) return;
     busy = true;
     stopSpeaking();
     history = history.filter(function (m) { return !m.error; });
+    var mark = history.length, aborted = false, wire = window.AbortController ? new AbortController() : null;
     history.push({ role: 'user', text: text });
     save(); render();
     input.value = ''; input.style.height = '';
@@ -189,13 +191,25 @@
     // The reply arrives as a stream: the words are shown as they are written, and for a spoken question each
     // piece is spoken as soon as it is ready, so the voice starts on the first sentence.
     var bubble = null, shown = '', talk = spoken ? startTalk() : null, finished = false;
+    var me = asking = {
+      /* The visitor carried on talking before he began to answer: take the question and any reply back out. */
+      abort: function () {
+        if (aborted) return;
+        aborted = true; busy = false; if (asking === me) asking = null;
+        if (wire) wire.abort();
+        if (talk) { talk.after = null; talkFinish(talk, false); }
+        history.length = mark; save(); render();
+      }
+    };
     function finishTurn(j) {
+      if (aborted) return;
       finished = true;
       if (j.known) write(localStorage, KEYS.known, '1');
       history.push({ role: 'assistant', text: j.reply, local: !!j.limited });
       save(); render();
       if (!talk || talk.dead) setState('idle');
       attachReport(j.actions);
+      if (j.gate || j.limited || !talk) hangUp(); // nothing will be spoken, so the open microphone is closed here
       if (j.gate) { if (talk) talkFinish(talk, false); showGate(); return; }
       if (talk && j.say) talkReplace(talk, j.say);
       // A spoken question gets a spoken answer; any move to another page waits until he has finished.
@@ -208,6 +222,7 @@
       else { if (talk) talkFinish(talk, false); run(j.actions); }
     }
     function onEvent(ev) {
+      if (aborted) return;
       if (ev.t === 'd') {
         if (!bubble) {
           var th = log.querySelector('.bba-think'); if (th) th.parentNode.removeChild(th);
@@ -223,6 +238,7 @@
     fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
+      signal: wire ? wire.signal : undefined,
       body: JSON.stringify({
         session: session,
         page: location.pathname,
@@ -256,13 +272,14 @@
         return pump();
       })
       .catch(function (e) {
-        if (finished) return; // the reply is already in; a late hiccup on the connection does not matter
+        if (finished || aborted) return; // the reply is already in, or was withdrawn
+        hangUp();
         if (talk) talkFinish(talk, false);
         var msg = e && e.message && e.message !== 'no reply' && e.message.length < 200 ? e.message : 'I could not answer that just now. Please try again, or use the request form.';
         history.push({ role: 'assistant', text: msg, error: true });
         render(); setState('idle');
       })
-      .then(function () { busy = false; });
+      .then(function () { if (!aborted) { busy = false; if (asking === me) asking = null; } });
   }
 
   form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value); });
@@ -355,6 +372,7 @@
     var go = function () {
       if (t.dead) return;
       if (item.failed) { t.playing = false; return talkNext(t); }
+      hangUp(); // he is answering now, so the microphone held open for a change of mind is closed
       player.src = item.blob || item.url;
       launch.classList.add('speaking'); setState('speaking');
       var p = player.play();
@@ -406,12 +424,15 @@
     if (!handsFree) unlockAudio();
     stopSpeaking();
     history = history.filter(function (m) { return !m.error; }); render();
-    var waiting = thinkingBubble('Working out what you said'), heardWords = false, quiet = null;
+    var waiting = thinkingBubble('Working out what you said'), heardWords = false, quiet = null, handedOver = false;
+    function liveBubbleOn(text) {
+      liveBubble = el('div', 'bba-msg u live' + (text ? ' has' : '')); liveBubble.textContent = text || 'Listening…';
+      log.appendChild(liveBubble); log.scrollTop = log.scrollHeight;
+    }
     recording = voice.listen({
       onStart: function () {
         listeningUI(true); setState('listening');
-        liveBubble = el('div', 'bba-msg u live'); liveBubble.textContent = 'Listening…';
-        log.appendChild(liveBubble); log.scrollTop = log.scrollHeight;
+        liveBubbleOn('');
         if (handsFree) quiet = setTimeout(function () { if (!heardWords) stopRecording(true); }, QUIET_MS);
       },
       onWords: function (text) {
@@ -419,11 +440,25 @@
         heardWords = true; liveBubble.classList.add('has'); liveBubble.textContent = text; log.scrollTop = log.scrollHeight;
         ear.querySelector('.t').textContent = 'Pause or tap send';
       },
+      /* Phone-call mode. A short pause sends what was said straight away, but the microphone stays open until he
+         starts to speak. If the visitor carries on talking in that moment, the question is taken back and he
+         keeps listening, so a pause for thought does not get them cut off. */
+      onUtterance: function (text) {
+        handedOver = true; clearTimeout(quiet);
+        listeningUI(false);
+        ask(text, true);
+      },
+      onResume: function () {
+        handedOver = false;
+        if (asking) asking.abort();
+        listeningUI(true); setState('listening'); liveBubbleOn('');
+      },
       onLevel: function (v) {
         bars.forEach(function (b, i) { b.style.transform = 'scaleY(' + (0.25 + Math.min(1, v * (0.6 + 0.4 * Math.sin(i * 1.9 + Date.now() / 140) + 0.4)) * 0.75).toFixed(2) + ')'; });
       },
       onStop: function () {
         clearTimeout(quiet);
+        if (handedOver) return; // the message is already being answered; nothing on screen changes
         listeningUI(false); ear.querySelector('.t').textContent = 'Listening…';
         if (!heardWords && recording) { setState('hearing'); log.appendChild(waiting); log.scrollTop = log.scrollHeight; }
       }
@@ -431,6 +466,7 @@
     recording.done.then(function (heard) {
       recording = null;
       if (waiting.parentNode) waiting.parentNode.removeChild(waiting);
+      if (heard.released || handedOver) return; // already handed over and being answered
       setState('idle');
       if (heard.cancelled) return;
       if (heard.text) return ask(heard.text, true);
@@ -439,6 +475,7 @@
     });
   }
   function stopRecording(cancel) { if (recording) { if (cancel) recording.cancel(); else recording.stop(); } }
+  function hangUp() { if (recording && recording.release) recording.release(); }
   mic.addEventListener('click', function () { if (recording) stopRecording(); else if (!busy) startRecording(); });
   ear.querySelector('.cancel').addEventListener('click', function () { stopRecording(true); });
 

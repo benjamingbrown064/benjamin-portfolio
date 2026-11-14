@@ -101,7 +101,7 @@ document.addEventListener('click',function(e){
       .then(function(j){
         if(closed)return;
         if(!j.token){if(j.status===429&&on.refused)on.refused(j);return} // 429: the voice allowance is used up; anything else: fall back to the recorded clip
-        ws=new WebSocket(LIVE_URL+'?model_id=scribe_v2_realtime&audio_format=pcm_16000&language_code=en&commit_strategy=vad&vad_silence_threshold_secs=1.0&token='+encodeURIComponent(j.token));
+        ws=new WebSocket(LIVE_URL+'?model_id=scribe_v2_realtime&audio_format=pcm_16000&language_code=en&commit_strategy=vad&vad_silence_threshold_secs=0.5&token='+encodeURIComponent(j.token));
         ws.onmessage=function(e){
           var m={};try{m=JSON.parse(e.data)}catch(x){}
           if(m.message_type==='session_started'){ready=true;started=true;queue.forEach(function(q){ws.send(q)});queue=[]}
@@ -110,7 +110,7 @@ document.addEventListener('click',function(e){
             if(m.message_type==='committed_transcript'&&m.text)parts.push(m.text);
             partial='';if(on.words)on.words(text());
             if(waiter){var w=waiter;waiter=null;w()}
-            else if(text()&&on.pause)on.pause(); // the visitor stopped talking
+            else if(text()&&on.pause)on.pause(text()); // the visitor stopped talking
           }
         };
         ws.onerror=ws.onclose=function(){ready=false;if(waiter){var w=waiter;waiter=null;w()}};
@@ -135,13 +135,19 @@ document.addEventListener('click',function(e){
     }
   }
 
-  /* opts: onStart(), onStop(), onWords(text) as the visitor speaks, onLevel(0..1), auto (default true: send when they stop talking). */
+  /* opts: onStart(), onStop(), onWords(text) as the visitor speaks, onLevel(0..1), auto (default true: send when they stop talking).
+     Phone-call mode: give onUtterance(text) and it is called at each pause with everything said so far, while the
+     microphone stays open; onResume() is called if they start talking again before release() is called. */
   function listen(opts){
     opts=opts||{};
     if(active)active.stop();
     var recorder=null,chunks=[],startedAt=0,timer=null,stopped=false,cancelled=false,resolve,feed=null,refused=null;
     var done=new Promise(function(r){resolve=r});
-    var ctl={stop:function(){stopped=true;clearTimeout(timer);if(recorder&&recorder.state!=='inactive')recorder.stop()},cancel:function(){cancelled=true;ctl.stop()},done:done};
+    var handed=false; // true while a paused utterance is with the caller and the visitor has not spoken again
+    var ctl={stop:function(){stopped=true;clearTimeout(timer);if(recorder&&recorder.state!=='inactive')recorder.stop()},cancel:function(){cancelled=true;ctl.stop()},
+      /* Close the microphone quietly: the utterance already handed over stands as the message. */
+      release:function(){cancelled=true;released=true;ctl.stop()},done:done};
+    var released=false;
     active=ctl;
     // The audio context has to be created inside the tap that started this, or phones keep it silent.
     var ctx=null;try{var AC=window.AudioContext||window.webkitAudioContext;if(AC){ctx=new AC();if(ctx.resume)ctx.resume()}}catch(e){ctx=null}
@@ -161,7 +167,7 @@ document.addEventListener('click',function(e){
             .then(function(j){resolve(j.text?{text:j.text}:{error:j.error||'I did not catch that. Try again, or type it.',gate:!!j.gate})})
             .catch(function(){resolve({error:'I could not hear that just now. Please type it instead.'})});
         };
-        if(cancelled){if(feed)feed.close();release();if(opts.onStop)opts.onStop();return resolve({cancelled:true})}
+        if(cancelled){if(feed)feed.close();release();if(opts.onStop&&!released)opts.onStop();return resolve(released?{released:true}:{cancelled:true})}
         if(refused){if(feed)feed.close();release();if(opts.onStop)opts.onStop();return resolve({error:refused.error,gate:!!refused.gate})}
         if(!feed){release();if(opts.onStop)opts.onStop();return upload()}
         feed.finish(function(text){
@@ -173,9 +179,19 @@ document.addEventListener('click',function(e){
       };
       recorder.start();startedAt=Date.now();
       if(ctx)feed=live(stream,ctx,{
-        words:function(t){if(opts.onWords&&!stopped)opts.onWords(t)},
+        words:function(t){
+          if(stopped)return;
+          // Phone-call mode: they paused, the words were handed over, and now they are talking again.
+          if(handed){handed=false;if(opts.onResume)opts.onResume()}
+          if(opts.onWords)opts.onWords(t);
+        },
         level:function(v){if(opts.onLevel&&!stopped)opts.onLevel(v)},
-        pause:function(){if(opts.auto!==false&&!stopped)ctl.stop()},
+        pause:function(t){
+          if(stopped||opts.auto===false)return;
+          // With onUtterance the microphone stays open after a pause, so the visitor can carry on and be heard;
+          // the caller closes it with release() once it is committed to answering.
+          if(opts.onUtterance){handed=true;opts.onUtterance(t)}else ctl.stop();
+        },
         refused:function(j){refused=j;ctl.stop()}
       });
       if(opts.onStart)opts.onStart();
