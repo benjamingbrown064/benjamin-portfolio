@@ -184,18 +184,76 @@ type ModelReply = {
   usage?: { input_tokens?: number; output_tokens?: number; cache_read_input_tokens?: number; cache_creation_input_tokens?: number };
 };
 
-async function callModel(system: unknown[], messages: unknown[]): Promise<ModelReply> {
+/** Calls the model with streaming on, so the words can be passed on as they are written. The stream is put back
+ *  together into the same shape a non-streamed reply has, so the rest of this file does not care which was used. */
+async function callModel(system: unknown[], messages: unknown[], onText?: (delta: string) => void): Promise<ModelReply> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": process.env.ANTHROPIC_API_KEY!, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: CHAT_MODEL, max_tokens: 1400, system, tools: TOOLS, messages }),
-    signal: AbortSignal.timeout(22_000),
+    body: JSON.stringify({ model: CHAT_MODEL, max_tokens: 1400, system, tools: TOOLS, messages, stream: true }),
+    signal: AbortSignal.timeout(30_000),
   });
-  if (!res.ok) throw new Error(`assistant request failed (${res.status}): ${(await res.text().catch(() => "")).slice(0, 300)}`);
-  return (await res.json()) as ModelReply;
+  if (!res.ok || !res.body) throw new Error(`assistant request failed (${res.status}): ${(await res.text().catch(() => "")).slice(0, 300)}`);
+
+  const out: ModelReply = { content: [], usage: {} };
+  const partialJson: Record<number, string> = {};
+  const handle = (ev: Record<string, unknown>) => {
+    const index = ev.index as number;
+    if (ev.type === "message_start") {
+      out.usage = { ...((ev.message as { usage?: ModelReply["usage"] })?.usage ?? {}) };
+    } else if (ev.type === "content_block_start") {
+      const b = ev.content_block as Block;
+      out.content[index] = b.type === "tool_use" ? { type: "tool_use", id: b.id, name: b.name, input: {} } : { type: b.type, text: b.text ?? "" };
+    } else if (ev.type === "content_block_delta") {
+      const d = ev.delta as { type?: string; text?: string; partial_json?: string };
+      const block = out.content[index];
+      if (d.type === "text_delta" && d.text && block) {
+        block.text = (block.text ?? "") + d.text;
+        onText?.(d.text);
+      } else if (d.type === "input_json_delta") {
+        partialJson[index] = (partialJson[index] ?? "") + (d.partial_json ?? "");
+      }
+    } else if (ev.type === "content_block_stop") {
+      const block = out.content[index];
+      if (block?.type === "tool_use") {
+        try {
+          block.input = partialJson[index] ? (JSON.parse(partialJson[index]) as Record<string, unknown>) : {};
+        } catch {
+          block.input = {};
+        }
+      }
+    } else if (ev.type === "message_delta") {
+      out.stop_reason = (ev.delta as { stop_reason?: string })?.stop_reason ?? out.stop_reason;
+      out.usage = { ...out.usage, ...((ev.usage as ModelReply["usage"]) ?? {}) };
+    } else if (ev.type === "error") {
+      throw new Error(`assistant stream error: ${JSON.stringify(ev.error).slice(0, 300)}`);
+    }
+  };
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let cut: number;
+    while ((cut = buffer.indexOf("\n\n")) >= 0) {
+      const frame = buffer.slice(0, cut);
+      buffer = buffer.slice(cut + 2);
+      for (const line of frame.split("\n")) {
+        if (!line.startsWith("data:")) continue;
+        const data = line.slice(5).trim();
+        if (data && data !== "[DONE]") handle(JSON.parse(data) as Record<string, unknown>);
+      }
+    }
+  }
+  out.content = out.content.filter(Boolean);
+  return out;
 }
 
-export async function askToto(history: Turn[], page: string, known = false): Promise<TotoResult> {
+/** onText, when given, receives the reply a few words at a time as it is written. */
+export async function askToto(history: Turn[], page: string, known = false, onText?: (delta: string) => void): Promise<TotoResult> {
   // The long, unchanging part is marked for caching so repeat turns cost a fraction of the first.
   const system = [
     { type: "text", text: systemPrompt(), cache_control: { type: "ephemeral" } },
@@ -212,7 +270,9 @@ export async function askToto(history: Turn[], page: string, known = false): Pro
   // Usually one round. A second lets him finish a turn that so far holds only an action, or only a
   // saved contact (for example: details saved, then the first-look report).
   for (let round = 0; round < 2; round++) {
-    const data = await callModel(system, messages);
+    // A second round's words follow the first after a blank line, as they do in the finished reply.
+    let opened = false;
+    const data = await callModel(system, messages, onText ? (d) => { if (!opened) { opened = true; if (reply) onText("\n\n"); } onText(d); } : undefined);
     usage.fresh += data.usage?.input_tokens ?? 0;
     usage.cacheRead += data.usage?.cache_read_input_tokens ?? 0;
     usage.cacheWrite += data.usage?.cache_creation_input_tokens ?? 0;

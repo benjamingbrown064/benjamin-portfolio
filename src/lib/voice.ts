@@ -1,5 +1,6 @@
 // Shared limits and checks for the assistant's voice. Listening and speaking both count towards one
 // allowance of seconds, and their estimated cost counts towards the same monthly cap as the chat.
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { rpc } from "./db";
 
 export const VOICE = {
@@ -37,4 +38,69 @@ export async function voiceAllowed(session: string, ip: string): Promise<VoiceDe
     return { allow: false, gate: false, message: "That is today’s voice allowance used. You can still type." };
   }
   return { allow: true, check: c };
+}
+
+/* ---------- speaking a reply while it is still being written ----------
+   The chat hands the browser each piece of the reply with a signature, and the speak endpoint will only voice
+   text carrying a valid one. So it can start on the first sentence without waiting for the whole reply to be
+   saved, and still cannot be used to voice text the assistant did not write. */
+const SAY_TTL_MS = 10 * 60_000;
+
+function saySignature(session: string, expires: number, text: string): string {
+  return createHmac("sha256", `${process.env.SITE_HASH_SALT ?? ""}:say`).update(`${session}\n${expires}\n${text}`).digest("hex").slice(0, 40);
+}
+
+export type Sayable = { text: string; e: number; g: string };
+
+export function signSay(session: string, text: string): Sayable {
+  const e = Date.now() + SAY_TTL_MS;
+  return { text, e, g: saySignature(session, e, text) };
+}
+
+export function verifySay(session: string, text: string, expires: number, signature: string): boolean {
+  if (!process.env.SITE_HASH_SALT || !Number.isFinite(expires) || expires < Date.now() || expires > Date.now() + SAY_TTL_MS + 60_000) return false;
+  const want = Buffer.from(saySignature(session, expires, text));
+  const got = Buffer.from(signature);
+  return want.length === got.length && timingSafeEqual(want, got);
+}
+
+/** Splits a reply into pieces to speak: the first sentence on its own, so the voice can start early, then the rest
+ *  in a few larger pieces. Call push() with each new bit of text; it returns any pieces that are now complete. */
+export function sayChunker(maxChars: number) {
+  let pending = "";
+  let spoken = 0;
+  let first = true;
+  const take = (final: boolean): string[] => {
+    const out: string[] = [];
+    for (;;) {
+      if (spoken >= maxChars) { pending = ""; break; }
+      let cut = -1;
+      if (first) {
+        // First piece: one sentence, as long as it is a real one.
+        const m = /[.!?…]["’”)]?(\s|$)/.exec(pending);
+        if (m && m.index >= 24) cut = m.index + m[0].length;
+      } else {
+        // Later pieces: break at a paragraph, or at the last sentence end once there is a good amount of text.
+        const para = pending.indexOf("\n\n");
+        if (para >= 0) cut = para + 2;
+        else if (pending.length > 260) {
+          const ends = [...pending.matchAll(/[.!?…]["’”)]?\s/g)];
+          const last = ends[ends.length - 1];
+          if (last && last.index !== undefined) cut = last.index + last[0].length;
+        }
+      }
+      if (cut < 0) {
+        if (final && pending.trim()) cut = pending.length;
+        else break;
+      }
+      const piece = pending.slice(0, cut).trim().slice(0, maxChars - spoken);
+      pending = pending.slice(cut);
+      if (piece) { out.push(piece); spoken += piece.length; first = false; }
+    }
+    return out;
+  };
+  return {
+    push(delta: string): string[] { pending += delta; return take(false); },
+    end(): string[] { return take(true); },
+  };
 }
