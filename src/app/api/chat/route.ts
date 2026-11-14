@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { insert, rpc } from "@/lib/db";
 import { fail, guard, str } from "@/lib/guard";
-import { askToto, type Action, type Turn } from "@/lib/toto";
+import { askToto, type Action, type TotoResult, type Turn } from "@/lib/toto";
+import { VOICE, sayChunker, signSay, type Sayable } from "@/lib/voice";
 
 export const maxDuration = 60;
 
@@ -67,40 +68,86 @@ export async function POST(request: Request) {
       return limited("We have covered a lot. The best next step is the request form, or a coffee with Ben. Both are on the Let’s talk page.");
     }
 
-    const out = await askToto(turns, page, pre.known);
-    const actions: Action[] = [...out.actions];
-    let reply = out.reply;
+    // Everything after the model has answered: the first-look report, the log, and the final reply.
+    const finish = async (out: TotoResult) => {
+      const actions: Action[] = [...out.actions];
+      let reply = out.reply;
 
-    // A first-look report is saved against the visitor's details, so those come first, and it is
-    // limited to a few a day per visitor.
-    if (out.report) {
-      const email = out.email ?? pre.email;
-      if (!email) {
-        reply = "Before I put your first look together, what is your name and email? Then I can save it for you and Ben.";
-      } else if (pre.reports >= 3) {
-        reply = "I have already put together a few first looks for you today. The request form is the best next step from here.";
-      } else {
-        const ref = `BB-D-${randomBytes(3).toString("hex").toUpperCase()}`;
-        await insert("discovery_submissions", {
-          ref,
-          journey: "conversation",
-          name: out.name ?? pre.name,
-          email,
-          company: out.report.company,
-          answers: { session, areas: out.report.areas, start: out.report.start, fit: out.report.fit },
-          signals: Object.fromEntries(out.report.areas.map((a) => [a.n, a.signal])),
-          summary: out.report.summary,
-          ip_hash: g.ip,
-        });
-        actions.unshift({ type: "report", ref, report: out.report });
+      // A first-look report is saved against the visitor's details, so those come first, and it is
+      // limited to a few a day per visitor.
+      if (out.report) {
+        const email = out.email ?? pre.email;
+        if (!email) {
+          reply = "Before I put your first look together, what is your name and email? Then I can save it for you and Ben.";
+        } else if (pre.reports >= 3) {
+          reply = "I have already put together a few first looks for you today. The request form is the best next step from here.";
+        } else {
+          const ref = `BB-D-${randomBytes(3).toString("hex").toUpperCase()}`;
+          await insert("discovery_submissions", {
+            ref,
+            journey: "conversation",
+            name: out.name ?? pre.name,
+            email,
+            company: out.report.company,
+            answers: { session, areas: out.report.areas, start: out.report.start, fit: out.report.fit },
+            signals: Object.fromEntries(out.report.areas.map((a) => [a.n, a.signal])),
+            summary: out.report.summary,
+            ip_hash: g.ip,
+          });
+          actions.unshift({ type: "report", ref, report: out.report });
+        }
       }
+      const log = () =>
+        rpc("chat_log_turn", {
+          p_session: session, p_ip: g.ip, p_page: page, p_user: question, p_reply: reply,
+          p_actions: actions.length ? actions : null,
+          p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
+        });
+      return { reply, actions, known: pre.known || Boolean(out.email), log };
+    };
+
+    // The browser can ask for the reply as a stream, so the words show as they are written and, for a spoken
+    // question, the voice can start on the first sentence. Lines are JSON, one per event:
+    //   {t:"d",v}  more words · {t:"s",say}  a signed piece ready to be spoken · {t:"done",reply,actions,known,say?}
+    if ((request.headers.get("accept") ?? "").includes("text/event-stream")) {
+      const wantVoice = g.body.voice === true;
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream<Uint8Array>({
+        async start(controller) {
+          const send = (event: Record<string, unknown>) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+          try {
+            let streamed = "";
+            const chunker = sayChunker(VOICE.maxSpeakChars);
+            const out = await askToto(turns, page, pre.known, (delta) => {
+              streamed += delta;
+              send({ t: "d", v: delta });
+              if (wantVoice) for (const piece of chunker.push(delta)) send({ t: "s", say: signSay(session, piece) });
+            });
+            if (wantVoice) for (const piece of chunker.end()) send({ t: "s", say: signSay(session, piece) });
+            const done = await finish(out);
+            // If the final reply is not what was streamed (a fallback line, or the report rules above), the
+            // browser is given the right words to say instead.
+            let say: Sayable[] | undefined;
+            if (wantVoice && done.reply.trim() !== streamed.trim()) {
+              const c = sayChunker(VOICE.maxSpeakChars);
+              say = [...c.push(done.reply), ...c.end()].map((piece) => signSay(session, piece));
+            }
+            send({ t: "done", reply: done.reply, actions: done.actions, known: done.known, ...(say ? { say } : {}) });
+            await done.log();
+          } catch (e) {
+            console.error("chat: stream failed", e);
+            send({ t: "error", error: "I could not answer that just now. Please try again, or use the request form." });
+          } finally {
+            controller.close();
+          }
+        },
+      });
+      return new Response(stream, { headers: { "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-store, no-transform", "x-accel-buffering": "no" } });
     }
-    await rpc("chat_log_turn", {
-      p_session: session, p_ip: g.ip, p_page: page, p_user: question, p_reply: reply,
-      p_actions: actions.length ? actions : null,
-      p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
-    });
-    return NextResponse.json({ ok: true, reply, actions, known: pre.known || Boolean(out.email) });
+
+    const done = await finish(await askToto(turns, page, pre.known));
+    await done.log();
+    return NextResponse.json({ ok: true, reply: done.reply, actions: done.actions, known: done.known });
   } catch (e) {
     console.error("chat: failed", e);
     return fail(502, "I could not answer that just now. Please try again, or use the request form.");

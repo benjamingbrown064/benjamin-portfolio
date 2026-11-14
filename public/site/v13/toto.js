@@ -2,7 +2,7 @@
    A chat panel that talks to /api/chat. The server holds the model, the facts and the limits; this
    script shows the conversation and carries out the actions the server returns (move to a page,
    open the request form, open the coffee booking). Voice: the visitor's words appear in the conversation as they
-   speak (BBVoice in site.js), and the reply to a spoken message is read aloud by /api/voice/speak.
+   speak (BBVoice in site.js), and the reply to a spoken message is read aloud piece by piece as it is written (/api/voice/speak).
    The line under Toto's name always says what is happening: listening, thinking or speaking.
    API kept from the design: window.BBAgentDesk.open() / close() / ask(text), and any element with
    [data-agent-open] opens the panel. */
@@ -186,35 +186,78 @@
     log.appendChild(thinkingBubble(NAME + ' is thinking')); log.scrollTop = log.scrollHeight;
     setState('thinking');
 
+    // The reply arrives as a stream: the words are shown as they are written, and for a spoken question each
+    // piece is spoken as soon as it is ready, so the voice starts on the first sentence.
+    var bubble = null, shown = '', talk = spoken ? startTalk() : null, finished = false;
+    function finishTurn(j) {
+      finished = true;
+      if (j.known) write(localStorage, KEYS.known, '1');
+      history.push({ role: 'assistant', text: j.reply, local: !!j.limited });
+      save(); render();
+      if (!talk || talk.dead) setState('idle');
+      attachReport(j.actions);
+      if (j.gate) { if (talk) talkFinish(talk, false); showGate(); return; }
+      if (talk && j.say) talkReplace(talk, j.say);
+      // A spoken question gets a spoken answer; any move to another page waits until he has finished.
+      // Hands-free: once he has finished speaking, and nothing is about to move the visitor elsewhere, listen for the next question.
+      if (talk && !j.limited) talkEnd(talk, function (heardOut) {
+        run(j.actions);
+        var moving = (j.actions || []).some(function (a) { return a.type !== 'report'; });
+        if (heardOut && !moving && isOpen() && !busy && !recording && !gate) startRecording(true);
+      });
+      else { if (talk) talkFinish(talk, false); run(j.actions); }
+    }
+    function onEvent(ev) {
+      if (ev.t === 'd') {
+        if (!bubble) {
+          var th = log.querySelector('.bba-think'); if (th) th.parentNode.removeChild(th);
+          bubble = el('div', 'bba-msg'); log.appendChild(bubble);
+          if (!talk) setState('idle');
+        }
+        shown += ev.v; bubble.textContent = shown.replace(/^\s+/, ''); log.scrollTop = log.scrollHeight;
+      } else if (ev.t === 's') { if (talk) talkAdd(talk, ev.say); }
+      else if (ev.t === 'done') finishTurn(ev);
+      else if (ev.t === 'error') throw new Error(ev.error || 'no reply');
+    }
+
     fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
       body: JSON.stringify({
         session: session,
         page: location.pathname,
         known: read(localStorage, KEYS.known) || '',
+        voice: !!spoken,
         // Lines this script wrote itself (limit notices, the thank-you after the details step) are not sent back.
         messages: history.filter(function (m) { return !m.local && !m.error; }).map(function (m) { return { role: m.role, text: m.text }; }).slice(-44)
       })
     })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
-      .then(function (j) {
-        if (!j.reply) throw new Error(j.error || 'no reply');
-        if (j.known) write(localStorage, KEYS.known, '1');
-        history.push({ role: 'assistant', text: j.reply, local: !!j.limited });
-        save(); render(); setState('idle');
-        attachReport(j.actions);
-        if (j.gate) { showGate(); return; }
-        // A spoken question gets a spoken answer; any move to another page waits until he has finished.
-        // Hands-free: once he has finished speaking, and nothing is about to move the visitor elsewhere, listen for the next question.
-        if (spoken && !j.limited) speak(function (finished) {
-          run(j.actions);
-          var moving = (j.actions || []).some(function (a) { return a.type !== 'report'; });
-          if (finished && !moving && isOpen() && !busy && !recording && !gate) startRecording(true);
-        });
-        else run(j.actions);
+      .then(function (r) {
+        // Limits and errors come back as one plain answer, not a stream.
+        if ((r.headers.get('content-type') || '').indexOf('text/event-stream') < 0 || !r.body || !r.body.getReader) {
+          return r.json().catch(function () { return {}; }).then(function (j) {
+            if (!j.reply) throw new Error(j.error || 'no reply');
+            finishTurn(j);
+          });
+        }
+        var reader = r.body.getReader(), decoder = new TextDecoder(), buffer = '';
+        function pump() {
+          return reader.read().then(function (step) {
+            if (step.done) { if (!finished) throw new Error('no reply'); return; }
+            buffer += decoder.decode(step.value, { stream: true });
+            var cut;
+            while ((cut = buffer.indexOf('\n\n')) >= 0) {
+              var frame = buffer.slice(0, cut); buffer = buffer.slice(cut + 2);
+              frame.split('\n').forEach(function (line) { if (line.indexOf('data:') === 0) onEvent(JSON.parse(line.slice(5))); });
+            }
+            return pump();
+          });
+        }
+        return pump();
       })
       .catch(function (e) {
+        if (finished) return; // the reply is already in; a late hiccup on the connection does not matter
+        if (talk) talkFinish(talk, false);
         var msg = e && e.message && e.message !== 'no reply' && e.message.length < 200 ? e.message : 'I could not answer that just now. Please try again, or use the request form.';
         history.push({ role: 'assistant', text: msg, error: true });
         render(); setState('idle');
@@ -269,35 +312,83 @@
   /* ---------- voice ---------- */
   var voice = window.BBVoice;
   var SILENCE = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
-  var recording = null, player = null, afterSpeech = null;
+  var recording = null, player = null;
   if (!voice || !voice.supported) mic.hidden = true;
 
   function unlockAudio() {
     // Phones only let a page play sound that started from a tap, so the player is started here, silently.
-    if (!player) { player = new Audio(); player.addEventListener('ended', function () { if (afterSpeech && player.src.indexOf('blob:') === 0) heardOut = true; speechDone(); }); player.addEventListener('error', speechDone); }
+    if (!player) {
+      player = new Audio();
+      var next = function () { var t = talk; if (t && t.playing) { t.playing = false; talkNext(t); } };
+      player.addEventListener('ended', next); player.addEventListener('error', next);
+    }
     try { player.src = SILENCE; var p = player.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
   }
-  var heardOut = false; // true only when a spoken reply played to its end, rather than being stopped
-  var speechTimer = null;
-  function speechDone() { var next = afterSpeech, finished = heardOut; afterSpeech = null; heardOut = false; clearTimeout(speechTimer); launch.classList.remove('speaking'); if (panel.getAttribute('data-state') === 'speaking') setState('idle'); if (next) next(finished); }
-  function stopSpeaking() { if (player && !player.paused) { try { player.pause(); } catch (e) {} } speechDone(); }
-  function speak(then) {
-    afterSpeech = then || null;
-    var done = false, finish = function () { if (!done) { done = true; speechDone(); } };
-    setState('speaking'); // from the moment the voice is being fetched, so there is no silent gap with nothing showing
-    fetch('/api/voice/speak', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session: session }) })
-      .then(function (r) { return r.ok ? r.blob() : null; })
-      .then(function (blob) {
-        if (!blob || !player || !isOpen()) return finish();
-        player.src = URL.createObjectURL(blob);
-        launch.classList.add('speaking'); setState('speaking');
-        var p = player.play();
-        if (p && p.catch) p.catch(finish);
-        clearTimeout(speechTimer);
-        speechTimer = setTimeout(function () { if (player && !player.paused) { try { player.pause(); } catch (e) {} } finish(); }, 60000); // never hold a page move for longer than a minute
-      })
-      .catch(finish);
+
+  /* A spoken reply is a queue of short pieces. The first is played straight from the server as it is made, so
+     the voice starts quickly; the ones after it are fetched while it plays, so they follow without a gap. */
+  var talk = null;
+  function sayUrl(p) { return '/api/voice/speak?s=' + encodeURIComponent(session) + '&e=' + p.e + '&g=' + p.g + '&t=' + encodeURIComponent(p.text); }
+  function startTalk() {
+    stopSpeaking();
+    var t = { queue: [], playing: false, ended: false, after: null, dead: false, started: false };
+    t.timer = setTimeout(function () { stopTalk(t); }, 90000); // never hold a page move for longer than this
+    talk = t;
+    return t;
   }
+  function talkAdd(t, p) {
+    if (t.dead || !player || !isOpen()) return;
+    var item = { url: sayUrl(p), blob: null, ready: null };
+    if (t.started) {
+      item.ready = fetch(item.url).then(function (r) { return r.ok ? r.blob() : null; })
+        .then(function (b) { item.blob = b ? URL.createObjectURL(b) : null; item.failed = !b; })
+        .catch(function () { item.failed = true; });
+    }
+    t.started = true;
+    t.queue.push(item); talkNext(t);
+  }
+  function talkNext(t) {
+    if (t.dead || t.playing) return;
+    var item = t.queue.shift();
+    if (!item) { if (t.ended) talkFinish(t, true); return; }
+    t.playing = true;
+    var go = function () {
+      if (t.dead) return;
+      if (item.failed) { t.playing = false; return talkNext(t); }
+      player.src = item.blob || item.url;
+      launch.classList.add('speaking'); setState('speaking');
+      var p = player.play();
+      if (p && p.catch) p.catch(function () { if (t.playing) { t.playing = false; talkNext(t); } });
+    };
+    if (item.ready) item.ready.then(go); else go();
+  }
+  /* The server found the final words differ from what it streamed: say these instead. */
+  function talkReplace(t, pieces) {
+    if (t.dead) return;
+    t.queue = []; t.playing = false; t.started = false;
+    try { player.pause(); } catch (e) {}
+    pieces.forEach(function (p) { talkAdd(t, p); });
+  }
+  /* No more pieces are coming. `after(heardOut)` runs when he has finished; heardOut is false if he was stopped. */
+  function talkEnd(t, after) {
+    t.ended = true; t.after = after;
+    if (t.dead) { after(false); return; }
+    if (!t.playing && !t.queue.length) talkFinish(t, t.started);
+  }
+  function talkFinish(t, heardOut) {
+    if (t.dead) return;
+    t.dead = true; clearTimeout(t.timer);
+    if (talk === t) talk = null;
+    launch.classList.remove('speaking');
+    if (panel.getAttribute('data-state') === 'speaking') setState('idle');
+    if (t.after) t.after(heardOut);
+  }
+  function stopTalk(t) {
+    if (player && !player.paused) { try { player.pause(); } catch (e) {} }
+    // If the reply is still being written, its actions run when it lands; talkEnd sees the talk is over.
+    talkFinish(t, false);
+  }
+  function stopSpeaking() { if (talk) stopTalk(talk); else if (player && !player.paused) { try { player.pause(); } catch (e) {} } }
   hush.addEventListener('click', stopSpeaking);
 
   /* Listening: the words go into a bubble as they are spoken. It sends when the visitor pauses, or when they tap send. */

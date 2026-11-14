@@ -101,7 +101,7 @@ document.addEventListener('click',function(e){
       .then(function(j){
         if(closed)return;
         if(!j.token){if(j.status===429&&on.refused)on.refused(j);return} // 429: the voice allowance is used up; anything else: fall back to the recorded clip
-        ws=new WebSocket(LIVE_URL+'?model_id=scribe_v2_realtime&audio_format=pcm_16000&language_code=en&commit_strategy=vad&vad_silence_threshold_secs=1.6&token='+encodeURIComponent(j.token));
+        ws=new WebSocket(LIVE_URL+'?model_id=scribe_v2_realtime&audio_format=pcm_16000&language_code=en&commit_strategy=vad&vad_silence_threshold_secs=1.0&token='+encodeURIComponent(j.token));
         ws.onmessage=function(e){
           var m={};try{m=JSON.parse(e.data)}catch(x){}
           if(m.message_type==='session_started'){ready=true;started=true;queue.forEach(function(q){ws.send(q)});queue=[]}
@@ -122,6 +122,7 @@ document.addEventListener('click',function(e){
       finish:function(cb){
         var done=false,end=function(){if(done)return;done=true;waiter=null;close();cb(text())};
         if(!ready||!ws||ws.readyState!==1)return end();
+        if(parts.length&&!partial)return end(); // the pause already produced the final words; nothing to wait for
         waiter=end;send(new Int16Array(1600),true);setTimeout(end,1300);
       },
       close:close
