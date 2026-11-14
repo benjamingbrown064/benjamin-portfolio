@@ -8,6 +8,9 @@ import facts from "../../site/facts.json";
 import { JOURNAL, journalDate, type JournalEntry } from "./journal";
 
 const SITE_URL = facts.siteUrl;
+// The picture shown when a page is shared (public/og/site.jpg). Rename the file when it changes: apps that show
+// link previews keep the old picture for as long as the address stays the same.
+const SHARE_IMAGE = "/og/site.jpg";
 
 export type PageOptions = {
   /** Path of the page on the site, used for the canonical address. */
@@ -157,14 +160,19 @@ export function renderPage(name: string, opts: PageOptions): string {
     : "";
   const head = [
     `<link rel="canonical" href="${canonical}">`,
+    `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`,
     opts.noindex ? `<meta name="robots" content="noindex">` : "",
     `<meta property="og:type" content="${opts.ogType ?? "website"}">`,
     `<meta property="og:site_name" content="${esc(facts.name)}">`,
     `<meta property="og:title" content="${title}">`,
     description ? `<meta property="og:description" content="${description}">` : "",
     `<meta property="og:url" content="${canonical}">`,
-    `<meta property="og:image" content="${opts.image ? SITE_URL + opts.image : `${SITE_URL}/opengraph-image`}">`,
+    `<meta property="og:image" content="${SITE_URL}${opts.image ?? SHARE_IMAGE}">`,
+    opts.image ? "" : `<meta property="og:image:width" content="2400">\n<meta property="og:image:height" content="1260">\n<meta property="og:image:alt" content="Benjamin Brown. Agents that make teams superhuman.">`,
     `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:title" content="${title}">`,
+    description ? `<meta name="twitter:description" content="${description}">` : "",
+    `<meta name="twitter:image" content="${SITE_URL}${opts.image ?? SHARE_IMAGE}">`,
     analytics,
   ]
     .filter(Boolean)

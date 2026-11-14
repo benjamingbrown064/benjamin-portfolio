@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
       // Real entries are left alone; every other /journal/... address (the old site's entries) goes to the index.
       { source: `/journal/:slug((?!(?:${JOURNAL.map((e) => e.slug).join("|") || "-"})$).*)`, destination: "/journal", permanent: false },
       // The journal has never lived at /blog, but people type it and old links use it.
+      // The share picture used to be generated at this address; anything still pointing at it gets the new one.
+      { source: "/opengraph-image", destination: "/og/site.jpg", permanent: true },
       { source: "/blog", destination: "/journal", permanent: true },
       { source: "/blog/:path*", destination: "/journal", permanent: false },
     ];
