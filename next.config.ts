@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // One address for the site: www goes to the bare domain, so search engines and analytics see a single site.
+      { source: "/:path*", has: [{ type: "host", value: "www.benjaminbrown.co" }], destination: "https://benjaminbrown.co/:path*", permanent: true },
       // Addresses from the previous site. Case studies that exist keep their address; the rest and the
       // old journal entries land on the nearest index page instead of a 404.
       { source: "/services", destination: "/method", permanent: true },
