@@ -114,7 +114,17 @@ export async function POST(request: Request) {
       const encoder = new TextEncoder();
       const stream = new ReadableStream<Uint8Array>({
         async start(controller) {
-          const send = (event: Record<string, unknown>) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+          // If the visitor closes the page mid-reply the stream is gone, but the turn must still be finished and
+          // logged, because the model has been paid for and the limits count on the log.
+          let open = true;
+          const send = (event: Record<string, unknown>) => {
+            if (!open) return;
+            try {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+            } catch {
+              open = false;
+            }
+          };
           try {
             let streamed = "";
             const chunker = sayChunker(VOICE.maxSpeakChars);
@@ -138,7 +148,11 @@ export async function POST(request: Request) {
             console.error("chat: stream failed", e);
             send({ t: "error", error: "I could not answer that just now. Please try again, or use the request form." });
           } finally {
-            controller.close();
+            try {
+              controller.close();
+            } catch {
+              // already closed by the browser going away
+            }
           }
         },
       });
