@@ -148,5 +148,53 @@
     "old": "<h2 class=\"h-m\">One note a month. No cadence for the sake of it.</h2>\n<p class=\"lede\">What I shipped, what broke, and what I would do differently. Unsubscribe in one click.</p>",
     "new": "<h2 class=\"h-m\">The Handover, in your inbox each week.</h2>\n<p class=\"lede\">The AI news that matters to a business, in plain English, with one thing to do about each. Unsubscribe in one click.</p>",
     "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Latest journal entry",
+    "new": "Latest in Notes",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<span class=\"eyebrow\">Journal</span>",
+    "new": "<span class=\"eyebrow\">Notes</span>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Read the journal",
+    "new": "Read all notes",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Latest project and journal entry",
+    "new": "Latest project and note",
+    "count": 1
+  },
+  {
+    "file": "journal.html",
+    "old": "<title>Journal · Benjamin Brown®</title>",
+    "new": "<title>Notes · Benjamin Brown®</title>",
+    "count": 1
+  },
+  {
+    "file": "journal.html",
+    "old": "<span class=\"eyebrow rv\">Journal</span>",
+    "new": "<span class=\"eyebrow rv\">Notes</span>",
+    "count": 1
+  },
+  {
+    "file": "journal-article.html",
+    "old": " · Journal · Benjamin Brown®</title>",
+    "new": " · Notes · Benjamin Brown®</title>",
+    "count": 1
+  },
+  {
+    "file": "journal-article.html",
+    "old": "</span> Journal</a>",
+    "new": "</span> Notes</a>",
+    "count": 1
   }
 ]
