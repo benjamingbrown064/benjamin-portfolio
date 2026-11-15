@@ -49,8 +49,8 @@ export type Turn = { role: "user" | "assistant"; text: string };
 
 /** What is in the journal, so the assistant can point to it without inventing entries. */
 function journalFacts(): string {
-  if (!JOURNAL.length) return "- The journal at /journal has no entries yet.";
-  return `- The journal at /journal is Ben's own writing. Entries, newest first:\n${JOURNAL.map(
+  if (!JOURNAL.length) return "- Notes, at /journal, has no entries yet.";
+  return `- Notes, at /journal, is Ben's own writing. Call it Notes, not the journal. Entries, newest first:\n${JOURNAL.map(
     (e) => `  - "${e.title}" (${e.issue ? `${e.category} ${e.issue}, ` : ""}${journalDate(e.date)}): ${e.excerpt} You have not read the full text, so do not summarise beyond this line; send them to /journal to read it.`,
   ).join("\n")}${JOURNAL.some((e) => e.category === "The Handover") ? "\n  - The Handover is Ben's weekly AI roundup for business owners." : ""}`;
 }
@@ -163,7 +163,7 @@ const PAGE_NAMES: Record<string, string> = {
   "/work/govscape": "the Govscape case study",
   "/method": "the method",
   "/discovery": "the discovery questionnaire",
-  "/journal": "the journal",
+  "/journal": "Notes",
   "/contact": "the Let’s talk page",
 };
 

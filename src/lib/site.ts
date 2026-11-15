@@ -111,11 +111,11 @@ function journalIndex(): string {
 function homeLatestJournal(): string {
   const roundup = JOURNAL.find((e) => e.category === "The Handover");
   if (roundup) {
-    const label = `Latest journal entry: ${kind(roundup)}, ${roundup.title}, ${journalDate(roundup.date)}`;
+    const label = `Latest in Notes: ${kind(roundup)}, ${roundup.title}, ${journalDate(roundup.date)}`;
     return `<a class="lt-c art" href="/journal/${roundup.slug}" aria-label="${esc(label)}" style="--art:url('${roundup.cover}')"><picture><source media="(max-width:760px)" srcset="${roundup.thumb}"><img src="${roundup.cover}" alt="" loading="lazy" decoding="async"></picture></a>`;
   }
   const e = JOURNAL[0];
-  return `<a class="lt-c bw" href="/journal/${e.slug}"><img src="${e.tile ?? e.thumb}" alt="" loading="lazy" decoding="async"><span class="lt-k">Latest journal entry</span><span class="lt-b"><span class="lt-x"><span class="lt-t">${esc(e.title)}</span><span class="lt-s">${esc(kind(e))} · ${journalDate(e.date)}</span></span><span class="go" aria-hidden="true">${ARROW}</span></span></a>`;
+  return `<a class="lt-c bw" href="/journal/${e.slug}"><img src="${e.tile ?? e.thumb}" alt="" loading="lazy" decoding="async"><span class="lt-k">Latest in Notes</span><span class="lt-b"><span class="lt-x"><span class="lt-t">${esc(e.title)}</span><span class="lt-s">${esc(kind(e))} · ${journalDate(e.date)}</span></span><span class="go" aria-hidden="true">${ARROW}</span></span></a>`;
 }
 
 /** Home page: the three-card journal section. Shown once there are three entries to fill it. */
@@ -250,7 +250,7 @@ export function renderJournalEntry(slug: string): string | null {
   const main = `
 <article class="ax" data-screen-label="01 Article">
 <header class="ax-head"><div class="w ax-w">
-<a class="ax-back rv" href="/journal"><span aria-hidden="true">←</span> Journal</a>
+<a class="ax-back rv" href="/journal"><span aria-hidden="true">←</span> Notes</a>
 <span class="jx-meta rv"><span>${esc(kind(e))}</span><span>${journalDate(e.date)}</span><span>${e.minutes} min read</span></span>
 <h1 class="ax-t rv">${esc(e.title)}</h1>
 <p class="lede rv">${esc(e.excerpt)}</p>
@@ -261,8 +261,8 @@ ${body}
 </div>
 <div class="w ax-w"><div class="ax-by rv"><img src="/site/assets/ben-portrait.jpg" alt=""><div><b>Ben Brown</b><span>Founder, operator and full-stack builder</span></div></div></div>
 </article>
-<section class="ax-next" data-screen-label="02 ${next ? "Next entry" : "Journal"}"><div class="w ax-w rv">
-${next ? `<span class="eyebrow">Next entry</span><a class="ax-nx" href="/journal/${next.slug}"><span>${esc(next.title)}</span><span class="ar" aria-hidden="true">→</span></a>` : `<span class="eyebrow">Journal</span><a class="ax-nx" href="/journal"><span>All entries</span><span class="ar" aria-hidden="true">→</span></a>`}
+<section class="ax-next" data-screen-label="02 ${next ? "Next entry" : "Notes"}"><div class="w ax-w rv">
+${next ? `<span class="eyebrow">Next entry</span><a class="ax-nx" href="/journal/${next.slug}"><span>${esc(next.title)}</span><span class="ar" aria-hidden="true">→</span></a>` : `<span class="eyebrow">Notes</span><a class="ax-nx" href="/journal"><span>All entries</span><span class="ar" aria-hidden="true">→</span></a>`}
 ${next ? `<a class="lnk" href="/journal">All entries</a>` : ""}
 </div></section>
 <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>
