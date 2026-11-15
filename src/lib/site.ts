@@ -122,7 +122,7 @@ function homeLatestJournal(): string {
 function homeJournal(html: string): string {
   if (JOURNAL.length < 3) return block(html, "home_journal", null);
   const posts = JOURNAL.slice(0, 3)
-    .map((e) => `<a class="post" href="/journal/${e.slug}"><div class="media img art"><img src="${e.thumb}" alt="" loading="lazy" decoding="async"><span class="tag"><span class="sq"></span>${esc(e.category)}</span></div><h3>${esc(e.title)}</h3><div class="ps"><span class="small">${journalDate(e.date)}</span><span class="small">${e.minutes} min read</span></div></a>`)
+    .map((e) => `<a class="post" href="/journal/${e.slug}"><div class="media img art${e.category === "The Handover" ? " lettered" : ""}"><img src="${e.thumb}" alt="" loading="lazy" decoding="async"><span class="tag"><span class="sq"></span>${esc(e.category)}</span></div><h3>${esc(e.title)}</h3><div class="ps"><span class="small">${journalDate(e.date)}</span><span class="small">${e.minutes} min read</span></div></a>`)
     .join("");
   return block(html, "home_journal", undefined).replace(/<div class="posts rv-g">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/, () => `<div class="posts rv-g">${posts}</div></div></section>`);
 }
