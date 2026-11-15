@@ -9,7 +9,7 @@ Any line starting "[NEEDS" is a note to the author: it is dropped and reported, 
 after the article's closing "---" rule or under a "## Notes for ..." heading.
 
 FIGURES.json is a list of pictures to place, each:
-  {"heading": "text the section heading starts with", "after": 2, "file": "name-without-extension",
+  {"heading": "text the section heading starts with, or empty for the opening before any heading", "after": 2, "file": "name-without-extension",
    "alt": "...", "caption": "...", "width": 1600, "height": 900}
 "after" is the number of the paragraph (within that section) the picture follows. Two entries with the same
 heading and "after" are set side by side. Add "narrow": true for a tall, phone-shaped picture on its own, so it
@@ -74,7 +74,8 @@ for block in re.split(r"\n\s*\n", body):
         raise SystemExit("unsupported Markdown block: " + block[:60])
     n += 1
     out.append("<p>%s</p>" % inline(" ".join(l.strip() for l in lines)))
-    here = [i for i, f in enumerate(figures) if heading.startswith(f["heading"]) and f["after"] == n]
+    # An empty "heading" means the opening of the article, before the first section heading.
+    here = [i for i, f in enumerate(figures) if (heading.startswith(f["heading"]) if f["heading"] else heading == "") and f["after"] == n]
     if here:
         used.update(here)
         figs = "".join(figure(figures[i]) for i in here)
