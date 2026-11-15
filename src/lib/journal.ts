@@ -43,7 +43,7 @@ export const JOURNAL: JournalEntry[] = [
     excerpt: "An AI assistant now answers visitors on my own site, by text and by voice. What it does, the seven rules around it, and what it has not proved yet.",
     minutes: 6,
     cover: "/media/journal/ai-answers-my-website/cover.jpg",
-    coverAlt: "Benjamin Brown in a dark studio, talking into a phone on loudspeaker and smiling.",
+    coverAlt: "Benjamin Brown in a dark studio with framed sunset prints, phone in both hands, smiling and looking towards the window.",
     thumb: "/media/journal/ai-answers-my-website/thumb.jpg",
   },
   {
