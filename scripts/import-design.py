@@ -196,7 +196,7 @@ def compile_jsx(src_path, dst_rel):
     out_rel = os.path.splitext(dst_rel)[0] + ".js"
     out = os.path.join(PUB, out_rel)
     os.makedirs(os.path.dirname(out), exist_ok=True)
-    code = open(src_path, encoding="utf-8").read()
+    code = apply_patches(dst_rel, open(src_path, encoding="utf-8").read())
     code = rewrite_script(code, os.path.dirname(rel(src_path)))
     r = subprocess.run(["npx", "--yes", "esbuild@0.25.10", "--loader=jsx", "--jsx=transform", "--target=es2019", "--charset=utf8"],
                        input=code, capture_output=True, text=True, cwd=ROOT)

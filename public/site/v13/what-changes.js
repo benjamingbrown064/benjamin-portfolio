@@ -1,4 +1,4 @@
-/* "What changes" dialog on the home page: Agile, Agentic, Fast, Simple, Passionate, Reliable.
+/* "What changes" dialog on the home page: One person, AI where it pays, Quick, One channel, Skin in the game, Built to hand over.
    Opened by the + button on each card (.oc-more[data-oc]). Layout from the design of 13 November 2026:
    a counter and close button, a small label, the headline, two paragraphs, three points as cards,
    and Previous / Next across the foot. Styles are in v13/site.css (.why-*). */
@@ -6,10 +6,10 @@
   'use strict';
   var ITEMS = [
     {
-      "name": "Agile",
-      "title": "Decided by who ships it",
+      "name": "One person",
+      "title": "No handovers",
       "body": [
-        "Design and code are one person. Nothing gets lost between brief and build.",
+        "Design and code are one person. Nothing gets lost between the brief and the build.",
         "The person who hears the change makes the change. Usually the same day."
       ],
       "points": [
@@ -19,8 +19,8 @@
       ]
     },
     {
-      "name": "Agentic",
-      "title": "AI where it earns its keep",
+      "name": "AI where it pays",
+      "title": "And nowhere else",
       "body": [
         "LLMs in production since day one. I know where they pay back. And where they quietly burn money.",
         "Agents take the repetitive, high-volume work. Your people keep the judgement calls, with the data in front of them."
@@ -32,10 +32,10 @@
       ]
     },
     {
-      "name": "Fast",
-      "title": "Weeks, not quarters",
+      "name": "Quick",
+      "title": "First screens in week two",
       "body": [
-        "First screens in week two. In production by week twelve. A staging build every Friday.",
+        "In production by week twelve. A staging build every Friday.",
         "You see working software early. Feedback arrives while it's still cheap to act on."
       ],
       "points": [
@@ -45,8 +45,8 @@
       ]
     },
     {
-      "name": "Simple",
-      "title": "One channel, one update",
+      "name": "One channel",
+      "title": "One update a week",
       "body": [
         "One Slack channel. One written update a week. One dashboard. No surprises on the invoice.",
         "You always know what's done, what's next and what it costs. No chasing."
@@ -58,10 +58,10 @@
       ]
     },
     {
-      "name": "Passionate",
-      "title": "Skin in the game",
+      "name": "Skin in the game",
+      "title": "I run my own too",
       "body": [
-        "I run my own products too. I know what your decisions weigh.",
+        "I run my own products. I know what your decisions weigh, because I make the same ones.",
         "I treat your budget and your team's time like my own. If it isn't worth building, I'll say so."
       ],
       "points": [
@@ -71,10 +71,10 @@
       ]
     },
     {
-      "name": "Reliable",
-      "title": "Built to hand over",
+      "name": "Built to hand over",
+      "title": "Your team runs it",
       "body": [
-        "Every build ships with the training and documentation to run it. When your team gets stuck, they fix it. They don't call me.",
+        "Every build ships with the training and the docs to run it. When your team gets stuck, they fix it. They don't call me.",
         "Reliability is what happens after I leave. Twenty of my twenty-six products run without me."
       ],
       "points": [
