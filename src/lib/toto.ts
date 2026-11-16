@@ -186,11 +186,12 @@ type ModelReply = {
 
 /** Calls the model with streaming on, so the words can be passed on as they are written. The stream is put back
  *  together into the same shape a non-streamed reply has, so the rest of this file does not care which was used. */
-async function callModel(system: unknown[], messages: unknown[], onText?: (delta: string) => void, model = CHAT_MODEL): Promise<ModelReply> {
+async function callModel(system: unknown[], messages: unknown[], onText?: (delta: string) => void, model = CHAT_MODEL, quick = false): Promise<ModelReply> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": process.env.ANTHROPIC_API_KEY!, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model, max_tokens: 1400, system, tools: TOOLS, messages, stream: true }),
+    // quick: no thinking before answering. On a call every hundred milliseconds of silence is heard.
+    body: JSON.stringify({ model, max_tokens: 1400, system, tools: TOOLS, messages, stream: true, ...(quick ? { thinking: { type: "between_tools" } } : {}) }),
     signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok || !res.body) throw new Error(`assistant request failed (${res.status}): ${(await res.text().catch(() => "")).slice(0, 300)}`);
@@ -297,7 +298,7 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
   for (let round = 0; round < 2; round++) {
     // A second round's words follow the first after a blank line, as they do in the finished reply.
     let opened = false;
-    const data = await callModel(system, messages, onText ? (d) => { if (!opened) { opened = true; if (reply) onText("\n\n"); } onText(d); } : undefined, model);
+    const data = await callModel(system, messages, onText ? (d) => { if (!opened) { opened = true; if (reply) onText("\n\n"); } onText(d); } : undefined, model, Boolean(opts.call));
     usage.fresh += data.usage?.input_tokens ?? 0;
     usage.cacheRead += data.usage?.cache_read_input_tokens ?? 0;
     usage.cacheWrite += data.usage?.cache_creation_input_tokens ?? 0;
