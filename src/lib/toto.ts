@@ -191,7 +191,7 @@ async function callModel(system: unknown[], messages: unknown[], onText?: (delta
     method: "POST",
     headers: { "x-api-key": process.env.ANTHROPIC_API_KEY!, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     // quick: no thinking before answering. On a call every hundred milliseconds of silence is heard.
-    body: JSON.stringify({ model, max_tokens: 1400, system, tools: TOOLS, messages, stream: true, ...(quick && !model.includes("haiku") ? { thinking: { type: "between_tools" } } : {}) }),
+    body: JSON.stringify({ model, max_tokens: 1400, system, tools: TOOLS, messages, stream: true, ...(quick ? { thinking: { type: model.includes("haiku") ? "disabled" : "between_tools" } } : {}) }),
     signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok || !res.body) throw new Error(`assistant request failed (${res.status}): ${(await res.text().catch(() => "")).slice(0, 300)}`);
