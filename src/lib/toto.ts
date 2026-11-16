@@ -260,6 +260,21 @@ const CALL_MODE = `You are on a live voice call with the visitor. This overrides
 - If they interrupt you, you will only see the part you managed to say. Pick up from their new words; do not repeat yourself.
 - The page actions (go_to, open_request, book_coffee) work during the call. Say one short line about what you have opened.`;
 
+/** Writes the long, cached part of Toto's prompt ahead of a call's first reply (it is read back at a tenth of the
+ *  price and noticeably faster), so the first answer on a call is not slowed by it. Best effort. */
+export async function warmToto(model = CHAT_MODEL): Promise<void> {
+  try {
+    await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": process.env.ANTHROPIC_API_KEY!, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({ model, max_tokens: 1, system: [{ type: "text", text: systemPrompt(), cache_control: { type: "ephemeral" } }], tools: TOOLS, messages: [{ role: "user", content: "Hello" }] }),
+      signal: AbortSignal.timeout(8000),
+    });
+  } catch {
+    // only a speed-up
+  }
+}
+
 /** onText, when given, receives the reply a few words at a time as it is written. */
 export async function askToto(history: Turn[], page: string, known = false, onText?: (delta: string) => void, opts: { call?: boolean; model?: string } = {}): Promise<TotoResult> {
   const model = opts.model ?? CHAT_MODEL;
