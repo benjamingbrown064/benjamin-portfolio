@@ -46,9 +46,10 @@ import { Conversation } from "https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.
 const $ = (s) => document.querySelector(s);
 const orb = $(".orb"), st = $(".st"), left = $(".left"), endBtn = $(".end"), log = $(".log");
 let conv = null, ticket = null, deadline = 0, timer = null, ended = false;
+// The test page keeps its own conversation, separate from the chat panel's, so earlier chat use does not count here.
 function session() {
-  let v = null; try { v = localStorage.getItem("toto:sid"); } catch (e) {}
-  if (!v) { v = crypto.randomUUID(); try { localStorage.setItem("toto:sid", v); } catch (e) {} }
+  let v = null; try { v = localStorage.getItem("toto:call-test-sid"); } catch (e) {}
+  if (!v) { v = crypto.randomUUID(); try { localStorage.setItem("toto:call-test-sid", v); } catch (e) {} }
   return v;
 }
 function mode(m, text) { document.body.dataset.mode = m; if (text != null) st.textContent = text; }
