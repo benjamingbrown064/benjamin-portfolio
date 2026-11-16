@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   // Files read at run time by the page renderer and the assistant.
   outputFileTracingIncludes: {
     "/api/chat": ["./site/assistant.md"],
+    "/api/voice/llm/chat/completions": ["./site/assistant.md"],
   },
   async redirects() {
     return [

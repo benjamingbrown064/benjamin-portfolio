@@ -252,12 +252,21 @@ async function callModel(system: unknown[], messages: unknown[], onText?: (delta
   return out;
 }
 
+/* On a live call every word is heard, not read, and the visitor can cut in at any moment. */
+const CALL_MODE = `You are on a live voice call with the visitor. This overrides the length guidance above:
+- Speak like a person on the phone: one to three short sentences, usually under 40 words. Then stop and let them talk.
+- Never list more than three things. Do not read out web addresses or email addresses unless asked; say "the request form" or "the Let's talk page" instead.
+- The visitor's words come from speech recognition and may have small errors. Go with the likely meaning; if it is genuinely unclear, ask them to say it again.
+- If they interrupt you, you will only see the part you managed to say. Pick up from their new words; do not repeat yourself.
+- The page actions (go_to, open_request, book_coffee) work during the call. Say one short line about what you have opened.`;
+
 /** onText, when given, receives the reply a few words at a time as it is written. */
-export async function askToto(history: Turn[], page: string, known = false, onText?: (delta: string) => void): Promise<TotoResult> {
+export async function askToto(history: Turn[], page: string, known = false, onText?: (delta: string) => void, opts: { call?: boolean } = {}): Promise<TotoResult> {
   // The long, unchanging part is marked for caching so repeat turns cost a fraction of the first.
   const system = [
     { type: "text", text: systemPrompt(), cache_control: { type: "ephemeral" } },
     { type: "text", text: `The visitor is currently on the page ${page}.${known ? " They have already left their name and email with the site, so do not ask for them again." : ""}` },
+    ...(opts.call ? [{ type: "text", text: CALL_MODE }] : []),
   ];
   const messages: { role: string; content: unknown }[] = history.map((t) => ({ role: t.role, content: t.text }));
   const usage = { fresh: 0, cacheRead: 0, cacheWrite: 0, out: 0 };
