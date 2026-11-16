@@ -28,6 +28,7 @@ function authorised(request: Request): boolean {
 }
 
 export async function POST(request: Request) {
+  const t0 = Date.now();
   if (!authorised(request)) return new Response("Not allowed", { status: 401 });
   let body: { messages?: Msg[]; model?: string };
   try {
@@ -75,9 +76,11 @@ export async function POST(request: Request) {
         callTool("end_call", { reason: "allowance", message: "" });
       };
       try {
-        // Bill the call up to now, then check every limit before paying for a reply.
+        // Bill the call up to now, then check every limit before paying for a reply. The checks run side by side.
+        type Pre = { session_messages: number; known: boolean; ip_hour: number; ip_day: number; site_day: number; month_cost: number };
         await rpc("call_tick", { p_call: t.c, p_rate: CALL.perSecond, p_end: false });
-        const voice = await voiceAllowed(t.s, t.i);
+        const [voice, pre] = await Promise.all([voiceAllowed(t.s, t.i), rpc<Pre>("chat_precheck", { p_session: t.s, p_ip: t.i })]);
+        const tChecked = Date.now();
         if (Date.now() > t.x || !voice.allow) {
           const known = voice.allow ? voice.check.known : !("gate" in voice && voice.gate);
           goodbye(known || t.k
@@ -86,16 +89,18 @@ export async function POST(request: Request) {
         } else if (!turns.length || turns[turns.length - 1].role !== "user") {
           send(chunk({ role: "assistant", content: "" }));
         } else {
-          const pre = await rpc<{ session_messages: number; known: boolean; ip_hour: number; ip_day: number; site_day: number; month_cost: number }>("chat_precheck", { p_session: t.s, p_ip: t.i });
           if (Number(pre.month_cost) >= LIMITS.monthlyUsd || pre.site_day >= LIMITS.siteDay || pre.ip_hour >= LIMITS.ipHour || pre.ip_day >= LIMITS.ipDay || pre.session_messages >= (pre.known ? LIMITS.sessionMessagesKnown : LIMITS.sessionMessages)) {
             goodbye("I have to stop here for now. The request form still works, and Ben reads every one.");
           } else {
             const question = turns[turns.length - 1].text;
             let first = true;
+            let tFirst = 0;
             const out = await askToto(turns, t.p, pre.known || t.k === 1, (delta) => {
+              if (first) tFirst = Date.now();
               send(chunk(first ? { role: "assistant", content: delta } : { content: delta }));
               first = false;
             }, { call: true });
+            console.log(JSON.stringify({ voiceLlm: { checks: tChecked - t0, firstWords: tFirst ? tFirst - t0 : null, done: Date.now() - t0, turns: turns.length } }));
             if (first) send(chunk({ role: "assistant", content: out.reply }));
             // Page actions are carried out by the browser, through the call's client tool.
             for (const a of out.actions) if (a.type !== "report") callTool("site_action", { action: JSON.stringify(a) });
