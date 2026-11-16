@@ -197,3 +197,6 @@ html[data-theme="dark"] .why-dlg::backdrop{background:rgba(0,0,0,.6)}
 .ax-body figure.ax-narrow{max-width:400px;margin-left:auto;margin-right:auto}
 /* Home journal cards: roundup artwork has its own lettering in the corner, so the category pill is left off it */
 .post .media.lettered .tag{display:none}
+
+/* Case-study role lines in sentence case (copy v2, 16 Nov 2026) */
+.wx-role,.gx-role{text-transform:none;letter-spacing:0;font-size:14px;font-weight:600}

@@ -384,7 +384,7 @@
     const slideHTML = (s, i) => {
       if (s === "type")
         return (
-          '<section class="bf-slide" data-i="0"><div class="bf-c"><div class="bf-eb bf-a" style="--d:0"><span class="n">01</span><span>Start here</span></div><h2 class="bf-q bf-a" style="--d:1">How can I help?</h2><p class="bf-h bf-a" style="--d:2">Pick one. I will only ask what I need to get started.</p><div class="bf-types bf-a" style="--d:3" role="radiogroup" aria-label="What you need">' +
+          '<section class="bf-slide" data-i="0"><div class="bf-c"><div class="bf-eb bf-a" style="--d:0"><span class="n">01</span><span>Start here</span></div><h2 class="bf-q bf-a" style="--d:1">How can I help?</h2><p class="bf-h bf-a" style="--d:2">Pick one.</p><div class="bf-types bf-a" style="--d:3" role="radiogroup" aria-label="What you need">' +
           TYPES.map(
             (t, j) =>
               '<button type="button" class="bf-type" role="radio" aria-checked="' +
@@ -404,7 +404,7 @@
           "</div>" +
           '<button type="button" class="bf-say bf-a" style="--d:4" data-bb-speak><span class="ic">' +
           svg('<rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path>') +
-          '</span><span class="tx"><b>Or just say it</b><span class="d">Tell me what you need. I will fill the form in for you to check.</span></span></button>' +
+          '</span><span class="tx"><b>Or just say it</b><span class="d">Tell me what you need. I’ll fill the form in for you to check.</span></span></button>' +
           "</div></section>"
         );
       if (s === "review")

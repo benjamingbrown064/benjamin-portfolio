@@ -197,7 +197,7 @@ export function renderPage(name: string, opts: PageOptions): string {
   }
   html = html.replace(/\{\{([a-z_.]+)\}\}/g, (m, key: string) => (key in tokens ? tokens[key] : m));
   // Hand-written scripts already in the page (for example the "What changes" dialog) get the same fingerprint.
-  html = html.replace(/(<script src=")(\/site\/v13\/[a-z0-9-]+\.js)(")/g, (_m, pre: string, src: string, post: string) => pre + versioned(src) + post);
+  html = html.replace(/(<script src=")(\/site\/v1[0-9]\/[a-z0-9-]+\.js)(")/g, (_m, pre: string, src: string, post: string) => pre + versioned(src) + post);
 
   const left = html.match(/\{\{[a-z_.]+\}\}/);
   if (left) throw new Error(`Unfilled token ${left[0]} in page "${name}"`);
@@ -263,7 +263,7 @@ export function renderJournalEntry(slug: string): string | null {
 <div class="w ax-w ax-body rv">
 ${body}
 </div>
-<div class="w ax-w"><div class="ax-by rv"><img src="/site/assets/ben-portrait.jpg" alt=""><div><b>Ben Brown</b><span>Founder, operator and full-stack builder</span></div></div></div>
+<div class="w ax-w"><div class="ax-by rv"><img src="/site/assets/ben-portrait.jpg" alt=""><div><b>Ben</b></div></div></div>
 </article>
 <section class="ax-next" data-screen-label="02 ${next ? "Next entry" : "Notes"}"><div class="w ax-w rv">
 ${next ? `<span class="eyebrow">Next entry</span><a class="ax-nx" href="/journal/${next.slug}"><span>${esc(next.title)}</span><span class="ar" aria-hidden="true">→</span></a>` : `<span class="eyebrow">Notes</span><a class="ax-nx" href="/journal"><span>All entries</span><span class="ar" aria-hidden="true">→</span></a>`}

@@ -196,5 +196,281 @@
     "old": "</span> Journal</a>",
     "new": "</span> Notes</a>",
     "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<b>I’m Ben. I evolve companies. I build the tools, design the skills and sharpen the process until it’s hard to match.</b> Twenty-six products shipped. Tens of thousands of users. One stubborn belief: <b>the best decisions come from the people who ship.</b>",
+    "new": "<b>I’m Ben. I’ve been building software for businesses since 2010, and running my own for most of that.</b> Twenty-six products shipped. Twenty of them run without me now. One stubborn belief: <b>the people who ship make the best decisions.</b>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p class=\"lede\">I designed, built and still run every product below. First commit to P&amp;L. You'd be talking to me.</p>",
+    "new": "<p class=\"lede\">I designed and built every product below. Most of them I still run. First commit to P&amp;L. You’d be talking to me.</p>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<span class=\"lt-s\">An AI-native operating system for small teams.</span>",
+    "new": "<span class=\"lt-s\">Crews answer on WhatsApp. Every job becomes a record nobody can edit.</span>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<h2 class=\"h-l\">The job, done right.</h2>",
+    "new": "<h2 class=\"h-l\">What I actually do.</h2>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<span class=\"d\">Built on the latest AI.</span>",
+    "new": "<span class=\"d\">Built on whichever AI does the job best.</span>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<span class=\"d\">What it takes to do the job right.</span>",
+    "new": "<span class=\"d\">What your people need to run it.</span>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Guardrails<b>Safety and security</b>",
+    "new": "Guardrails<b>Limits on what it can touch, and a person who checks</b>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<b>Taskbox.</b> An operating system for small teams. Inboxes, SOPs, handovers and retros. The agent does the filing.</h3><p class=\"hw-d\">An operating system for small teams, with AI built in.</p>",
+    "new": "<b>Taskbox.</b> Proof of work for field crews. They answer on WhatsApp, and every job becomes a record nobody can edit.</h3><p class=\"hw-d\">Proof of work from the messages crews already send.</p>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Control gaps, policy mapping and evidence in one baseline. Not forty spreadsheets.</h3>",
+    "new": "Control gaps, policy mapping and evidence in one place. Most firms keep it in forty spreadsheets.</h3>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Most projects are a relay race: strategist, designer, agency, support desk. Here, nobody passes the baton. The person who scoped it builds it, ships it and answers the phone after.",
+    "new": "Most projects get passed along: strategist, designer, agency, support desk. Something gets lost at every handover. Here, the person who scoped it builds it, ships it and answers the phone after.",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p class=\"oc-t\">Agile.</p><h3>Decided by who ships it</h3><p>Design and code are one person. Nothing gets lost between brief and build.</p>",
+    "new": "<p class=\"oc-t\">One person.</p><h3>No handovers</h3><p>Design and code are one person. Nothing gets lost between the brief and the build.</p>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p class=\"oc-t\">Agentic.</p><h3>AI where it earns its keep</h3>",
+    "new": "<p class=\"oc-t\">AI where it pays.</p><h3>And nowhere else</h3>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p class=\"oc-t\">Fast.</p><h3>Weeks, not quarters</h3><p>First screens in week two. In production by week twelve. A staging build every Friday.</p>",
+    "new": "<p class=\"oc-t\">Quick.</p><h3>First screens in week two</h3><p>In production by week twelve. A staging build every Friday.</p>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p class=\"oc-t\">Simple.</p><h3>One channel, one update</h3>",
+    "new": "<p class=\"oc-t\">One channel.</p><h3>One update a week</h3>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p class=\"oc-t\">Passionate.</p><h3>Skin in the game</h3><p>I run my own products too. I know what your decisions weigh.</p>",
+    "new": "<p class=\"oc-t\">Skin in the game.</p><h3>I run my own too</h3><p>I run my own products. I know what your decisions weigh, because I make the same ones.</p>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p class=\"oc-t\">Reliable.</p><h3>Built to hand over</h3><p>Every build ships with the training and documentation to run it.",
+    "new": "<p class=\"oc-t\">Built to hand over.</p><h3>Your team runs it</h3><p>Every build ships with the training and the docs to run it.",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "aria-label=\"More on Agile\"",
+    "new": "aria-label=\"More on One person\"",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "aria-label=\"More on Agentic\"",
+    "new": "aria-label=\"More on AI where it pays\"",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "aria-label=\"More on Fast\"",
+    "new": "aria-label=\"More on Quick\"",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "aria-label=\"More on Simple\"",
+    "new": "aria-label=\"More on One channel\"",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "aria-label=\"More on Passionate\"",
+    "new": "aria-label=\"More on Skin in the game\"",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "aria-label=\"More on Reliable\"",
+    "new": "aria-label=\"More on Built to hand over\"",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Mine starts with the cooks. The technology goes in around your people, not over them.</p>",
+    "new": "Mine starts with the cooks.</p>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "with the gaps filled by software, not spreadsheets.</p>",
+    "new": "with software where the spreadsheets used to be.</p>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "They stop losing Fridays to admin. They become superhuman.</p>",
+    "new": "They stop losing Fridays to admin.</p>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<span class=\"eyebrow\">Methods</span><h2 class=\"h-l\">Strategy first. Software last.</h2>",
+    "new": "<span class=\"eyebrow\">The method</span><h2 class=\"h-l\">Strategy first. Software last.</h2>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "</h2></div><span class=\"small\">Not the technology.</span></div>",
+    "new": "</h2></div></div>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p class=\"a\">I would rather tell you</p><span class=\"no\"><span>N</span><span>O</span><i aria-hidden=\"true\">.</i></span>",
+    "new": "<p class=\"a\">I’d rather tell you</p><span class=\"no\"><span>N</span><span>O</span></span>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<h2>Make your team Superhuman<em class=\"hl-or\">.</em></h2>",
+    "new": "<h2>What would your team do with the heavy lifting gone<em class=\"hl-or\">?</em></h2>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "content=\"Benjamin Brown builds the AI tools your team needs and teaches the skills to run them. Twenty-six products shipped.\"",
+    "new": "content=\"I build the AI tools your team needs, teach your people to run them, then hand them over. Twenty-six products shipped.\"",
+    "count": 1
+  },
+  {
+    "file": "work.html",
+    "old": "From the first commit through to the P&amp;L, every product below was designed, built and is still operated by the person you would be talking to.",
+    "new": "I designed and built every one of these. Most of them I still run. You’d be talking to me.",
+    "count": 1
+  },
+  {
+    "file": "work.html",
+    "old": "content=\"Six products designed, built and operated by Benjamin Brown.\"",
+    "new": "content=\"Six products I designed and built, and most of them I still run.\"",
+    "count": 1
+  },
+  {
+    "file": "work.html",
+    "old": "<b>Taskbox.</b> An AI-native operating system for small teams: inboxes, SOPs, handovers and retros, with the agent doing the filing.</h3><p class=\"hw-d\">An AI-native operating system for small teams.</p>",
+    "new": "<b>Taskbox.</b> Proof of work for field crews. They answer on WhatsApp, and every job becomes a record nobody can edit.</h3><p class=\"hw-d\">Proof of work from the messages crews already send.</p>",
+    "count": 1
+  },
+  {
+    "file": "work.html",
+    "old": "Governance, risk and compliance: control gaps, policy mapping and evidence in one baseline, instead of forty spreadsheets.</h3>",
+    "new": "Governance, risk and compliance. Control gaps, policy mapping and evidence in one place. Most firms keep it in forty spreadsheets.</h3>",
+    "count": 1
+  },
+  {
+    "file": "services.html",
+    "old": "<title>Skills · Benjamin Brown®</title>",
+    "new": "<title>The method · Benjamin Brown®</title>",
+    "count": 1
+  },
+  {
+    "file": "services.html",
+    "old": "<span class=\"eyebrow\">Skills</span>\n<h1",
+    "new": "<span class=\"eyebrow\">The method</span>\n<h1",
+    "count": 1
+  },
+  {
+    "file": "services.html",
+    "old": "<p>Not a skill area. It is the outcome of the ten steps: the order the work should happen in. Discovery order is not delivery order, so the work starts wherever the answers were weakest.</p>",
+    "new": "<p>This one’s what the ten steps add up to: the order the work should happen in. Discovery order isn’t delivery order. The work starts wherever the answers were weakest.</p>",
+    "count": 1
+  },
+  {
+    "file": "services.html",
+    "old": "Lifting one area puts pressure on the next: doubling sales tests support. The aim is for each area to improve in step with the others, not for one to race ahead.</p>",
+    "new": "Lifting one area puts pressure on the next: double your sales and you’ll find out how good your support is. The aim is for every area to improve in step with the others.</p>",
+    "count": 1
+  },
+  {
+    "file": "services.html",
+    "old": "<p>Only now does technology come in. The nine answers before it decide what gets built.</p>",
+    "new": "<p>Only now does the technology come in. The nine answers before it decide what gets built.</p>",
+    "count": 1
+  },
+  {
+    "file": "contact.html",
+    "old": "Pick one and I will only ask what I need.</p>",
+    "new": "Pick one and I’ll only ask what I need.</p>",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "Pick one. I will only ask what I need to get started.",
+    "new": "Pick one.",
+    "count": 1
+  },
+  {
+    "file": "v12/bb-flow.js",
+    "old": "Tell me what you need. I will fill the form in for you to check.",
+    "new": "Tell me what you need. I’ll fill the form in for you to check.",
+    "count": 1
+  },
+  {
+    "file": "journal.html",
+    "old": "<h1 class=\"h-l rv\">Notes from the build.</h1>\n<p class=\"lede rv\">Essays, working notes and field reports on building software, running teams and putting agentic workflows to work. <b>Written between projects, not instead of them.</b></p>",
+    "new": "<h1 class=\"h-l rv\">Notes from the workshop.</h1>\n<p class=\"lede rv\">Things shipped. Lessons learned the hard way. The occasional opinion.</p>",
+    "count": 1
+  },
+  {
+    "file": "journal.html",
+    "old": "content=\"Essays, working notes and field reports from Benjamin Brown on building software, running teams and putting agentic workflows to work.\"",
+    "new": "content=\"Things I’ve shipped, lessons I learned the hard way, and the occasional opinion. From Ben Brown.\"",
+    "count": 1
+  },
+  {
+    "file": "journal.html",
+    "old": "The AI news that matters to a business, in plain English, with one thing to do about each. Unsubscribe in one click.",
+    "new": "The AI news worth your time, in plain English, with one thing to do about each. Hit reply any time. I read them. Unsubscribe in one click.",
+    "count": 1
+  },
+  {
+    "file": "work/warrantyos-v3.jsx",
+    "old": "Founded, designed, built and run by Ben Brown.",
+    "new": "Founded, designed, built and run by Benjamin Brown.",
+    "count": 1
   }
 ]
