@@ -5,7 +5,7 @@ import { rpc } from "./db";
 
 export const VOICE = {
   anonSessionSeconds: 120, // a taste, before the visitor leaves their details
-  knownDaySeconds: 600, // per visitor per day once they have
+  knownDaySeconds: 900, // per visitor per day once they have
   siteDaySeconds: 7200,
   maxClipSeconds: 45,
   maxClipBytes: 1_500_000,
