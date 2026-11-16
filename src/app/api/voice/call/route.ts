@@ -3,7 +3,7 @@ import { rpc } from "@/lib/db";
 import { fail, guard, str } from "@/lib/guard";
 import { CALL, makeTicket, readTicket } from "@/lib/call";
 import { UUID_RE, VOICE, voiceAllowed } from "@/lib/voice";
-import { warmToto } from "@/lib/toto";
+import { callNote, warmToto, type Turn } from "@/lib/toto";
 import { isBot } from "@/lib/bot";
 
 export const maxDuration = 20;
@@ -15,6 +15,19 @@ export const maxDuration = 20;
 export async function POST(request: Request) {
   const g = await guard(request, { maxBytes: 4000 });
   if (!g.ok) return g.response;
+
+  if (g.body.op === "note") {
+    // The note left in the chat after a call: once per call, from the lines the visitor's browser saw.
+    const t = readTicket(str(g.body.ticket, 2000) ?? "", true);
+    if (!t) return fail(400, "Invalid request.");
+    const lines: Turn[] = (Array.isArray(g.body.lines) ? g.body.lines : []).slice(-24)
+      .map((l) => ({ role: (l as Turn)?.role === "user" ? "user" as const : "assistant" as const, text: str((l as Turn)?.text, 600) ?? "" }))
+      .filter((l) => l.text);
+    if (lines.filter((l) => l.role === "user").length < 2) return NextResponse.json({ ok: false });
+    if (!(await rpc<boolean>("call_claim_note", { p_call: t.c }).catch(() => false))) return NextResponse.json({ ok: false });
+    const note = await callNote(lines);
+    return NextResponse.json(note ? { ok: true, note } : { ok: false });
+  }
 
   if (g.body.op === "end") {
     const t = readTicket(str(g.body.ticket, 2000) ?? "", true);
