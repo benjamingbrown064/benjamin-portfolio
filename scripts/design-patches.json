@@ -472,5 +472,29 @@
     "old": "Founded, designed, built and run by Ben Brown.",
     "new": "Founded, designed, built and run by Benjamin Brown.",
     "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<div class=\"led-row lr\"><span class=\"n\">5</span><span class=\"lr-b\"><span class=\"lr-t\"><span class=\"t\">in market</span><span class=\"lr-tag\"><i></i>Live</span></span><span class=\"lr-tally\" aria-hidden=\"true\"><i class=\"on\" style=\"--k:0\"></i><i class=\"on\" style=\"--k:1\"></i><i class=\"on\" style=\"--k:2\"></i><i class=\"on\" style=\"--k:3\"></i><i class=\"on\" style=\"--k:4\"></i><i style=\"--k:5\"></i><i style=\"--k:6\"></i><i style=\"--k:7\"></i><i style=\"--k:8\"></i><i style=\"--k:9\"></i><i style=\"--k:10\"></i><i style=\"--k:11\"></i><i style=\"--k:12\"></i><i style=\"--k:13\"></i><i style=\"--k:14\"></i><i style=\"--k:15\"></i><i style=\"--k:16\"></i><i style=\"--k:17\"></i><i style=\"--k:18\"></i><i style=\"--k:19\"></i><i style=\"--k:20\"></i><i style=\"--k:21\"></i><i style=\"--k:22\"></i><i style=\"--k:23\"></i><i style=\"--k:24\"></i><i style=\"--k:25\"></i></span></span></div><div class=\"led-row lr\"><span class=\"n\">1</span><span class=\"lr-b\"><span class=\"lr-t\"><span class=\"t\">in beta</span><span class=\"lr-tag\"><i></i>Testing</span></span><span class=\"lr-tally\" aria-hidden=\"true\"><i class=\"on\" style=\"--k:0\"></i><i style=\"--k:1\"></i><i style=\"--k:2\"></i><i style=\"--k:3\"></i><i style=\"--k:4\"></i><i style=\"--k:5\"></i><i style=\"--k:6\"></i><i style=\"--k:7\"></i><i style=\"--k:8\"></i><i style=\"--k:9\"></i><i style=\"--k:10\"></i><i style=\"--k:11\"></i><i style=\"--k:12\"></i><i style=\"--k:13\"></i><i style=\"--k:14\"></i><i style=\"--k:15\"></i><i style=\"--k:16\"></i><i style=\"--k:17\"></i><i style=\"--k:18\"></i><i style=\"--k:19\"></i><i style=\"--k:20\"></i><i style=\"--k:21\"></i><i style=\"--k:22\"></i><i style=\"--k:23\"></i><i style=\"--k:24\"></i><i style=\"--k:25\"></i></span></span></div>",
+    "new": "<div class=\"led-row lr\"><span class=\"n\">3</span><span class=\"lr-b\"><span class=\"lr-t\"><span class=\"t\">in market</span><span class=\"lr-tag\"><i></i>Live</span></span><span class=\"lr-tally\" aria-hidden=\"true\"><i class=\"on\" style=\"--k:0\"></i><i class=\"on\" style=\"--k:1\"></i><i class=\"on\" style=\"--k:2\"></i><i style=\"--k:3\"></i><i style=\"--k:4\"></i><i style=\"--k:5\"></i><i style=\"--k:6\"></i><i style=\"--k:7\"></i><i style=\"--k:8\"></i><i style=\"--k:9\"></i><i style=\"--k:10\"></i><i style=\"--k:11\"></i><i style=\"--k:12\"></i><i style=\"--k:13\"></i><i style=\"--k:14\"></i><i style=\"--k:15\"></i><i style=\"--k:16\"></i><i style=\"--k:17\"></i><i style=\"--k:18\"></i><i style=\"--k:19\"></i><i style=\"--k:20\"></i><i style=\"--k:21\"></i><i style=\"--k:22\"></i><i style=\"--k:23\"></i><i style=\"--k:24\"></i><i style=\"--k:25\"></i></span></span></div><div class=\"led-row lr\"><span class=\"n\">2</span><span class=\"lr-b\"><span class=\"lr-t\"><span class=\"t\">in beta</span><span class=\"lr-tag\"><i></i>Testing</span></span><span class=\"lr-tally\" aria-hidden=\"true\"><i class=\"on\" style=\"--k:0\"></i><i class=\"on\" style=\"--k:1\"></i><i style=\"--k:2\"></i><i style=\"--k:3\"></i><i style=\"--k:4\"></i><i style=\"--k:5\"></i><i style=\"--k:6\"></i><i style=\"--k:7\"></i><i style=\"--k:8\"></i><i style=\"--k:9\"></i><i style=\"--k:10\"></i><i style=\"--k:11\"></i><i style=\"--k:12\"></i><i style=\"--k:13\"></i><i style=\"--k:14\"></i><i style=\"--k:15\"></i><i style=\"--k:16\"></i><i style=\"--k:17\"></i><i style=\"--k:18\"></i><i style=\"--k:19\"></i><i style=\"--k:20\"></i><i style=\"--k:21\"></i><i style=\"--k:22\"></i><i style=\"--k:23\"></i><i style=\"--k:24\"></i><i style=\"--k:25\"></i></span></span></div><div class=\"led-row lr\"><span class=\"n\">1</span><span class=\"lr-b\"><span class=\"lr-t\"><span class=\"t\">in build</span><span class=\"lr-tag\"><i></i>Coming</span></span><span class=\"lr-tally\" aria-hidden=\"true\"><i class=\"on\" style=\"--k:0\"></i><i style=\"--k:1\"></i><i style=\"--k:2\"></i><i style=\"--k:3\"></i><i style=\"--k:4\"></i><i style=\"--k:5\"></i><i style=\"--k:6\"></i><i style=\"--k:7\"></i><i style=\"--k:8\"></i><i style=\"--k:9\"></i><i style=\"--k:10\"></i><i style=\"--k:11\"></i><i style=\"--k:12\"></i><i style=\"--k:13\"></i><i style=\"--k:14\"></i><i style=\"--k:15\"></i><i style=\"--k:16\"></i><i style=\"--k:17\"></i><i style=\"--k:18\"></i><i style=\"--k:19\"></i><i style=\"--k:20\"></i><i style=\"--k:21\"></i><i style=\"--k:22\"></i><i style=\"--k:23\"></i><i style=\"--k:24\"></i><i style=\"--k:25\"></i></span></span></div>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Seventeen years. Six live projects. One pair of hands.",
+    "new": "Sixteen years. Six projects on the go. One pair of hands.",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<span class=\"h2-pill\"><i></i>Efficiency<b>2× to 10×</b></span>",
+    "new": "",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<p>LLMs in production since day one. I know where they pay back. And where they quietly burn money.</p>",
+    "new": "<p>I’ve put AI into production in my own products. I know where it pays back, and where it quietly burns money.</p>",
+    "count": 1
   }
 ]

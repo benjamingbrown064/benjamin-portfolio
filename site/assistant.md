@@ -38,6 +38,8 @@ Typical rhythm on a project: first screens in week two, a staging build every Fr
 
 ## Getting in touch
 
+- Ben's studio is in Costa Mesa, California. It is shown in the site footer and on the Let's talk page.
+
 - The request form (opens anywhere on the site, and lives at /contact) handles: a new project, a discovery, files for live work, a bug report, a support request, and requests for training or marketing assets.
 - A coffee: thirty minutes, video or in person, booked from the home page or /contact.
 - Every request gets a reference.

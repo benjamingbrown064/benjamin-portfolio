@@ -238,7 +238,7 @@ def wrap(name):
     return lambda m: "<!--block:%s-->%s<!--/block:%s-->" % (name, m.group(0), name)
 
 
-SOON_TAG = '<span class="soon-tag">Coming soon</span>'
+SOON_TAG = '<span class="soon-tag">Case study coming soon</span>'
 GO_RE = re.compile(r'<span class="go">.*?</span>', re.S)
 
 
@@ -296,7 +296,7 @@ def home_side_project(html):
             '<path d="M19.6 11.6l2.1-2.1" stroke="#1d1d1f" stroke-width="3.2" stroke-linecap="round"/>'
             '<path d="M22.2 9.2c.9-1.6 2.3-2.1 3.6-1.5" fill="none" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round"/>'
             '<circle cx="26.4" cy="7.6" r="1.7" fill="#ff6b1f"/><circle cx="11.6" cy="15.6" r="1.6" fill="#fff" opacity=".35"/></svg></span>'
-            '<span class="tx"><span class="k2">Side project</span><b>Want to play a game?</b></span>'
+            '<span class="tx"><span class="k2">Side project</span><b>Want to play a game?</b><span style="display:block;font-size:12.5px;font-weight:500;opacity:.75;margin-top:3px">A retro game I built for fun. Toto’s in it.</span></span>'
             '<span class="arr" aria-hidden="true">→</span><span class="sr-only"> (opens bomberbot.app in a new tab)</span></a>')
     return must_sub(r'(<div class="w hero-cap"><div>.*?</div>)(</div>)', lambda m: m.group(1) + pill + m.group(2), html, "home banner side-project pill")
 
