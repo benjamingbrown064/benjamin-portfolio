@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  if (await isBot(request)) return fail(403, "Request not allowed.");
+  if (await isBot(request)) return fail(403, "I could not start a call from this browser. You can type instead.");
   if (CALL.off || !CALL.agentId || !CALL.llmSecret || !process.env.ELEVENLABS_API_KEY) {
     return NextResponse.json({ ok: false, error: "Calls are resting for now. You can still type." }, { status: 503 });
   }
