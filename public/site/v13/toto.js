@@ -62,6 +62,21 @@
     '<div class="bba-foot"><span>' + NAME + ' is AI · hands over to Ben</span><button type="button" class="form">Request form ↗</button></div>');
   panel.setAttribute('aria-label', 'Chat with ' + NAME);
 
+  /* While on a call the panel can be tucked away: a small bar keeps the call in view, with mute and hang up,
+     and the page stays visible. Styled here; the main stylesheet is bundled from the design files. */
+  var bar = el('div', 'bba-callbar',
+    '<button type="button" class="cb-open" aria-label="Open the chat"><i class="cb-dot" aria-hidden="true"></i><span class="cb-t">On a call with Toto</span></button>' +
+    '<button type="button" class="cb-mute" aria-pressed="false">Mute</button><button type="button" class="cb-end">Hang up</button>');
+  bar.hidden = true;
+  bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Call with ' + NAME);
+  var barStyle = el('style', null, '.bba-callbar{position:fixed;right:90px;bottom:28px;z-index:81;display:flex;align-items:center;gap:6px;padding:6px;background:var(--ink,#0a0a0a);color:var(--bone,#f4f1ea);border-radius:999px;box-shadow:0 10px 28px rgba(10,10,10,.22);font:600 13.5px/1 var(--sans,system-ui,sans-serif)}' +
+    '.bba-callbar[hidden]{display:none}.bba-callbar button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:9px 12px;border-radius:999px}' +
+    '.bba-callbar .cb-open{display:flex;align-items:center;gap:9px;padding-left:10px}.bba-callbar .cb-mute,.bba-callbar .cb-end{background:rgba(255,255,255,.1)}' +
+    '.bba-callbar .cb-end{background:#ff5a1f;color:#fff}.bba-callbar .cb-mute[aria-pressed=true]{background:#f4f1ea;color:#0a0a0a}' +
+    '.bba-callbar .cb-dot{width:10px;height:10px;border-radius:50%;background:#3ad07a;transition:transform .08s linear}' +
+    '.bba-callbar[data-mode=speaking] .cb-dot{background:#ff5a1f}' +
+    '@media (max-width:560px){.bba-callbar{right:86px;left:12px;bottom:26px;justify-content:space-between}.bba-callbar .cb-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}}');
+
   var log = panel.querySelector('.bba-log');
   var input = panel.querySelector('textarea');
   var form = panel.querySelector('.bba-comp');
@@ -523,6 +538,25 @@
   var CALL_SRC = (document.currentScript && document.currentScript.getAttribute('data-call')) || '/site/v13/vendor/call.mjs';
   var call = null; // { conv, ticket, known, deadline, timer, pending, ended }
   function inCall() { return !!call; }
+  function syncBar() {
+    bar.hidden = !call || isOpen();
+    if (call) bar.setAttribute('data-mode', panel.getAttribute('data-state') === 'speaking' ? 'speaking' : 'listening');
+  }
+  function setMuted(m) {
+    if (!call) return;
+    call.muted = !!m;
+    try { if (call.conv) call.conv.setMicMuted(call.muted); } catch (e) {}
+    var b = bar.querySelector('.cb-mute'); b.setAttribute('aria-pressed', call.muted ? 'true' : 'false'); b.textContent = call.muted ? 'Unmute' : 'Mute';
+  }
+  /* Tuck the panel away without ending the call. */
+  function minimize() {
+    panel.classList.remove('on');
+    document.documentElement.classList.remove('bba-open');
+    launch.classList.remove('on');
+    launch.setAttribute('aria-label', 'Chat with ' + NAME);
+    launch.setAttribute('aria-expanded', 'false');
+    syncBar();
+  }
   function callUI(on) {
     listeningUI(on);
     if (on) { ear.querySelector('.t').textContent = 'On a call · listening'; ear.querySelector('.cancel').textContent = 'Hang up'; mic.setAttribute('aria-label', 'Hang up'); }
@@ -543,6 +577,7 @@
     var last = history[history.length - 1];
     if (last && last.role === role && last.text === text) return; // the greeting is already on screen
     history.push({ role: role, text: text, call: true });
+    if (call) { call.lines = (call.lines || []).concat([{ role: role, text: text }]).slice(-24); }
     save(); render();
   }
   function endCall(after) {
@@ -550,11 +585,19 @@
     call = null;
     clearInterval(c.timer);
     callUI(false); setState('idle'); launch.classList.remove('speaking');
+    bar.hidden = true; var mb = bar.querySelector('.cb-mute'); mb.setAttribute('aria-pressed', 'false'); mb.textContent = 'Mute';
     if (c.ticket) {
       try { fetch('/api/voice/call', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'end', ticket: c.ticket }) }).catch(function () {}); } catch (e) {}
     }
     var conv = c.conv; c.conv = null;
     if (conv) { try { conv.endSession(); } catch (e) {} }
+    // A short note in the chat: what was talked about and the next step. Not when the call only moved to another page.
+    if (!c.quiet && c.ticket && (c.lines || []).filter(function (l) { return l.role === 'user'; }).length >= 2) {
+      fetch('/api/voice/call', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'note', ticket: c.ticket, lines: c.lines }) })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (j && j.ok && j.note) { history.push({ role: 'assistant', text: j.note, local: true, note: true }); save(); render(); } })
+        .catch(function () {});
+    }
     // At the end of the free call, offer the details step so they can carry on.
     if (!c.known && !c.byVisitor && !c.quiet && Date.now() > c.deadline - 15000 && !gate) showGate();
     if (after) setTimeout(after, 150);
@@ -570,7 +613,7 @@
     var go = function () {
       if (c.pending !== a || call !== c) return;
       c.pending = null; clearTimeout(c.settle); clearTimeout(c.hardStop);
-      if (a.type === 'go_to') write(sessionStorage, KEYS.resume, String(Date.now()));
+      if (a.type === 'go_to') { write(sessionStorage, KEYS.resume, String(Date.now())); write(sessionStorage, 'toto:calllines', JSON.stringify(c.lines || [])); }
       c.quiet = true;
       endCall(function () { run([a]); });
     };
@@ -585,6 +628,7 @@
     history = history.filter(function (m) { return !m.error; }); render();
     var c = call = { conv: null, ticket: null, known: false, deadline: 0, timer: null, pending: null, byVisitor: false };
     callUI(true); setState('thinking'); ear.querySelector('.t').textContent = 'Connecting…';
+    syncBar(); bar.querySelector('.cb-t').textContent = resume ? 'Reconnecting to Toto…' : 'On a call with Toto';
     var fail = function (msg, gateToo) { if (call === c) { call = null; callUI(false); setState('idle'); } if (msg) note(msg); if (gateToo) showGate(); };
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(function (s) { s.getTracks().forEach(function (t) { t.stop(); }); })
@@ -599,6 +643,7 @@
         c.ticket = j.ticket; c.known = !!j.known; c.deadline = Date.now() + j.seconds * 1000;
         var hadChat = history.some(function (m) { return m.role === 'user'; });
         c.resume = !!resume;
+        if (resume) { try { c.lines = JSON.parse(read(sessionStorage, 'toto:calllines') || '[]'); } catch (e) {} remove(sessionStorage, 'toto:calllines'); }
         c.greeting = resume ? '' : hadChat ? 'I’m listening. Go ahead.' : GREETING_SPOKEN;
         return import(CALL_SRC).then(function (lib) {
           if (call !== c) return;
@@ -612,11 +657,13 @@
               // Arriving on a new page mid-call: Toto opens by saying where they are, then carries on.
               if (c.resume) setTimeout(function () { if (call === c && c.conv) try { c.conv.sendUserMessage('[arrived]'); } catch (e) {} }, 250);
               setState('listening'); ear.querySelector('.t').textContent = 'On a call · listening';
+              bar.querySelector('.cb-t').textContent = 'On a call with Toto'; syncBar();
               c.timer = setInterval(function () {
                 if (call !== c || !c.conv) return;
                 // Backstop: Toto ends the call himself when its time is up, at the next turn; this ends it if nobody speaks.
                 if (Date.now() > c.deadline + 8000) return endCall();
                 var v = c.conv.getInputVolume ? c.conv.getInputVolume() : 0;
+                bar.querySelector('.cb-dot').style.transform = 'scale(' + (1 + Math.min(1, (c.muted ? 0 : v) * 4) * .7).toFixed(2) + ')';
                 bars.forEach(function (b, i) { b.style.transform = 'scaleY(' + (0.25 + Math.min(1, v * 3 * (0.6 + 0.4 * Math.sin(i * 1.9 + Date.now() / 140) + 0.4)) * 0.75).toFixed(2) + ')'; });
               }, 80);
             },
@@ -627,6 +674,7 @@
               launch.classList.toggle('speaking', speaking);
               ear.querySelector('.t').textContent = speaking ? 'On a call · talk to cut in' : 'On a call · listening';
               if (c.pending) { if (speaking) clearTimeout(c.settle); else c.settleNow(); }
+              syncBar();
             },
             onMessage: function (m) {
               if (call !== c || !m || !m.message) return;
@@ -640,7 +688,7 @@
         });
       })
       .catch(function (e) {
-        if (resume) return fail('Tap the microphone to carry on our call.');
+        if (resume) { fail('Tap the microphone to carry on our call.'); open(); return; }
         if (e && e.mic) return fail('I need microphone access for a call. You can type instead.');
         fail('The call could not connect. Please try again, or type.');
       });
@@ -655,6 +703,7 @@
   function track(name, params) { if (window.BBTrack) window.BBTrack(name, params); }
   function open() {
     if (!isOpen()) track('toto_open');
+    bar.hidden = true;
     panel.classList.add('on');
     document.documentElement.classList.add('bba-open');
     launch.classList.add('on', 'seen');
@@ -665,7 +714,7 @@
     setTimeout(function () { input.focus({ preventScroll: true }); }, 400);
   }
   function close() {
-    if (call) endCall();
+    if (call) { minimize(); return; } // the call carries on in the small bar
     stopRecording(true);
     stopSpeaking();
     panel.classList.remove('on');
@@ -684,6 +733,11 @@
   function mount() {
     document.body.appendChild(launch);
     document.body.appendChild(panel);
+    document.head.appendChild(barStyle);
+    document.body.appendChild(bar);
+    bar.querySelector('.cb-open').addEventListener('click', function () { open(); });
+    bar.querySelector('.cb-end').addEventListener('click', function () { hangUpCall(); });
+    bar.querySelector('.cb-mute').addEventListener('click', function () { setMuted(!(call && call.muted)); });
     if (read(localStorage, KEYS.seen)) launch.classList.add('seen');
     if (location.hash && read(sessionStorage, KEYS.reopen)) setTimeout(function () { showSection(location.hash.slice(1)); }, 600);
     render();
@@ -691,7 +745,11 @@
     // A call that moved the visitor here picks up again by itself, if it moved them within the last half minute.
     var resumeAt = Number(read(sessionStorage, KEYS.resume) || 0);
     remove(sessionStorage, KEYS.resume);
-    if (resumeAt && Date.now() - resumeAt < 30000 && voice && voice.supported) { open(); setTimeout(function () { startCall(true); }, 300); }
+    if (resumeAt && Date.now() - resumeAt < 30000 && voice && voice.supported) {
+      // The call carries on in the small bar, so the new page is in full view.
+      if (isOpen()) minimize();
+      setTimeout(function () { startCall(true); }, 300);
+    }
   }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
 

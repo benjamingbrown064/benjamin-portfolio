@@ -375,3 +375,29 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
   const cost = (usage.fresh * price.in + usage.cacheWrite * price.cacheWrite + usage.cacheRead * price.cacheRead + outputTokens * price.out) / 1_000_000;
   return { reply, actions: actions.slice(0, 2), report, name, email, inputTokens, outputTokens, cost };
 }
+
+/** The short note left in the chat when a call ends: what was talked about and the most useful next step. */
+export async function callNote(lines: Turn[]): Promise<string | null> {
+  const said = lines.map((t) => `${t.role === "user" ? "Visitor" : "Toto"}: ${t.text}`).join("\n").slice(-6000);
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": process.env.ANTHROPIC_API_KEY!, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-haiku-5-5",
+        max_tokens: 160,
+        thinking: { type: "disabled" },
+        system: `You are ${facts.assistantName}, the AI assistant on Ben's website. A voice call with a visitor has just ended. Write the note left in the chat: two short sentences, under 45 words, speaking to the visitor as "you". First what you talked about, then the single most useful next step on this site (for example the request form, a coffee with Ben, or a page to read). Only mention things said in the call. No greeting, no sign-off, no markdown, UK spelling.`,
+        messages: [{ role: "user", content: said }],
+      }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    const j = (await res.json()) as { content?: { type: string; text?: string }[] };
+    const text = (j.content ?? []).filter((b) => b.type === "text").map((b) => b.text).join("").trim();
+    return text ? text.slice(0, 400) : null;
+  } catch (e) {
+    console.error("toto: call note failed", e);
+    return null;
+  }
+}
