@@ -136,7 +136,7 @@ export async function POST(request: Request) {
           // Page actions are carried out by the browser, through the call's client tool.
           for (const a of out.actions) if (a.type !== "report") callTool("site_action", { action: JSON.stringify(a) });
           await rpc("chat_log_turn", {
-            p_session: t.s, p_ip: t.i, p_page: t.p, p_user: question === ARRIVED ? "(arrived on the page)" : question, p_reply: out.reply,
+            p_session: t.s, p_ip: t.i, p_page: t.p, p_user: question === ARRIVED ? "(arrived on the page)" : question, p_reply: out.reply.replace(/\[[a-z][a-z ]{1,20}\]\s*/gi, "").trim(),
             p_actions: out.actions.length ? out.actions : null,
             p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
           });
