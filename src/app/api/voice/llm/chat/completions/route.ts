@@ -78,8 +78,11 @@ export async function POST(request: Request) {
       try {
         // Bill the call up to now, then check every limit before paying for a reply. The checks run side by side.
         type Pre = { session_messages: number; known: boolean; ip_hour: number; ip_day: number; site_day: number; month_cost: number };
-        await rpc("call_tick", { p_call: t.c, p_rate: CALL.perSecond, p_end: false });
-        const [voice, pre] = await Promise.all([voiceAllowed(t.s, t.i), rpc<Pre>("chat_precheck", { p_session: t.s, p_ip: t.i })]);
+        const [, voice, pre] = await Promise.all([
+          rpc("call_tick", { p_call: t.c, p_rate: CALL.perSecond, p_end: false }),
+          voiceAllowed(t.s, t.i),
+          rpc<Pre>("chat_precheck", { p_session: t.s, p_ip: t.i }),
+        ]);
         const tChecked = Date.now();
         if (Date.now() > t.x || !voice.allow) {
           const known = voice.allow ? voice.check.known : !("gate" in voice && voice.gate);
@@ -100,7 +103,7 @@ export async function POST(request: Request) {
               send(chunk(first ? { role: "assistant", content: delta } : { content: delta }));
               first = false;
             }, { call: true });
-            console.log(JSON.stringify({ voiceLlm: { checks: tChecked - t0, firstWords: tFirst ? tFirst - t0 : null, done: Date.now() - t0, turns: turns.length } }));
+            console.log(JSON.stringify({ voiceLlm: { checks: tChecked - t0, firstWords: tFirst ? tFirst - t0 : null, done: Date.now() - t0, turns: turns.length, from: request.headers.get("x-vercel-ip-country") } }));
             if (first) send(chunk({ role: "assistant", content: out.reply }));
             // Page actions are carried out by the browser, through the call's client tool.
             for (const a of out.actions) if (a.type !== "report") callTool("site_action", { action: JSON.stringify(a) });
