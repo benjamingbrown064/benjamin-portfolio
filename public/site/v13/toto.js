@@ -15,7 +15,7 @@
   var GREETING_SPOKEN = "Hi, it's Toto. How can I help?";
   var STARTERS = ['What does Ben do?', 'Run a quick discovery', 'Show me the work', 'I would like to talk to Ben'];
   var HOME_SECTIONS = { work: 'work', method: 'services', pricing: 'pricing', testimonials: 'testimonials' };
-  var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen' };
+  var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen', resume: 'toto:resume' };
   var MAX_STORED = 60;
 
   /* ---------- storage ---------- */
@@ -528,6 +528,7 @@
   function callLine(role, text) {
     text = (text || '').trim();
     if (!/[\p{L}\p{N}]/u.test(text)) return; // a silent turn comes through as "..."
+    if (text === '[arrived]') return;
     var last = history[history.length - 1];
     if (last && last.role === role && last.text === text) return; // the greeting is already on screen
     history.push({ role: role, text: text, call: true });
@@ -544,20 +545,31 @@
     var conv = c.conv; c.conv = null;
     if (conv) { try { conv.endSession(); } catch (e) {} }
     // At the end of the free call, offer the details step so they can carry on.
-    if (!c.known && !c.byVisitor && Date.now() > c.deadline - 15000 && !gate) showGate();
+    if (!c.known && !c.byVisitor && !c.quiet && Date.now() > c.deadline - 15000 && !gate) showGate();
     if (after) setTimeout(after, 150);
   }
-  /* A page action during a call waits until Toto has said his line, then the call ends and the action runs. */
+  /* A page action during a call waits until Toto has finished his line: he must have been quiet for a moment, not just
+     paused between sentences. Then the call ends and the action runs. A move to another page carries the call on there. */
+  var SETTLE_MS = 1200;
   function callAction(a) {
     if (!call || !a || a.type === 'report') return;
-    var c = call, go = function () { if (c.pending === a) { c.pending = null; endCall(function () { run([a]); }); } };
+    var c = call;
+    if (a.type === 'go_to' && a.path === location.pathname) { run([a]); return; } // already here: just scroll, keep talking
     c.pending = a;
-    c.pendingTimer = setTimeout(go, 6000);
-    c.afterSpeaking = go;
+    var go = function () {
+      if (c.pending !== a || call !== c) return;
+      c.pending = null; clearTimeout(c.settle); clearTimeout(c.hardStop);
+      if (a.type === 'go_to') write(sessionStorage, KEYS.resume, String(Date.now()));
+      c.quiet = true;
+      endCall(function () { run([a]); });
+    };
+    c.settleNow = function () { clearTimeout(c.settle); c.settle = setTimeout(go, SETTLE_MS); };
+    c.settleNow(); // if he is already quiet, this fires; speaking again restarts it
+    c.hardStop = setTimeout(go, 12000);
   }
-  function startCall() {
+  function startCall(resume) {
     if (call || busy) return;
-    unlockAudio();
+    if (!resume) unlockAudio();
     stopSpeaking();
     history = history.filter(function (m) { return !m.error; }); render();
     var c = call = { conv: null, ticket: null, known: false, deadline: 0, timer: null, pending: null, byVisitor: false };
@@ -575,7 +587,8 @@
         if (!j.ok) return fail(j.error || 'I could not start a call just now. You can type instead.', !!j.gate);
         c.ticket = j.ticket; c.known = !!j.known; c.deadline = Date.now() + j.seconds * 1000;
         var hadChat = history.some(function (m) { return m.role === 'user'; });
-        c.greeting = hadChat ? 'I’m listening. Go ahead.' : GREETING_SPOKEN;
+        c.resume = !!resume;
+        c.greeting = resume ? '' : hadChat ? 'I’m listening. Go ahead.' : GREETING_SPOKEN;
         return import(CALL_SRC).then(function (lib) {
           if (call !== c) return;
           return lib.Conversation.startSession({
@@ -585,6 +598,8 @@
             clientTools: { site_action: function (p) { var a = null; try { a = JSON.parse(p.action); } catch (e) {} callAction(a); } },
             onConnect: function () {
               if (call !== c) return;
+              // Arriving on a new page mid-call: Toto opens by saying where they are, then carries on.
+              if (c.resume) setTimeout(function () { if (call === c && c.conv) try { c.conv.sendUserMessage('[arrived]'); } catch (e) {} }, 250);
               setState('listening'); ear.querySelector('.t').textContent = 'On a call · listening';
               c.timer = setInterval(function () {
                 if (call !== c || !c.conv) return;
@@ -600,7 +615,7 @@
               setState(speaking ? 'speaking' : 'listening'); hush.hidden = true;
               launch.classList.toggle('speaking', speaking);
               ear.querySelector('.t').textContent = speaking ? 'On a call · talk to cut in' : 'On a call · listening';
-              if (!speaking && c.afterSpeaking) { var f = c.afterSpeaking; c.afterSpeaking = null; clearTimeout(c.pendingTimer); setTimeout(f, 300); }
+              if (c.pending) { if (speaking) clearTimeout(c.settle); else c.settleNow(); }
             },
             onMessage: function (m) {
               if (call !== c || !m || !m.message) return;
@@ -614,6 +629,7 @@
         });
       })
       .catch(function (e) {
+        if (resume) return fail('Tap the microphone to carry on our call.');
         if (e && e.mic) return fail('I need microphone access for a call. You can type instead.');
         fail('The call could not connect. Please try again, or type.');
       });
@@ -660,6 +676,10 @@
     if (read(localStorage, KEYS.seen)) launch.classList.add('seen');
     render();
     if (read(sessionStorage, KEYS.reopen)) { remove(sessionStorage, KEYS.reopen); open(); }
+    // A call that moved the visitor here picks up again by itself, if it moved them within the last half minute.
+    var resumeAt = Number(read(sessionStorage, KEYS.resume) || 0);
+    remove(sessionStorage, KEYS.resume);
+    if (resumeAt && Date.now() - resumeAt < 30000 && voice && voice.supported) { open(); setTimeout(function () { startCall(true); }, 300); }
   }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
 

@@ -16,6 +16,8 @@ export const preferredRegion = "iad1";
 
 type Msg = { role?: string; content?: unknown };
 
+const ARRIVED = "(Not the visitor's words: the call has just reconnected because you moved them to this page. Open with one short sentence about what they are now looking at, then carry the conversation on from where it was. Do not greet them again.)";
+
 const LIMITS = { sessionMessages: 30, sessionMessagesKnown: 100, ipHour: 40, ipDay: 80, siteDay: 1500, monthlyUsd: Number(process.env.CHAT_MONTHLY_CAP_USD ?? 40) };
 
 function text(content: unknown): string {
@@ -57,7 +59,9 @@ export async function POST(request: Request) {
   const turns: Turn[] = [];
   for (const m of [...earlier, ...messages].slice(-44)) {
     const role = m.role === "user" ? "user" : m.role === "assistant" ? "assistant" : null;
-    const said = text(m.content).trim().slice(0, 1200);
+    let said = text(m.content).trim().slice(0, 1200);
+    // Sent by the browser when a call reconnects after moving the visitor to another page.
+    if (role === "user" && said === "[arrived]") said = ARRIVED;
     if (!role || !said) continue;
     if (turns.length && turns[turns.length - 1].role === role) turns[turns.length - 1] = { role, text: `${turns[turns.length - 1].text} ${said}` };
     else turns.push({ role, text: said });
@@ -132,7 +136,7 @@ export async function POST(request: Request) {
           // Page actions are carried out by the browser, through the call's client tool.
           for (const a of out.actions) if (a.type !== "report") callTool("site_action", { action: JSON.stringify(a) });
           await rpc("chat_log_turn", {
-            p_session: t.s, p_ip: t.i, p_page: t.p, p_user: question, p_reply: out.reply,
+            p_session: t.s, p_ip: t.i, p_page: t.p, p_user: question === ARRIVED ? "(arrived on the page)" : question, p_reply: out.reply,
             p_actions: out.actions.length ? out.actions : null,
             p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
           });
