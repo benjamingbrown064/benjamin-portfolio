@@ -28,12 +28,14 @@ body[data-mode=connecting] .orb{opacity:.6}
 .m{padding:10px 14px;border-radius:14px;max-width:88%;white-space:pre-wrap}
 .m.u{align-self:flex-end;background:#1d1c18}.m.a{align-self:flex-start;border:1px solid var(--line)}
 .m.x{align-self:center;color:var(--mute);font-size:13px;border:1px dashed var(--line)}
+.fast{color:var(--mute);font-size:13px;display:flex;gap:8px;align-items:center}
 .note{color:var(--mute);font-size:13px;text-align:center;max-width:420px}
 </style></head>
 <body data-mode="idle"><main>
 <h1>Toto · live call test</h1>
 <button class="orb" type="button" aria-label="Talk to Toto">Talk to Toto</button>
 <div class="st" aria-live="polite">Tap to start a call. Talk normally; you can cut in while he speaks.</div>
+<label class="fast"><input type="checkbox"> Faster model (test)</label>
 <div class="left"></div>
 <button class="end" type="button" hidden>Hang up</button>
 <div class="log" role="log"></div>
@@ -70,7 +72,7 @@ async function start() {
   catch (e) { mode("idle", "I need your microphone for a call."); orb.textContent = "Talk to Toto"; return; }
   let j = {};
   try {
-    const r = await fetch("/api/voice/call", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session: session(), page: "/" }) });
+    const r = await fetch("/api/voice/call", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session: session(), page: "/", fast: document.querySelector(".fast input").checked }) });
     j = await r.json().catch(() => ({}));
   } catch (e) {}
   if (!j.ok) { mode("idle", j.error || "I could not start a call just now."); orb.textContent = "Talk to Toto"; return; }

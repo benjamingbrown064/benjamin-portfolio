@@ -5,6 +5,8 @@ import { askToto, type Turn } from "@/lib/toto";
 import { voiceAllowed } from "@/lib/voice";
 
 export const maxDuration = 60;
+// ElevenLabs and the model provider are both in the US, so the reply is written there; only the limit checks cross to the London database.
+export const preferredRegion = "iad1";
 
 /* Toto's brain for live voice calls. ElevenLabs runs the call and asks this endpoint for each reply, in the
    OpenAI Chat Completions format, streamed. It is not for browsers: it only answers requests carrying the
@@ -102,8 +104,8 @@ export async function POST(request: Request) {
               if (first) tFirst = Date.now();
               send(chunk(first ? { role: "assistant", content: delta } : { content: delta }));
               first = false;
-            }, { call: true });
-            console.log(JSON.stringify({ voiceLlm: { checks: tChecked - t0, firstWords: tFirst ? tFirst - t0 : null, done: Date.now() - t0, turns: turns.length, from: request.headers.get("x-vercel-ip-country") } }));
+            }, { call: true, ...(t.m ? { model: "claude-haiku-5-5" } : {}) });
+            console.log(JSON.stringify({ voiceLlm: { checks: tChecked - t0, firstWords: tFirst ? tFirst - t0 : null, done: Date.now() - t0, turns: turns.length, fast: Boolean(t.m), from: request.headers.get("x-vercel-ip-country") } }));
             if (first) send(chunk({ role: "assistant", content: out.reply }));
             // Page actions are carried out by the browser, through the call's client tool.
             for (const a of out.actions) if (a.type !== "report") callTool("site_action", { action: JSON.stringify(a) });

@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       throw new Error(`token ${res.status}`);
     }
     const seconds = Math.min(left, CALL.maxSeconds);
-    const ticket = makeTicket({ c: opened.id, s: session, i: g.ip, p: page, k: c.known ? 1 : 0, x: Date.now() + seconds * 1000 });
+    const ticket = makeTicket({ c: opened.id, s: session, i: g.ip, p: page, k: c.known ? 1 : 0, ...(g.body.fast === true ? { m: 1 as const } : {}), x: Date.now() + seconds * 1000 });
     return NextResponse.json({ ok: true, token: j.token, ticket, seconds, known: c.known });
   } catch (e) {
     console.error("call: start failed", e);
