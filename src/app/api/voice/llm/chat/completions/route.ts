@@ -5,6 +5,9 @@ import { askToto, type Turn } from "@/lib/toto";
 import { voiceAllowed } from "@/lib/voice";
 
 export const maxDuration = 60;
+// ElevenLabs calls from the US and the model is answered there too, so replies are written in the US. The
+// London database checks run alongside the model, so the distance to them costs nothing.
+export const preferredRegion = "iad1";
 
 /* Toto's brain for live voice calls. ElevenLabs runs the call and asks this endpoint for each reply, in the
    OpenAI Chat Completions format, streamed. It is not for browsers: it only answers requests carrying the
@@ -76,43 +79,54 @@ export async function POST(request: Request) {
         callTool("end_call", { reason: "allowance", message: "" });
       };
       try {
-        // Bill the call up to now, then check every limit before paying for a reply. The checks run side by side.
         type Pre = { session_messages: number; known: boolean; ip_hour: number; ip_day: number; site_day: number; month_cost: number };
+        const question = turns.length && turns[turns.length - 1].role === "user" ? turns[turns.length - 1].text : "";
+        // The reply is started straight away and the limit checks run alongside it, so they add no delay. Nothing
+        // is passed on to the call until the checks have cleared; if they fail, the reply is never heard.
+        let cleared = false;
+        let held: string[] = [];
+        let first = true;
+        let tFirst = 0;
+        const forward = (delta: string) => {
+          if (first) tFirst = Date.now();
+          send(chunk(first ? { role: "assistant", content: delta } : { content: delta }));
+          first = false;
+        };
+        const reply = question && Date.now() <= t.x
+          ? askToto(turns, t.p, t.k === 1, (delta) => { if (cleared) forward(delta); else held.push(delta); }, { call: true, ...(t.m ? { model: "claude-haiku-5-5" } : {}) })
+          : null;
+        reply?.catch(() => {}); // handled below
+        // Bill the call up to now, and check every limit.
         const [, voice, pre] = await Promise.all([
           rpc("call_tick", { p_call: t.c, p_rate: CALL.perSecond, p_end: false }),
           voiceAllowed(t.s, t.i),
           rpc<Pre>("chat_precheck", { p_session: t.s, p_ip: t.i }),
         ]);
         const tChecked = Date.now();
+        const overMessages = Number(pre.month_cost) >= LIMITS.monthlyUsd || pre.site_day >= LIMITS.siteDay || pre.ip_hour >= LIMITS.ipHour || pre.ip_day >= LIMITS.ipDay || pre.session_messages >= (pre.known ? LIMITS.sessionMessagesKnown : LIMITS.sessionMessages);
         if (Date.now() > t.x || !voice.allow) {
           const known = voice.allow ? voice.check.known : !("gate" in voice && voice.gate);
           goodbye(known || t.k
             ? "That is all the call time I have for today, so I will stop here. You can keep typing to me in the chat, or use the request form."
             : "That is the end of the free call. If you leave your name and email in the chat, we can carry on talking.");
-        } else if (!turns.length || turns[turns.length - 1].role !== "user") {
+        } else if (!reply) {
           send(chunk({ role: "assistant", content: "" }));
+        } else if (overMessages) {
+          goodbye("I have to stop here for now. The request form still works, and Ben reads every one.");
         } else {
-          if (Number(pre.month_cost) >= LIMITS.monthlyUsd || pre.site_day >= LIMITS.siteDay || pre.ip_hour >= LIMITS.ipHour || pre.ip_day >= LIMITS.ipDay || pre.session_messages >= (pre.known ? LIMITS.sessionMessagesKnown : LIMITS.sessionMessages)) {
-            goodbye("I have to stop here for now. The request form still works, and Ben reads every one.");
-          } else {
-            const question = turns[turns.length - 1].text;
-            let first = true;
-            let tFirst = 0;
-            const out = await askToto(turns, t.p, pre.known || t.k === 1, (delta) => {
-              if (first) tFirst = Date.now();
-              send(chunk(first ? { role: "assistant", content: delta } : { content: delta }));
-              first = false;
-            }, { call: true, ...(t.m ? { model: "claude-haiku-5-5" } : {}) });
-            console.log(JSON.stringify({ voiceLlm: { checks: tChecked - t0, firstWords: tFirst ? tFirst - t0 : null, done: Date.now() - t0, turns: turns.length, tokensIn: out.inputTokens, cost: Number(out.cost.toFixed(5)), fast: Boolean(t.m), from: request.headers.get("x-vercel-ip-country") } }));
-            if (first) send(chunk({ role: "assistant", content: out.reply }));
-            // Page actions are carried out by the browser, through the call's client tool.
-            for (const a of out.actions) if (a.type !== "report") callTool("site_action", { action: JSON.stringify(a) });
-            await rpc("chat_log_turn", {
-              p_session: t.s, p_ip: t.i, p_page: t.p, p_user: question, p_reply: out.reply,
-              p_actions: out.actions.length ? out.actions : null,
-              p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
-            });
-          }
+          cleared = true;
+          const early = held; held = [];
+          for (const d of early) forward(d);
+          const out = await reply;
+          console.log(JSON.stringify({ voiceLlm: { checks: tChecked - t0, firstWords: tFirst ? tFirst - t0 : null, done: Date.now() - t0, turns: turns.length, tokensIn: out.inputTokens, cost: Number(out.cost.toFixed(5)), fast: Boolean(t.m), from: request.headers.get("x-vercel-ip-country") } }));
+          if (first) send(chunk({ role: "assistant", content: out.reply }));
+          // Page actions are carried out by the browser, through the call's client tool.
+          for (const a of out.actions) if (a.type !== "report") callTool("site_action", { action: JSON.stringify(a) });
+          await rpc("chat_log_turn", {
+            p_session: t.s, p_ip: t.i, p_page: t.p, p_user: question, p_reply: out.reply,
+            p_actions: out.actions.length ? out.actions : null,
+            p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
+          });
         }
         send(chunk({}, tool ? "tool_calls" : "stop"));
         send(encoder.encode("data: [DONE]\n\n"));
