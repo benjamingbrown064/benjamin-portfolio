@@ -4,10 +4,10 @@ import { JOURNAL } from "./src/lib/journal";
 const nextConfig: NextConfig = {
   // Files read at run time by the page renderer and the assistant.
   outputFileTracingIncludes: {
-    "/api/chat": ["./site/assistant.md"],
-    "/api/voice/llm/chat/completions": ["./site/assistant.md"],
-    "/api/voice/llm": ["./site/assistant.md"],
-    "/api/voice/call": ["./site/assistant.md"],
+    "/api/chat": ["./site/assistant.md", "./site/pages/*.html"],
+    "/api/voice/llm/chat/completions": ["./site/assistant.md", "./site/pages/*.html"],
+    "/api/voice/llm": ["./site/assistant.md", "./site/pages/*.html"],
+    "/api/voice/call": ["./site/assistant.md", "./site/pages/*.html"],
   },
   async redirects() {
     return [

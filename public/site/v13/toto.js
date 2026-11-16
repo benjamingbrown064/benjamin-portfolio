@@ -144,12 +144,21 @@
     if (window.BBCoffee) window.BBCoffee.open();
     else location.href = '/contact#coffee';
   }
+  /* Scrolls a section into view and outlines it for a moment, so the visitor sees what Toto is talking about. */
+  function showSection(id) {
+    var target = id && document.getElementById(id);
+    if (!target) return false;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Styled here rather than in the stylesheet, which is bundled from the design files.
+    var was = target.style.outline, wasOff = target.style.outlineOffset;
+    target.style.outline = '3px solid #ff5a1f'; target.style.outlineOffset = '-3px';
+    setTimeout(function () { target.style.outline = was; target.style.outlineOffset = wasOff; }, 2600);
+    return true;
+  }
   function goTo(path, section) {
-    var id = section && HOME_SECTIONS[section];
+    var id = section && (HOME_SECTIONS[section] || section);
     if (path === location.pathname) {
-      var target = id && document.getElementById(id);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      else window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (!showSection(id)) window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     write(sessionStorage, KEYS.reopen, '1'); // keep the conversation open on the next page
@@ -529,6 +538,8 @@
     text = (text || '').trim();
     if (!/[\p{L}\p{N}]/u.test(text)) return; // a silent turn comes through as "..."
     if (text === '[arrived]') return;
+    text = text.replace(/\[[a-z][a-z ]{1,20}\]\s*/gi, '').trim(); // voice tags such as [warm] shape the voice, they are not words
+    if (!text) return;
     var last = history[history.length - 1];
     if (last && last.role === role && last.text === text) return; // the greeting is already on screen
     history.push({ role: role, text: text, call: true });
@@ -674,6 +685,7 @@
     document.body.appendChild(launch);
     document.body.appendChild(panel);
     if (read(localStorage, KEYS.seen)) launch.classList.add('seen');
+    if (location.hash && read(sessionStorage, KEYS.reopen)) setTimeout(function () { showSection(location.hash.slice(1)); }, 600);
     render();
     if (read(sessionStorage, KEYS.reopen)) { remove(sessionStorage, KEYS.reopen); open(); }
     // A call that moved the visitor here picks up again by itself, if it moved them within the last half minute.

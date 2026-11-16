@@ -2,6 +2,7 @@
 // affect the visitor's own browser. It has no access to email, files, calendars or any private system.
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { sectionIds, siteText } from "./pages";
 import facts from "../../site/facts.json";
 import { JOURNAL, journalDate } from "./journal";
 
@@ -97,18 +98,24 @@ Facts you may state:
 - Starting prices: Discovery from ${p.discovery.gbp} (${p.discovery.usd}), fixed fee. Project from ${p.project.gbp} (${p.project.usd}), fixed scope. Subscription from ${p.subscription.gbp} (${p.subscription.usd}) a month.
 - Contact: ${facts.email}.
 ${journalFacts()}
-${loadKnowledge()}`;
+${loadKnowledge()}
+
+## The pages of this site
+
+Below is the text of the site's main pages. Everything in it counts as facts you may state, and you can quote it. Use it to talk about the work in real detail, and to point the visitor at the right part of a page with go_to and a section id. Do not invent anything beyond it.
+
+${siteText()}`;
 }
 
 const TOOLS = [
   {
     name: "go_to",
-    description: "Take the visitor to a page on this site, optionally to a section of the home page.",
+    description: "Take the visitor to a page on this site, or to a section of a page, which is scrolled into view and briefly highlighted. Works for the page they are already on too: use it with a section to point at part of the current page.",
     input_schema: {
       type: "object",
       properties: {
         path: { type: "string", enum: PAGES },
-        section: { type: "string", enum: HOME_SECTIONS, description: "Only with path '/'." },
+        section: { type: "string", description: "Optional. The id of a section on that page, from the [section id=...] markers in the page text." },
       },
       required: ["path"],
     },
@@ -169,7 +176,7 @@ const PAGE_NAMES: Record<string, string> = {
 
 /** The line Toto says when he moves the visitor without adding words of his own. */
 function describeMove(path: string, section?: string): string {
-  if (section) return `Here is the ${section === "work" ? "selected work" : section} section. Ask me anything about it.`;
+  if (section) return `Here is that part of ${PAGE_NAMES[path] ?? "the page"}. Ask me anything about it.`;
   return `Here is ${PAGE_NAMES[path] ?? "that page"}. Ask me anything as you look through it.`;
 }
 
@@ -263,8 +270,8 @@ const CALL_MODE = `You are on a live voice call with the visitor, and your words
 - If they interrupt you, you will only see the part you managed to say. Pick up from their new words; do not repeat yourself.
 Moving around the site on a call:
 - When they ask to see something, or clearly want to, take them there with go_to straight away. Do not ask "shall I take you there?" first. Only ask if it is genuinely unclear which page they mean.
-- Never use go_to for the page they are already on; just talk about it.
-- When you do move them, say one short line that you are taking them there and will carry on when it opens, for example "Taking you to Taskbox now, I'll pick up when it opens." Say nothing else in that reply; the call reconnects on the new page by itself.
+- On the page they are already on, use go_to only with a section, to scroll to it and highlight it while you talk (the call carries on). Never move them to the page they are already on without a section.
+- When you move them to a different page, say one short line that you are taking them there and will carry on when it opens, for example "Taking you to Taskbox now, I'll pick up when it opens." Say nothing else in that reply; the call reconnects on the new page by itself.
 - The first message after they arrive on a new page is yours to open: say in one sentence what they are looking at, then carry on the conversation.
 - open_request and book_coffee end the call, because a form opens. Say one short line first.`;
 
@@ -319,7 +326,8 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
       const i = block.input;
       // Tool input is checked again here: only known pages, sections and request types reach the browser.
       if (block.name === "go_to" && typeof i.path === "string" && (PAGES as readonly string[]).includes(i.path)) {
-        const section = typeof i.section === "string" && i.path === "/" && (HOME_SECTIONS as readonly string[]).includes(i.section) ? i.section : undefined;
+        const legacy = i.path === "/" && (HOME_SECTIONS as readonly string[]).includes(String(i.section)); // older names for home sections
+        const section = typeof i.section === "string" && (legacy || sectionIds(i.path).has(i.section)) ? i.section : undefined;
         actions.push({ type: "go_to", path: i.path, ...(section ? { section } : {}) });
       } else if (block.name === "open_request" && typeof i.request === "string" && (REQUEST_TYPES as readonly string[]).includes(i.request)) {
         actions.push({ type: "open_request", request: i.request, ...(typeof i.summary === "string" ? { summary: i.summary.slice(0, 300) } : {}) });
