@@ -27,8 +27,16 @@ export type VoiceCheck = { session_seconds: number; known: boolean; ip_day_secon
 
 export type VoiceDecision = { allow: true; check: VoiceCheck } | { allow: false; gate: boolean; message: string };
 
+/** Ben's own connections (and Doug's test rigs), listed in SITE_TEST_IP_HASHES, are treated as a checked visitor so
+ *  testing is not cut short by the free allowance. The site-wide daily limit and the monthly cap still apply. */
+const TEST_HASHES = new Set((process.env.SITE_TEST_IP_HASHES ?? "").split(",").map((h) => h.trim()).filter(Boolean));
+export function isTestIp(ip: string): boolean {
+  return TEST_HASHES.has(ip);
+}
+
 export async function voiceAllowed(session: string, ip: string): Promise<VoiceDecision> {
   const c = await rpc<VoiceCheck>("voice_precheck", { p_session: session, p_ip: ip });
+  if (isTestIp(ip)) c.known = true;
   if (Number(c.month_cost) >= VOICE.monthlyUsd || Number(c.site_day_seconds) >= VOICE.siteDaySeconds) {
     return { allow: false, gate: false, message: "Voice is resting for now. You can still type." };
   }

@@ -12,7 +12,7 @@
 
   var NAME = 'Toto';
   var GREETING = "Hi, I'm Toto, Ben's AI assistant. I can answer questions about the work, the method and pricing, show you around, or open a request for Ben. What are you working on?";
-  var GREETING_SPOKEN = "Hi, I'm Toto, Ben's AI assistant. What are you working on?";
+  var GREETING_SPOKEN = "Hi, it's Toto. How can I help?";
   var STARTERS = ['What does Ben do?', 'Run a quick discovery', 'Show me the work', 'I would like to talk to Ben'];
   var HOME_SECTIONS = { work: 'work', method: 'services', pricing: 'pricing', testimonials: 'testimonials' };
   var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen' };
