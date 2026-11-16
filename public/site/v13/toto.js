@@ -527,7 +527,7 @@
   }
   function callLine(role, text) {
     text = (text || '').trim();
-    if (!text) return;
+    if (!/[\p{L}\p{N}]/u.test(text)) return; // a silent turn comes through as "..."
     var last = history[history.length - 1];
     if (last && last.role === role && last.text === text) return; // the greeting is already on screen
     history.push({ role: role, text: text, call: true });
