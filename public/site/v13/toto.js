@@ -588,6 +588,8 @@
               setState('listening'); ear.querySelector('.t').textContent = 'On a call · listening';
               c.timer = setInterval(function () {
                 if (call !== c || !c.conv) return;
+                // Backstop: Toto ends the call himself when its time is up, at the next turn; this ends it if nobody speaks.
+                if (Date.now() > c.deadline + 8000) return endCall();
                 var v = c.conv.getInputVolume ? c.conv.getInputVolume() : 0;
                 bars.forEach(function (b, i) { b.style.transform = 'scaleY(' + (0.25 + Math.min(1, v * 3 * (0.6 + 0.4 * Math.sin(i * 1.9 + Date.now() / 140) + 0.4)) * 0.75).toFixed(2) + ')'; });
               }, 80);
