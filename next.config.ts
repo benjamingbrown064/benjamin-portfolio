@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/chat": ["./site/assistant.md"],
     "/api/voice/llm/chat/completions": ["./site/assistant.md"],
+    "/api/voice/llm": ["./site/assistant.md"],
+    "/api/voice/call": ["./site/assistant.md"],
   },
   async redirects() {
     return [

@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { rpc } from "@/lib/db";
 import { fail, guard, str } from "@/lib/guard";
 import { CALL, makeTicket, readTicket } from "@/lib/call";
 import { UUID_RE, VOICE, voiceAllowed } from "@/lib/voice";
+import { warmToto } from "@/lib/toto";
 
 export const maxDuration = 20;
 
@@ -52,6 +53,8 @@ export async function POST(request: Request) {
       await rpc("call_tick", { p_call: opened.id, p_rate: 0, p_end: true }).catch(() => {});
       throw new Error(`token ${res.status}`);
     }
+    // While Toto says hello, get his prompt ready so the first answer comes quickly.
+    after(() => warmToto(g.body.fast === true ? "claude-haiku-5-5" : undefined));
     const seconds = Math.min(left, CALL.maxSeconds);
     const ticket = makeTicket({ c: opened.id, s: session, i: g.ip, p: page, k: c.known ? 1 : 0, ...(g.body.fast === true ? { m: 1 as const } : {}), x: Date.now() + seconds * 1000 });
     return NextResponse.json({ ok: true, token: j.token, ticket, seconds, known: c.known });
