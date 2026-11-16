@@ -575,12 +575,13 @@
         if (!j.ok) return fail(j.error || 'I could not start a call just now. You can type instead.', !!j.gate);
         c.ticket = j.ticket; c.known = !!j.known; c.deadline = Date.now() + j.seconds * 1000;
         var hadChat = history.some(function (m) { return m.role === 'user'; });
+        c.greeting = hadChat ? 'I’m listening. Go ahead.' : GREETING_SPOKEN;
         return import(CALL_SRC).then(function (lib) {
           if (call !== c) return;
           return lib.Conversation.startSession({
             conversationToken: j.token,
             connectionType: 'webrtc',
-            dynamicVariables: { ticket: j.ticket, before: earlierTurns(), greeting: hadChat ? 'I’m listening. Go ahead.' : GREETING_SPOKEN },
+            dynamicVariables: { ticket: j.ticket, before: earlierTurns(), greeting: c.greeting },
             clientTools: { site_action: function (p) { var a = null; try { a = JSON.parse(p.action); } catch (e) {} callAction(a); } },
             onConnect: function () {
               if (call !== c) return;
@@ -599,7 +600,12 @@
               ear.querySelector('.t').textContent = speaking ? 'On a call · talk to cut in' : 'On a call · listening';
               if (!speaking && c.afterSpeaking) { var f = c.afterSpeaking; c.afterSpeaking = null; clearTimeout(c.pendingTimer); setTimeout(f, 300); }
             },
-            onMessage: function (m) { if (call === c && m && m.message) callLine(m.source === 'user' ? 'user' : 'assistant', m.message); },
+            onMessage: function (m) {
+              if (call !== c || !m || !m.message) return;
+              // The spoken hello repeats what is already on screen, so it is not added again.
+              if (!c.greeted && m.source !== 'user') { c.greeted = true; if (m.message.trim() === c.greeting) return; }
+              callLine(m.source === 'user' ? 'user' : 'assistant', m.message);
+            },
             onDisconnect: function () { if (call === c) endCall(); },
             onError: function (e) { try { console.error('call', e); } catch (x) {} }
           }).then(function (conv) { if (call === c) c.conv = conv; else { try { conv.endSession(); } catch (e) {} } });
