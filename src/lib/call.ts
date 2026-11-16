@@ -23,6 +23,7 @@ export type Ticket = {
   i: string; // visitor's ip hash, taken when the call started (replies come from ElevenLabs, not the visitor)
   p: string; // page the call started on
   k: 0 | 1; // visitor has left their details
+  m?: 1; // test page only: answer with the faster, smaller model
   x: number; // when this call's allowance runs out, ms
 };
 

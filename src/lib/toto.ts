@@ -186,11 +186,11 @@ type ModelReply = {
 
 /** Calls the model with streaming on, so the words can be passed on as they are written. The stream is put back
  *  together into the same shape a non-streamed reply has, so the rest of this file does not care which was used. */
-async function callModel(system: unknown[], messages: unknown[], onText?: (delta: string) => void): Promise<ModelReply> {
+async function callModel(system: unknown[], messages: unknown[], onText?: (delta: string) => void, model = CHAT_MODEL): Promise<ModelReply> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": process.env.ANTHROPIC_API_KEY!, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: CHAT_MODEL, max_tokens: 1400, system, tools: TOOLS, messages, stream: true }),
+    body: JSON.stringify({ model, max_tokens: 1400, system, tools: TOOLS, messages, stream: true }),
     signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok || !res.body) throw new Error(`assistant request failed (${res.status}): ${(await res.text().catch(() => "")).slice(0, 300)}`);
@@ -261,7 +261,8 @@ const CALL_MODE = `You are on a live voice call with the visitor. This overrides
 - The page actions (go_to, open_request, book_coffee) work during the call. Say one short line about what you have opened.`;
 
 /** onText, when given, receives the reply a few words at a time as it is written. */
-export async function askToto(history: Turn[], page: string, known = false, onText?: (delta: string) => void, opts: { call?: boolean } = {}): Promise<TotoResult> {
+export async function askToto(history: Turn[], page: string, known = false, onText?: (delta: string) => void, opts: { call?: boolean; model?: string } = {}): Promise<TotoResult> {
+  const model = opts.model ?? CHAT_MODEL;
   // The long, unchanging part is marked for caching so repeat turns cost a fraction of the first.
   const system = [
     { type: "text", text: systemPrompt(), cache_control: { type: "ephemeral" } },
@@ -281,7 +282,7 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
   for (let round = 0; round < 2; round++) {
     // A second round's words follow the first after a blank line, as they do in the finished reply.
     let opened = false;
-    const data = await callModel(system, messages, onText ? (d) => { if (!opened) { opened = true; if (reply) onText("\n\n"); } onText(d); } : undefined);
+    const data = await callModel(system, messages, onText ? (d) => { if (!opened) { opened = true; if (reply) onText("\n\n"); } onText(d); } : undefined, model);
     usage.fresh += data.usage?.input_tokens ?? 0;
     usage.cacheRead += data.usage?.cache_read_input_tokens ?? 0;
     usage.cacheWrite += data.usage?.cache_creation_input_tokens ?? 0;
@@ -339,7 +340,7 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
 
   const inputTokens = usage.fresh + usage.cacheRead + usage.cacheWrite;
   const outputTokens = usage.out;
-  const price = PRICES[CHAT_MODEL] ?? PRICES["claude-sonnet-5-5"];
+  const price = PRICES[model] ?? PRICES["claude-sonnet-5-5"];
   const cost = (usage.fresh * price.in + usage.cacheWrite * price.cacheWrite + usage.cacheRead * price.cacheRead + outputTokens * price.out) / 1_000_000;
   return { reply, actions: actions.slice(0, 2), report, name, email, inputTokens, outputTokens, cost };
 }
