@@ -44,9 +44,18 @@ export async function POST(request: Request) {
   const t = readTicket(/ticket=([A-Za-z0-9_.-]+)/.exec(system)?.[1] ?? "", true);
   if (!t) return new Response("No call", { status: 403 });
 
+  // The chat so far, if the visitor typed before starting the call, so Toto carries on rather than starting over.
+  // It comes from the browser, as typed history does on /api/chat, and is held to the same limits.
+  const earlier: Msg[] = [];
+  try {
+    const raw = /before=([A-Za-z0-9_-]+)/.exec(system)?.[1];
+    if (raw) for (const m of (JSON.parse(Buffer.from(raw, "base64url").toString()) as Msg[]).slice(-12)) if (m && typeof m === "object") earlier.push(m);
+  } catch {
+    // ignore a bad history; the call carries on without it
+  }
   // Visitor and Toto turns only, alternating, starting and ending with the visitor.
   const turns: Turn[] = [];
-  for (const m of messages.slice(-44)) {
+  for (const m of [...earlier, ...messages].slice(-44)) {
     const role = m.role === "user" ? "user" : m.role === "assistant" ? "assistant" : null;
     const said = text(m.content).trim().slice(0, 1200);
     if (!role || !said) continue;

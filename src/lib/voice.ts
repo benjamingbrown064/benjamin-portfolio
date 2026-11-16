@@ -5,6 +5,7 @@ import { rpc } from "./db";
 
 export const VOICE = {
   anonSessionSeconds: 120, // a taste, before the visitor leaves their details
+  anonIpDaySeconds: 180, // the free taste per connection per day, however many conversations it starts
   knownDaySeconds: 900, // per visitor per day once they have
   siteDaySeconds: 7200,
   maxClipSeconds: 45,

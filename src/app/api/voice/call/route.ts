@@ -4,6 +4,7 @@ import { fail, guard, str } from "@/lib/guard";
 import { CALL, makeTicket, readTicket } from "@/lib/call";
 import { UUID_RE, VOICE, voiceAllowed } from "@/lib/voice";
 import { warmToto } from "@/lib/toto";
+import { isBot } from "@/lib/bot";
 
 export const maxDuration = 20;
 
@@ -22,6 +23,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  if (await isBot(request)) return fail(403, "Request not allowed.");
   if (CALL.off || !CALL.agentId || !CALL.llmSecret || !process.env.ELEVENLABS_API_KEY) {
     return NextResponse.json({ ok: false, error: "Calls are resting for now. You can still type." }, { status: 503 });
   }
@@ -34,7 +36,10 @@ export async function POST(request: Request) {
     if (!decision.allow) return NextResponse.json({ ok: false, gate: decision.gate, error: decision.message }, { status: 429 });
     const c = decision.check;
     // What this call may use: a first call without details is short; with details, the rest of today's allowance.
-    const left = Math.floor(c.known ? VOICE.knownDaySeconds - Number(c.ip_day_seconds) : VOICE.anonSessionSeconds - Number(c.session_seconds));
+    // Without a checked email the free allowance also holds per connection, so a fresh conversation does not reset it.
+    const left = Math.floor(c.known
+      ? VOICE.knownDaySeconds - Number(c.ip_day_seconds)
+      : Math.min(VOICE.anonSessionSeconds - Number(c.session_seconds), VOICE.anonIpDaySeconds - Number(c.ip_day_seconds)));
     if (left < 15) {
       return NextResponse.json({ ok: false, gate: !c.known, error: c.known ? "That is today’s voice allowance used. You can still type." : "Leave your name and email below to keep talking. You can still type." }, { status: 429 });
     }

@@ -19,7 +19,8 @@ const REQUEST_KIND: Record<string, string> = {
 export type Receipt =
   | { kind: "request"; to: string; name?: string | null; ref: string; type: string }
   | { kind: "discovery"; to: string; name?: string | null; ref: string }
-  | { kind: "booking"; to: string; name?: string | null; date?: string | null; time?: string | null; timeZone?: string | null; format?: string | null };
+  | { kind: "booking"; to: string; name?: string | null; date?: string | null; time?: string | null; timeZone?: string | null; format?: string | null }
+  | { kind: "code"; to: string; name?: string | null; code: string };
 
 /** A first name is used only when it is plainly a name: letters, hyphens and apostrophes, up to 30 characters. */
 function firstName(name?: string | null): string | null {
@@ -59,6 +60,17 @@ export function receiptContent(r: Receipt): { subject: string; lines: string[] }
         hello,
         `Thanks for working through the discovery questions. Your answers are saved under the reference ${r.ref}.`,
         `I will read them myself, and you will get ${facts.replyPromise} with my first thoughts on where to start. If you want to add anything, reply to this email.`,
+        ...sign,
+      ],
+    };
+  }
+  if (r.kind === "code") {
+    return {
+      subject: `Your code for benjaminbrown.co: ${r.code}`,
+      lines: [
+        hello,
+        `Your code is ${r.code}. Type it into the chat on benjaminbrown.co to carry on talking to Toto. It works for 10 minutes.`,
+        "If you did not ask for this, ignore this email and nothing more will be sent.",
         ...sign,
       ],
     };
