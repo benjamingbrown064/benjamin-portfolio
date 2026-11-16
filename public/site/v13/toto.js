@@ -12,6 +12,7 @@
 
   var NAME = 'Toto';
   var GREETING = "Hi, I'm Toto, Ben's AI assistant. I can answer questions about the work, the method and pricing, show you around, or open a request for Ben. What are you working on?";
+  var GREETING_SPOKEN = "Hi, I'm Toto, Ben's AI assistant. What are you working on?";
   var STARTERS = ['What does Ben do?', 'Run a quick discovery', 'Show me the work', 'I would like to talk to Ben'];
   var HOME_SECTIONS = { work: 'work', method: 'services', pricing: 'pricing', testimonials: 'testimonials' };
   var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen' };
@@ -54,7 +55,7 @@
     '<button type="button" class="bba-x" aria-label="Close chat"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>' +
     '<div class="bba-log" role="log" aria-live="polite"></div>' +
     '<div class="bba-starters"></div>' +
-    '<form class="bba-comp"><textarea rows="1" maxlength="1200" placeholder="' + (window.BBVoice && window.BBVoice.supported ? 'Type, or tap the mic to talk…' : 'Ask anything…') + '" aria-label="Message"></textarea>' +
+    '<form class="bba-comp"><textarea rows="1" maxlength="1200" placeholder="' + (window.BBVoice && window.BBVoice.supported ? 'Type, or tap the mic to call…' : 'Ask anything…') + '" aria-label="Message"></textarea>' +
     '<div class="bba-ear" hidden><span class="lv" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="t">Listening…</span><button type="button" class="cancel">Cancel</button></div>' +
     '<button type="button" class="mic" aria-label="Speak your message" aria-pressed="false"><svg class="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg><svg class="i-send" viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg></button>' +
     '<button type="submit" class="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg></button></form>' +
@@ -290,36 +291,61 @@
   panel.querySelector('.clr').addEventListener('click', function () {
     history = [{ role: 'assistant', text: GREETING }];
     session = uuid(); write(localStorage, KEYS.session, session);
-    remove(localStorage, KEYS.known); gate = null; stopRecording(true); stopSpeaking();
+    remove(localStorage, KEYS.known); gate = null; if (call) endCall(); stopRecording(true); stopSpeaking();
     save(); render();
   });
   panel.querySelector('.form').addEventListener('click', function () { openRequest(); });
   panel.querySelector('.bba-x').addEventListener('click', function () { close(); });
 
-  /* ---------- the ask-once details step ---------- */
+  /* ---------- the ask-once details step ----------
+     Two steps: name and email, then the six-digit code sent to that email. The code proves the address is theirs. */
   var gate = null;
   function showGate() {
     if (gate) { render(); return; }
     gate = el('form', 'bba-gate',
       '<input type="text" name="name" placeholder="Your name" autocomplete="name" aria-label="Your name" required maxlength="120">' +
       '<input type="email" name="email" placeholder="you@company.com" autocomplete="email" aria-label="Your email" required maxlength="200">' +
-      '<button type="submit">Carry on</button>' +
+      '<input type="text" name="code" placeholder="6-digit code from the email" inputmode="numeric" autocomplete="one-time-code" aria-label="Code from the email" maxlength="7" hidden>' +
+      '<button type="submit">Send me a code</button>' +
       '<small>Used so Ben can follow up. See the <a href="/privacy">privacy page</a>.</small><span class="bba-gate-err" aria-live="polite"></span>');
+    var step = 'details', name = '';
     gate.addEventListener('submit', function (e) {
       e.preventDefault();
       var btn = gate.querySelector('button'), err = gate.querySelector('.bba-gate-err');
-      var name = gate.elements.name.value.trim(), email = gate.elements.email.value.trim();
+      var codeIn = gate.elements.code;
       btn.disabled = true; err.textContent = '';
-      fetch('/api/visitor', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session: session, name: name, email: email }) })
-        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.ok = r.ok && j.ok !== false; return j; }); })
+      var post = function (url, body) {
+        return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.ok = r.ok && j.ok !== false; return j; }); });
+      };
+      if (step === 'details') {
+        name = gate.elements.name.value.trim();
+        post('/api/visitor/code', { session: session, name: name, email: gate.elements.email.value.trim() })
+          .then(function (j) {
+            btn.disabled = false;
+            if (!j.ok) { err.textContent = j.error || 'The code did not send. Please try again.'; return; }
+            step = 'code';
+            gate.elements.name.readOnly = gate.elements.email.readOnly = true;
+            codeIn.hidden = false; codeIn.required = true; codeIn.focus({ preventScroll: true });
+            btn.textContent = 'Carry on';
+            err.textContent = 'Code sent. Check your email (and spam).';
+          })
+          .catch(function () { btn.disabled = false; err.textContent = 'The code did not send. Please try again.'; });
+        return;
+      }
+      post('/api/visitor', { session: session, code: codeIn.value })
         .then(function (j) {
-          if (!j.ok) { btn.disabled = false; err.textContent = j.error || 'That did not save. Please try again.'; return; }
+          if (!j.ok) {
+            btn.disabled = false; err.textContent = j.error || 'That did not work. Please try again.';
+            if (j.expired) { step = 'details'; codeIn.value = ''; codeIn.hidden = true; codeIn.required = false; gate.elements.name.readOnly = gate.elements.email.readOnly = false; btn.textContent = 'Send me a code'; }
+            return;
+          }
           write(localStorage, KEYS.known, '1');
           gate = null;
           // Pick the conversation up where it stopped: drop the notice and re-ask the question that met the gate.
           history = history.filter(function (m) { return !m.error && !m.local; });
-          var last = history[history.length - 1], pending = last && last.role === 'user' ? history.pop().text : '';
-          history.push({ role: 'assistant', text: 'Thanks, ' + name.split(' ')[0] + '.', local: true });
+          var last = history[history.length - 1], pending = last && last.role === 'user' && !last.call ? history.pop().text : '';
+          history.push({ role: 'assistant', text: 'Thanks, ' + name.split(' ')[0] + '. You can carry on typing, or tap the microphone to talk.', local: true });
           save(); render();
           if (pending) ask(pending); else input.focus({ preventScroll: true });
         })
@@ -478,8 +504,116 @@
   }
   function stopRecording(cancel) { if (recording) { if (cancel) recording.cancel(); else recording.stop(); } }
   function hangUp() { if (recording && recording.release) recording.release(); }
-  mic.addEventListener('click', function () { if (recording) stopRecording(); else if (!busy) startRecording(); });
-  ear.querySelector('.cancel').addEventListener('click', function () { stopRecording(true); });
+  mic.addEventListener('click', function () { if (call) hangUpCall(); else if (recording) stopRecording(); else if (!busy) startCall(); });
+  ear.querySelector('.cancel').addEventListener('click', function () { if (call) hangUpCall(); else stopRecording(true); });
+
+  /* ---------- live voice calls ----------
+     The microphone starts a call: ElevenLabs runs it (listening, turn-taking, cutting in, Rory's voice) and asks this
+     site's server for every reply, so Toto's facts and rules are the same as in the chat. Both sides appear in the
+     chat as text. If calls are switched off, the microphone falls back to the older record-and-reply voice. */
+  var CALL_SRC = (document.currentScript && document.currentScript.getAttribute('data-call')) || '/site/v13/vendor/call.mjs';
+  var call = null; // { conv, ticket, known, deadline, timer, pending, ended }
+  function inCall() { return !!call; }
+  function callUI(on) {
+    listeningUI(on);
+    if (on) { ear.querySelector('.t').textContent = 'On a call · listening'; ear.querySelector('.cancel').textContent = 'Hang up'; mic.setAttribute('aria-label', 'Hang up'); }
+    else { ear.querySelector('.cancel').textContent = 'Cancel'; ear.querySelector('.t').textContent = 'Listening…'; }
+  }
+  function earlierTurns() {
+    var out = history.filter(function (m) { return !m.local && !m.error && (m.role === 'user' || m.role === 'assistant'); }).slice(-12)
+      .map(function (m) { return { role: m.role, content: String(m.text).slice(0, 600) }; });
+    if (!out.some(function (m) { return m.role === 'user'; })) return '';
+    try { return btoa(unescape(encodeURIComponent(JSON.stringify(out)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); } catch (e) { return ''; }
+  }
+  function callLine(role, text) {
+    text = (text || '').trim();
+    if (!text) return;
+    var last = history[history.length - 1];
+    if (last && last.role === role && last.text === text) return; // the greeting is already on screen
+    history.push({ role: role, text: text, call: true });
+    save(); render();
+  }
+  function endCall(after) {
+    var c = call; if (!c) { if (after) after(); return; }
+    call = null;
+    clearInterval(c.timer);
+    callUI(false); setState('idle'); launch.classList.remove('speaking');
+    if (c.ticket) {
+      try { fetch('/api/voice/call', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'end', ticket: c.ticket }) }).catch(function () {}); } catch (e) {}
+    }
+    var conv = c.conv; c.conv = null;
+    if (conv) { try { conv.endSession(); } catch (e) {} }
+    // At the end of the free call, offer the details step so they can carry on.
+    if (!c.known && !c.byVisitor && Date.now() > c.deadline - 15000 && !gate) showGate();
+    if (after) setTimeout(after, 150);
+  }
+  /* A page action during a call waits until Toto has said his line, then the call ends and the action runs. */
+  function callAction(a) {
+    if (!call || !a || a.type === 'report') return;
+    var c = call, go = function () { if (c.pending === a) { c.pending = null; endCall(function () { run([a]); }); } };
+    c.pending = a;
+    c.pendingTimer = setTimeout(go, 6000);
+    c.afterSpeaking = go;
+  }
+  function startCall() {
+    if (call || busy) return;
+    unlockAudio();
+    stopSpeaking();
+    history = history.filter(function (m) { return !m.error; }); render();
+    var c = call = { conv: null, ticket: null, known: false, deadline: 0, timer: null, pending: null, byVisitor: false };
+    callUI(true); setState('thinking'); ear.querySelector('.t').textContent = 'Connecting…';
+    var fail = function (msg, gateToo) { if (call === c) { call = null; callUI(false); setState('idle'); } if (msg) note(msg); if (gateToo) showGate(); };
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(function (s) { s.getTracks().forEach(function (t) { t.stop(); }); })
+      .then(function () {
+        return fetch('/api/voice/call', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session: session, page: location.pathname }) })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); });
+      }, function () { throw { mic: true }; })
+      .then(function (j) {
+        if (call !== c) return;
+        if (j.status === 503) { call = null; callUI(false); setState('idle'); return startRecording(); } // calls are off: the older voice still works
+        if (!j.ok) return fail(j.error || 'I could not start a call just now. You can type instead.', !!j.gate);
+        c.ticket = j.ticket; c.known = !!j.known; c.deadline = Date.now() + j.seconds * 1000;
+        var hadChat = history.some(function (m) { return m.role === 'user'; });
+        return import(CALL_SRC).then(function (lib) {
+          if (call !== c) return;
+          return lib.Conversation.startSession({
+            conversationToken: j.token,
+            connectionType: 'webrtc',
+            dynamicVariables: { ticket: j.ticket, before: earlierTurns(), greeting: hadChat ? 'I’m listening. Go ahead.' : GREETING_SPOKEN },
+            clientTools: { site_action: function (p) { var a = null; try { a = JSON.parse(p.action); } catch (e) {} callAction(a); } },
+            onConnect: function () {
+              if (call !== c) return;
+              setState('listening'); ear.querySelector('.t').textContent = 'On a call · listening';
+              c.timer = setInterval(function () {
+                if (call !== c || !c.conv) return;
+                var v = c.conv.getInputVolume ? c.conv.getInputVolume() : 0;
+                bars.forEach(function (b, i) { b.style.transform = 'scaleY(' + (0.25 + Math.min(1, v * 3 * (0.6 + 0.4 * Math.sin(i * 1.9 + Date.now() / 140) + 0.4)) * 0.75).toFixed(2) + ')'; });
+              }, 80);
+            },
+            onModeChange: function (m) {
+              if (call !== c) return;
+              var speaking = m && m.mode === 'speaking';
+              setState(speaking ? 'speaking' : 'listening'); hush.hidden = true;
+              launch.classList.toggle('speaking', speaking);
+              ear.querySelector('.t').textContent = speaking ? 'On a call · talk to cut in' : 'On a call · listening';
+              if (!speaking && c.afterSpeaking) { var f = c.afterSpeaking; c.afterSpeaking = null; clearTimeout(c.pendingTimer); setTimeout(f, 300); }
+            },
+            onMessage: function (m) { if (call === c && m && m.message) callLine(m.source === 'user' ? 'user' : 'assistant', m.message); },
+            onDisconnect: function () { if (call === c) endCall(); },
+            onError: function (e) { try { console.error('call', e); } catch (x) {} }
+          }).then(function (conv) { if (call === c) c.conv = conv; else { try { conv.endSession(); } catch (e) {} } });
+        });
+      })
+      .catch(function (e) {
+        if (e && e.mic) return fail('I need microphone access for a call. You can type instead.');
+        fail('The call could not connect. Please try again, or type.');
+      });
+  }
+  function hangUpCall() { if (call) { call.byVisitor = true; endCall(); } }
+  // Nobody pays for a call left running in a hidden tab or on a locked phone.
+  document.addEventListener('visibilitychange', function () { if (document.hidden && call) endCall(); });
+  window.addEventListener('pagehide', function () { if (call) endCall(); });
 
   /* ---------- open / close ---------- */
   function isOpen() { return panel.classList.contains('on'); }
@@ -496,6 +630,7 @@
     setTimeout(function () { input.focus({ preventScroll: true }); }, 400);
   }
   function close() {
+    if (call) endCall();
     stopRecording(true);
     stopSpeaking();
     panel.classList.remove('on');

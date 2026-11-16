@@ -179,7 +179,11 @@ export function renderPage(name: string, opts: PageOptions): string {
     .join("\n");
   // The assistant is on every page except the discovery questionnaire, which is a focused full-screen flow.
   const bodyEnd =
-    `<script src="${versioned("/site/v13/site.js")}" defer></script>` + (name === "discovery" ? "" : `\n<script src="${versioned("/site/v13/toto.js")}" defer></script>`);
+    `<script src="${versioned("/site/v13/site.js")}" defer></script>` +
+    (name === "discovery"
+      ? ""
+      : // BotID tags the requests that start a call or send an email code; the call library itself loads only when a call starts.
+        `\n<script src="${versioned("/site/v13/vendor/botid.js")}" defer></script>\n<script src="${versioned("/site/v13/toto.js")}" data-call="${versioned("/site/v13/vendor/call.mjs")}" defer></script>`);
 
   const tokens: Record<string, string> = {
     head,
