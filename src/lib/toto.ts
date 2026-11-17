@@ -94,7 +94,7 @@ ${AREAS.map((a) => `  ${a.n} ${a.name}: ${a.q}`).join("\n")}
 - With the report, say one or two sentences only; the report itself appears on their screen.
 
 Facts you may state:
-- Availability for new work: ${facts.availability}.
+- Ben is taking on new work from ${facts.availability}.
 - Starting prices: Discovery from ${p.discovery.gbp} (${p.discovery.usd}), fixed fee. Project from ${p.project.gbp} (${p.project.usd}), fixed scope. Subscription from ${p.subscription.gbp} (${p.subscription.usd}) a month.
 - Contact: ${facts.email}.
 ${journalFacts()}

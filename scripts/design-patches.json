@@ -50,7 +50,7 @@
   {
     "file": "Ben Brown Portfolio v12.html",
     "old": "Available Q4 2026",
-    "new": "Available {{availability}}",
+    "new": "Taking on new work from {{availability}}",
     "count": 1
   },
   {
