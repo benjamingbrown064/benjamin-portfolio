@@ -23,6 +23,15 @@
       "unit": "a month"
     }
   },
-  "social": [],
+  "social": [
+    {
+      "label": "X",
+      "url": "https://x.com/benbrown064"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://uk.linkedin.com/in/imbenbrown"
+    }
+  ],
   "gtm": "GTM-WLRQ8ZVX"
 }
