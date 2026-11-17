@@ -69,7 +69,7 @@ export function receiptContent(r: Receipt): { subject: string; lines: string[] }
       subject: `Your code for benjaminbrown.co: ${r.code}`,
       lines: [
         hello,
-        `Your code is ${r.code}. Type it into the chat on benjaminbrown.co to carry on talking to Toto. It works for 10 minutes.`,
+        `Your code is ${r.code}. Type it into the chat on benjaminbrown.co to carry on talking to Harvey. It works for 10 minutes.`,
         "If you did not ask for this, ignore this email and nothing more will be sent.",
         ...sign,
       ],

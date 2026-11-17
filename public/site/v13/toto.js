@@ -10,9 +10,9 @@
   'use strict';
   if (window.BBAgentDesk) return;
 
-  var NAME = 'Toto';
-  var GREETING = "Hi, I'm Toto, Ben's AI assistant. I can answer questions about the work, the method and pricing, show you around, or open a request for Ben. What are you working on?";
-  var GREETING_SPOKEN = "Hi, it's Toto. How can I help?";
+  var NAME = 'Harvey';
+  var GREETING = "Hi, I'm Harvey, Ben's AI assistant. I can answer questions about the work, the method and pricing, show you around, or open a request for Ben. What are you working on?";
+  var GREETING_SPOKEN = "Hi, it's Harvey. How can I help?";
   var STARTERS = ['What does Ben do?', 'Run a quick discovery', 'Show me the work', 'I would like to talk to Ben'];
   var HOME_SECTIONS = { work: 'work', method: 'services', pricing: 'pricing', testimonials: 'testimonials' };
   var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen', resume: 'toto:resume' };
@@ -65,7 +65,7 @@
   /* While on a call the panel can be tucked away: a small bar keeps the call in view, with mute and hang up,
      and the page stays visible. Styled here; the main stylesheet is bundled from the design files. */
   var bar = el('div', 'bba-callbar',
-    '<button type="button" class="cb-open" aria-label="Open the chat"><i class="cb-dot" aria-hidden="true"></i><span class="cb-t">On a call with Toto</span></button>' +
+    '<button type="button" class="cb-open" aria-label="Open the chat"><i class="cb-dot" aria-hidden="true"></i><span class="cb-t">On a call with ' + NAME + '</span></button>' +
     '<button type="button" class="cb-mute" aria-pressed="false">Mute</button><button type="button" class="cb-end">Hang up</button>');
   bar.hidden = true;
   bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Call with ' + NAME);
@@ -628,7 +628,7 @@
     history = history.filter(function (m) { return !m.error; }); render();
     var c = call = { conv: null, ticket: null, known: false, deadline: 0, timer: null, pending: null, byVisitor: false };
     callUI(true); setState('thinking'); ear.querySelector('.t').textContent = 'Connecting…';
-    syncBar(); bar.querySelector('.cb-t').textContent = resume ? 'Reconnecting to Toto…' : 'On a call with Toto';
+    syncBar(); bar.querySelector('.cb-t').textContent = resume ? 'Reconnecting to ' + NAME + '…' : 'On a call with ' + NAME;
     var fail = function (msg, gateToo) { if (call === c) { call = null; callUI(false); setState('idle'); } if (msg) note(msg); if (gateToo) showGate(); };
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(function (s) { s.getTracks().forEach(function (t) { t.stop(); }); })
@@ -657,7 +657,7 @@
               // Arriving on a new page mid-call: Toto opens by saying where they are, then carries on.
               if (c.resume) setTimeout(function () { if (call === c && c.conv) try { c.conv.sendUserMessage('[arrived]'); } catch (e) {} }, 250);
               setState('listening'); ear.querySelector('.t').textContent = 'On a call · listening';
-              bar.querySelector('.cb-t').textContent = 'On a call with Toto'; syncBar();
+              bar.querySelector('.cb-t').textContent = 'On a call with ' + NAME; syncBar();
               c.timer = setInterval(function () {
                 if (call !== c || !c.conv) return;
                 // Backstop: Toto ends the call himself when its time is up, at the next turn; this ends it if nobody speaks.

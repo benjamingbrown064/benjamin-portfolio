@@ -378,7 +378,7 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
 
 /** The short note left in the chat when a call ends: what was talked about and the most useful next step. */
 export async function callNote(lines: Turn[]): Promise<string | null> {
-  const said = lines.map((t) => `${t.role === "user" ? "Visitor" : "Toto"}: ${t.text}`).join("\n").slice(-6000);
+  const said = lines.map((t) => `${t.role === "user" ? "Visitor" : facts.assistantName}: ${t.text}`).join("\n").slice(-6000);
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
