@@ -496,5 +496,29 @@
     "old": "<p>LLMs in production since day one. I know where they pay back. And where they quietly burn money.</p>",
     "new": "<p>I’ve put AI into production in my own products. I know where it pays back, and where it quietly burns money.</p>",
     "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "Ben learns fast, works well with everyone around him and builds solutions quicker than anyone I have worked with. He is a true innovator.",
+    "new": "I can fully recommend Ben as reliable, reasonable and imaginative.",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "alt=\"Lawrence Whittaker\"",
+    "new": "alt=\"Nick Wentworth-Stanley\"",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<div><b>Lawrence Whittaker</b><span>CEO, WarrantyWise</span></div>",
+    "new": "<div><b>Nick Wentworth-Stanley DL</b><span>Partner, Hambro Perks</span></div>",
+    "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "src=\"assets/web/lawrence-whittaker.jpg\"",
+    "new": "src=\"/media/testimonials/nick-wentworth-stanley.jpg\"",
+    "count": 1
   }
 ]
