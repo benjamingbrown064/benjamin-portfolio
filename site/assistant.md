@@ -38,7 +38,7 @@ Typical rhythm on a project: first screens in week two, a staging build every Fr
 
 ## Getting in touch
 
-- Ben's studio is in Costa Mesa, California. It is shown in the site footer and on the Let's talk page.
+- Ben has two studios: in the US at 695 Town Center Dr, Suite 1100, Costa Mesa, CA 92626, and in the UK at Patch Studio, The Bonding Warehouse, Terry Ave, York YO1 6FA. Both are in the site footer.
 
 - The request form (opens anywhere on the site, and lives at /contact) handles: a new project, a discovery, files for live work, a bug report, a support request, and requests for training or marketing assets.
 - A coffee: thirty minutes, video or in person, booked from the home page or /contact.
