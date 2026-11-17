@@ -59,7 +59,7 @@ export async function POST(request: Request) {
 
     const opened = await rpc<{ ok: boolean; id?: string }>("call_open", { p_session: session, p_ip: g.ip, p_max_open: CALL.maxOpen });
     if (!opened.ok || !opened.id) {
-      return NextResponse.json({ ok: false, error: "Toto is on a few calls already. Try again in a minute, or type." }, { status: 429 });
+      return NextResponse.json({ ok: false, error: "Harvey is on a few calls already. Try again in a minute, or type." }, { status: 429 });
     }
 
     const res = await fetch(`https://api.elevenlabs.io/v1/convai/conversation/token?agent_id=${encodeURIComponent(CALL.agentId)}`, {

@@ -2,7 +2,7 @@
   "_note": "Single source of truth for facts shown on the site and given to the assistant. Change a value here, not in the pages.",
   "siteUrl": "https://benjaminbrown.co",
   "name": "Benjamin Brown",
-  "assistantName": "Toto",
+  "assistantName": "Harvey",
   "email": "hello@benjaminbrown.co",
   "availability": "January 2027",
   "replyPromise": "a reply within one working day",
