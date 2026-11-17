@@ -200,3 +200,6 @@ html[data-theme="dark"] .why-dlg::backdrop{background:rgba(0,0,0,.6)}
 
 /* Case-study role lines in sentence case (copy v2, 16 Nov 2026) */
 .wx-role,.gx-role{text-transform:none;letter-spacing:0;font-size:14px;font-weight:600}
+
+/* Slim cookie bar on phones (also injected by site.js until the next design import) */
+@media(max-width:600px){.ck{left:8px;right:80px;bottom:14px;width:auto;padding:9px 10px 9px 12px;display:flex;align-items:center;gap:10px;border-radius:12px}.ck p{font-size:12px;line-height:1.35}.ck-b{margin-top:0;flex-shrink:0;gap:6px}.ck-b button{flex:none;min-height:32px;padding:0 11px;font-size:12.5px}}

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { insert, signedUploadUrl } from "@/lib/db";
 import { EMAIL_RE, fail, guard, str } from "@/lib/guard";
-import { sendReceipt } from "@/lib/mail";
+import { sendNotice, sendReceipt } from "@/lib/mail";
 
 const TYPES = new Set(["project", "discovery", "files", "bug", "support", "assets"]);
 const MAX_FILES = 5;
@@ -70,6 +70,7 @@ export async function POST(request: Request) {
       for (const r of rows) uploads.push({ name: r.name, url: await signedUploadUrl("request-files", r.path) });
     }
     await sendReceipt({ kind: "request", to: email, name, ref, type });
+    await sendNotice(`New ${type} request ${ref}: ${name}`, [["Reference", ref], ["Type", type], ["Name", name], ["Email", email], ["Company", str(b.company, 160)], ...Object.entries(data).map(([k, v]) => [k, v] as [string, string]), ["Files", files.length ? files.map((f) => f.name).join(", ") : null], ["Page", str(b.page, 300)]]);
     return NextResponse.json({ ok: true, ref, uploads });
   } catch (e) {
     console.error("requests: save failed", e);

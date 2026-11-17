@@ -265,7 +265,13 @@ ${body}
 </div>
 <div class="w ax-w"><div class="ax-by rv"><img src="/site/assets/ben-portrait.jpg" alt=""><div><b>Ben</b></div></div></div>
 </article>
-<section class="ax-next" data-screen-label="02 ${next ? "Next entry" : "Notes"}"><div class="w ax-w rv">
+<section class="jx-sub grey" id="subscribe" data-screen-label="02 Subscribe"><div class="w rv">
+<span class="eyebrow">Subscribe</span>
+<h2 class="h-m">The Handover, in your inbox each week.</h2>
+<p class="lede">The AI news worth your time, in plain English, with one thing to do about each. Unsubscribe in one click.</p>
+<form class="jx-form" data-sub><input type="email" placeholder="you@company.com" aria-label="Email address" required><button class="btn" type="submit">Subscribe</button></form>
+</div></section>
+<section class="ax-next" data-screen-label="03 ${next ? "Next entry" : "Notes"}"><div class="w ax-w rv">
 ${next ? `<span class="eyebrow">Next entry</span><a class="ax-nx" href="/journal/${next.slug}"><span>${esc(next.title)}</span><span class="ar" aria-hidden="true">→</span></a>` : `<span class="eyebrow">Notes</span><a class="ax-nx" href="/journal"><span>All entries</span><span class="ar" aria-hidden="true">→</span></a>`}
 ${next ? `<a class="lnk" href="/journal">All entries</a>` : ""}
 </div></section>
