@@ -60,12 +60,21 @@ function block(html: string, name: string, replacement: string | null | undefine
   return html.replace(re, (_m, inner: string) => (replacement === undefined ? inner : (replacement ?? "")));
 }
 
+/* Social links: small icons on the footer's brand row, right-aligned (links in site/facts.json). */
+const SOCIAL_ICONS: Record<string, string> = {
+  X: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.3-8.3L2.8 2h6.4l4.4 5.9L18.9 2Zm-1.1 18.2h1.7L8.3 3.7H6.5l11.3 16.5Z"/></svg>`,
+  LinkedIn: `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>`,
+};
+const SOCIAL_CSS = `<style>.foot>.w{position:relative}.foot-soc{position:absolute;right:0;top:0;height:28px;display:flex;align-items:center;gap:14px}.foot-soc a{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;color:var(--ink,#1d1d1f);box-shadow:inset 0 0 0 1px var(--line,rgba(0,0,0,.14));transition:background .2s,color .2s}.foot-soc a:hover{background:var(--ink,#1d1d1f);color:var(--bone,#fff)}.foot-soc svg{width:16px;height:16px}</style>`;
 function footerSocial(): string {
+  return ""; // shown as icons on the brand row instead (see socialIcons)
+}
+function socialIcons(): string {
   const links = facts.social as { label: string; url: string }[];
   if (!links.length) return "";
-  return `<div><h4>Elsewhere</h4>${links
-    .map((l) => `<a href="${esc(l.url)}" rel="me noopener" target="_blank">${esc(l.label)}</a>`)
-    .join("")}</div>`;
+  return `<span class="foot-soc">${links
+    .map((l) => `<a href="${esc(l.url)}" rel="me noopener" target="_blank" aria-label="${esc(l.label)}">${SOCIAL_ICONS[l.label] ?? esc(l.label)}</a>`)
+    .join("")}</span>`;
 }
 
 /* ---------- journal ---------- */
@@ -195,6 +204,8 @@ export function renderPage(name: string, opts: PageOptions): string {
     tokens[`price.${k}.gbp`] = v.gbp;
     tokens[`price.${k}.usd`] = v.usd;
   }
+  // Social icons on the footer's brand row.
+  html = html.replace("Benjamin Brown<sup>®</sup></a>\n<div class=\"foot-grid\">", () => `Benjamin Brown<sup>®</sup></a>${socialIcons()}${SOCIAL_CSS}\n<div class="foot-grid">`);
   html = html.replace(/\{\{([a-z_.]+)\}\}/g, (m, key: string) => (key in tokens ? tokens[key] : m));
   // Hand-written scripts already in the page (for example the "What changes" dialog) get the same fingerprint.
   html = html.replace(/(<script src=")(\/site\/v1[0-9]\/[a-z0-9-]+\.js)(")/g, (_m, pre: string, src: string, post: string) => pre + versioned(src) + post);
