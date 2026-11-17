@@ -520,5 +520,27 @@
     "old": "src=\"assets/web/lawrence-whittaker.jpg\"",
     "new": "src=\"/media/testimonials/nick-wentworth-stanley.jpg\"",
     "count": 1
+  },
+  {
+    "file": "work/warrantyos-mocks2.jsx",
+    "old": "<h1 ",
+    "new": "<div "
+  },
+  {
+    "file": "work/warrantyos-mocks2.jsx",
+    "old": "</h1>",
+    "new": "</div>"
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<span class=\"ln\"><span>Agents that make teams</span></span><span class=\"ln\">",
+    "new": "<span class=\"ln\"><span>Agents that make teams</span></span> <span class=\"ln\">",
+    "count": 1
+  },
+  {
+    "file": "discovery.html",
+    "old": "<div class=\"dq\" id=\"dq\" data-screen-label=\"Discovery\">",
+    "new": "<h1 class=\"sr-only\">Discovery: ten questions about your business</h1>\n<div class=\"dq\" id=\"dq\" data-screen-label=\"Discovery\">",
+    "count": 1
   }
 ]

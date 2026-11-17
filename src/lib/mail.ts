@@ -119,3 +119,31 @@ export async function sendReceipt(r: Receipt): Promise<boolean> {
     return false;
   }
 }
+
+const NOTICE_TO = process.env.MAIL_NOTICE_TO || "ben@benjaminbrown.co";
+
+/** A plain email to Ben for every new enquiry, as well as the Telegram alert, so nothing depends on one channel.
+ *  The visitor's own words go to Ben only, escaped. Never throws. */
+export async function sendNotice(subject: string, fields: [string, string | null | undefined][]): Promise<boolean> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return false;
+  try {
+    const rows = fields.filter(([, v]) => v && String(v).trim()).map(([k, v]) => [k, String(v).slice(0, 4000)] as const);
+    const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n\n") + "\n\n--\nFrom the website. Reply to the visitor from your own email; this message is only for you.";
+    const html =
+      `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;color:#1d1d1f;max-width:600px">` +
+      rows.map(([k, v]) => `<p style="margin:0 0 12px"><b>${esc(k)}</b><br>${esc(v).replace(/\n/g, "<br>")}</p>`).join("") +
+      `<p style="margin:20px 0 0;font-size:12.5px;color:#6e6e73">From the website. Reply to the visitor from your own email; this message is only for you.</p></div>`;
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: FROM, to: [NOTICE_TO], subject: subject.slice(0, 160), text, html }),
+      signal: AbortSignal.timeout(6_000),
+    });
+    if (!res.ok) throw new Error(`${res.status}: ${(await res.text().catch(() => "")).slice(0, 200)}`);
+    return true;
+  } catch (e) {
+    console.error("mail: notice failed", e);
+    return false;
+  }
+}
