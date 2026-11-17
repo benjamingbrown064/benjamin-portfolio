@@ -656,5 +656,59 @@
     "old": "<div><h4>US Studio</h4>695 Town Center Dr, Suite 1100<br>Costa Mesa, CA 92626<br>United States</div>",
     "new": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>",
     "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
+  },
+  {
+    "file": "contact.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
+  },
+  {
+    "file": "journal.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
+  },
+  {
+    "file": "work.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
+  },
+  {
+    "file": "work/warrantyos-v3.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
+  },
+  {
+    "file": "work/govscape.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
+  },
+  {
+    "file": "work/taskbox-v2.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
+  },
+  {
+    "file": "services.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
+  },
+  {
+    "file": "journal-article.html",
+    "old": "<div><h4>US Studio</h4>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York YO1 6FA<br>United Kingdom</div>",
+    "new": "<div><h4>US Studio</h4>Benjamin Brown Studio<br>695 Town Center Dr,<br>Suite 1100<br>Costa Mesa,<br>CA 92626<br>United States</div>\n<div><h4>UK Studio</h4>Patch Studio<br>The Bonding Warehouse<br>Terry Ave<br>York<br>YO1 6FA<br>United Kingdom</div>",
+    "count": 1
   }
 ]
