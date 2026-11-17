@@ -542,5 +542,11 @@
     "old": "<div class=\"dq\" id=\"dq\" data-screen-label=\"Discovery\">",
     "new": "<h1 class=\"sr-only\">Discovery: ten questions about your business</h1>\n<div class=\"dq\" id=\"dq\" data-screen-label=\"Discovery\">",
     "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<h2>What would your team do with the heavy lifting gone<em class=\"hl-or\">?</em></h2>",
+    "new": "<h2 style=\"font-family:Archivo,system-ui,sans-serif;font-weight:750;font-size:clamp(38px,4.2vw,60px);line-height:.98;letter-spacing:-.038em;max-width:17ch;text-wrap:balance;margin:0 auto\">What would your team do with the <em class=\"hl-or\">heavy lifting gone?</em></h2>",
+    "count": 1
   }
 ]
