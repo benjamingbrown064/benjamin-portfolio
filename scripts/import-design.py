@@ -299,6 +299,17 @@ def home_method_stack(html):
     return html.replace("</body>", '<script src="/site/v13/method/device.js" defer></script>\n</body>', 1)
 
 
+# Home sections Ben has hidden (18 Nov 2026) but may bring back: still in the page, not shown.
+# To bring one back, delete its id from this list, re-run the import and build.
+HIDDEN_HOME_SECTIONS = ("why", "services")  # "What changes when one person owns…", Methods list
+
+
+def home_hide_sections(html):
+    for sid in HIDDEN_HOME_SECTIONS:
+        html = must_sub(r'<section class="[^"]*" id="%s"' % sid, lambda m: m.group(0) + " hidden", html, "hide home section " + sid)
+    return html
+
+
 def home_side_project(html):
     """Home page banner: a pill in the bottom-right corner linking to the BomberBot side project."""
     pill = ('<a class="hero-game" href="https://www.bomberbot.app" target="_blank" rel="noopener">'
@@ -325,6 +336,7 @@ def structural_edits(src_rel, html):
         html = home_what_changes(html)
         html = home_side_project(html)
         html = home_method_stack(html)
+        html = home_hide_sections(html)
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
         html = must_sub(r'<section class="sec grey" id="pricing".*?</section>', pricing, html, "home pricing")
         # "Latest project" tile: the Taskbox "Talk it through" animation sits over the right of the photo.
