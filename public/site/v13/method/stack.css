@@ -30,7 +30,6 @@
 .md-stage img{position:absolute;left:-18.182%;top:-18.182%;width:130.909%;height:123.636%;display:block;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .md-stage .md-part,.md-stage .md-cast,.md-stage .md-full{opacity:0;will-change:transform,opacity;backface-visibility:hidden}
 .md-stage .md-cast{filter:brightness(0) blur(.8cqi)}
-.md-glow{position:absolute;left:55.909%;top:72.455%;width:5.9%;aspect-ratio:1;translate:-50% -50%;background:radial-gradient(circle,rgba(255,140,50,.45),rgba(255,107,31,0) 65%);opacity:0;pointer-events:none}
 .md-title{position:absolute;left:4%;top:-1%;margin:0;color:var(--ink);opacity:0;font-size:clamp(22px,6.2cqi,46px);font-weight:600;letter-spacing:-.045em;line-height:1;will-change:opacity,transform}
 .md-title span{display:block;font-size:.5em;font-weight:500;color:var(--mute);margin-top:.4em;letter-spacing:-.025em}
 .md-title em{font-style:normal;color:#FF6B1F}
@@ -58,3 +57,12 @@
 /* Site additions (Doug, 18 Nov 2026): on phones the stage sat under the 52px sticky nav, so the lowering layers
    and the "Superhuman" title were cut off. Give the stage room below the nav and keep the title inside it. */
 @media(max-width:860px){.ms-grid{padding-top:96px}.md-stage{width:min(100%,34svh)}.md-title{top:6%}}
+/* v6 (Ben, 18 Nov 2026): live meters on the base screen and a green finish light. These overlays work in the
+   renders' own 1440x1360 frame, so .md-frame sits exactly where every render image sits. */
+.md-frame{position:absolute;left:-18.182%;top:-18.182%;width:130.909%;height:123.636%;pointer-events:none}
+.md-frame img.md-led{left:54.583%;top:71.25%;width:4.167%;height:4.412%;opacity:0;transition:none}
+.md-frame img.md-led.on{opacity:1;transition:opacity .7s ease .1s}
+.md-glow{position:absolute;left:56.69%;top:73.38%;width:4.2%;aspect-ratio:1;translate:-50% -50%;background:radial-gradient(circle,rgba(70,230,110,.5),rgba(40,200,90,0) 65%);opacity:0;pointer-events:none;transition:none}
+.md-glow.on{opacity:1;transition:opacity .7s ease .1s}
+.md-screen{position:absolute;left:0;top:0;width:1440px;height:1360px;transform-origin:0 0;pointer-events:none}
+.md-screen canvas{position:absolute;left:0;top:0;width:592px;height:310px;transform-origin:0 0}
