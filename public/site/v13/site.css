@@ -203,3 +203,6 @@ html[data-theme="dark"] .why-dlg::backdrop{background:rgba(0,0,0,.6)}
 
 /* Slim cookie bar on phones (also injected by site.js until the next design import) */
 @media(max-width:600px){.ck[role=dialog]{left:8px;right:8px;bottom:86px;width:auto;padding:8px 8px 8px 12px;display:flex;align-items:center;gap:8px;border-radius:12px}.ck[role=dialog] p{font-size:12px;line-height:1.3}.ck[role=dialog] .ck-b{margin-top:0;flex-shrink:0;gap:6px}.ck[role=dialog] .ck-b button{flex:none;min-height:32px;padding:0 10px;font-size:12.5px}}
+
+/* Sections hidden with the hidden attribute (see HIDDEN_HOME_SECTIONS in scripts/import-design.py) stay hidden whatever their own display rule. */
+section[hidden]{display:none!important}
