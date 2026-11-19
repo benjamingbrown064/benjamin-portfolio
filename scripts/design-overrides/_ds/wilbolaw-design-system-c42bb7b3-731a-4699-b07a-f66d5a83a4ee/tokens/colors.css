@@ -1,0 +1,29 @@
+/* WilboLaw colour — monochrome base, one accent (Moonstone), desaturated functional set. Values verbatim from the brand book. */
+:root{
+/* monochrome ramp */
+--obsidian:#0D0D0D;--graphite:#1C1C1C;--slate:#454545;--steel:#737373;--mist:#ABABAB;--fog:#F5F5F5;--paper:#FFFFFF;
+--grey-dadada:#DADADA;--grey-e5e5e5:#E5E5E5;--grey-f0f0f0:#F0F0F0;--grey-fafafa:#FAFAFA;
+/* ink (text) */
+--ink:#0D0D0D;--ink-2:#454545;--ink-3:#737373;--ink-4:#ABABAB;
+/* lines + interaction */
+--line:#E5E5E5;--line-2:#DADADA;--hover:rgba(13,13,13,.04);
+/* surfaces */
+--canvas:#F5F5F5;--surface:#FFFFFF;--well:#FAFAFA;--sunken:#F0F0F0;
+/* emphasis (primary action) */
+--emph:#0D0D0D;--emph-hover:#262626;--on-emph:#FFFFFF;
+/* accent — Moonstone. #519CAB for fills/indicators only; Deep for any accent text or link */
+--moonstone:#519CAB;--moonstone-deep:#2C6B77;
+--acc:#519CAB;--acc-deep:#2C6B77;--acc-tint:rgba(81,156,171,.12);--acc-wash:#EDF4F6;
+/* functional, desaturated */
+--ok:#2E6E4E;--ok-bg:#E9F1EC;--ok-line:#CDE0D4;
+--fair:#7E6318;--fair-bg:#F4F0E2;--fair-line:#E3D9BC;
+--warn:#96502C;--warn-bg:#F4EAE4;--warn-line:#E5CFC1;
+--crit:#A8321C;--crit-bg:#F6E8E5;--crit-line:#EDCCC4;
+
+/* semantic aliases */
+--text-body:var(--ink);--text-secondary:var(--ink-2);--text-meta:var(--ink-3);--text-caption:var(--ink-4);
+--text-link:var(--acc-deep);--text-link-hover:var(--acc);--text-on-dark:#FFFFFF;--text-on-dark-muted:rgba(255,255,255,.55);
+--surface-page:var(--canvas);--surface-card:var(--surface);--surface-well:var(--well);--surface-sunken:var(--sunken);--surface-dark:var(--obsidian);--surface-dark-raised:var(--graphite);
+--border-default:var(--line);--border-strong:var(--line-2);
+--focus-ring:0 0 0 3px var(--acc-tint);
+}

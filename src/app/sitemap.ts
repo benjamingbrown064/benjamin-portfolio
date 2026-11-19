@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["/work/warrantyos", 0.8],
     ["/work/taskbox", 0.8],
     ["/work/govscape", 0.8],
+    ["/work/wilbolaw", 0.8],
     ["/method", 0.9],
     ["/discovery", 0.8],
     ["/journal", 0.6],

@@ -213,3 +213,7 @@ section[hidden]{display:none!important}
 
 /* Home banner flick (hero-flick.js): the one photo shows in light and dark mode (the dark-mode portrait is gone) */
 .hero-fig .frame img.h-flick{display:block}
+
+/* WilboLaw case study (19 Nov 2026): on phones the animation panels sized themselves to the iframe and pushed the page
+   ~150px wider than the screen (also in the design file). Let the grid columns shrink to the screen. */
+.wlx .wx-row>*,.wlx .wx-film,.wlx .wx-stage{min-width:0;max-width:100%}

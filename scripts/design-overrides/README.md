@@ -8,3 +8,4 @@ the file at the same path in the design. Text fixes on top still go in `design-p
   `login.html`, `v12/login.css`, `assets/ben-desk-bw-crop.jpg` (converted from his 6.4 MB PNG; client sign-in page, not wired to a backend yet).
 - 19 Nov 2026: `assets/ben-window-arms-folded.jpg`, the home "About" photo (replaces ben-desk-bw; patch in design-patches.json).
 - 19 Nov 2026: `assets/ben-study-laptop.jpg`, the sign-in page photo (replaces ben-desk-bw-crop; patch in design-patches.json).
+- 19 Nov 2026, WilboLaw Case Study Export: `work/wilbolaw.{html,jsx,css}`, `work/wilbolaw-mocks.jsx`, `work/wilbolaw-film.html`, `work/wl-anim/*.html`, `assets/web/wl/`, `assets/web/wilbolaw/`, `_ds/wilbolaw-design-system-…/`.

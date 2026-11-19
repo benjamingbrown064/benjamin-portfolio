@@ -48,6 +48,7 @@ PAGES = {
     "work/warrantyos-v2.html": (None, "/work/warrantyos"),
     "work/taskbox-v2.html": ("work-taskbox", "/work/taskbox"),
     "work/govscape.html": ("work-govscape", "/work/govscape"),
+    "work/wilbolaw.html": ("work-wilbolaw", "/work/wilbolaw"),  # 19 Nov 2026, from design-overrides
     # Case studies still being written: cards point at the work index until they exist.
     "work/case-study.html": (None, "/work"),
 }
@@ -268,8 +269,8 @@ def coming_soon_cards(html, src_rel):
         inner = inner.replace('<div class="media img">', '<div class="media img">' + SOON_TAG, 1)
         return '<div class="card has-ov soon">' + inner + "</div>"
     html, n = re.subn(r'<a class="card has-ov" href="(?:work/)?case-study\.html[^"]*">(.*?)</a>', unlink, html, flags=re.S)
-    if n != 2:
-        raise SystemExit("expected 2 unpublished case-study cards in %s, found %d" % (src_rel, n))
+    if n != 1:  # Ascra (WilboLaw got its case study on 19 Nov 2026)
+        raise SystemExit("expected 1 unpublished case-study card in %s, found %d" % (src_rel, n))
     ghost = '<div class="card gx-card"><div class="media solo">'
     if html.count(ghost) != 1:
         raise SystemExit("Ghost Mode card not found in " + src_rel)
@@ -359,12 +360,13 @@ def home_side_project(html):
 def structural_edits(src_rel, html):
     """Edits that depend on page structure rather than exact text. Blocks wrapped in
     <!--block:name--> markers are kept, removed or replaced by src/lib/site.ts."""
-    if src_rel == "login.html":
-        # The sign-in page arrived with a newer footer design (".ft", needs v12/footer.css) than the rest of the site.
-        # Give it the same footer as every other page; restyle all footers together if the new one is wanted.
+    if '<footer class="foot dark ft"' in html:
+        # Pages Ben sent after the main export (sign-in, WilboLaw) carry a newer footer design (".ft", needs
+        # v12/footer.css). Give them the same footer as every other page; restyle all footers together if wanted.
         contact = apply_patches("contact.html", open(os.path.join(SRC, "contact.html"), encoding="utf-8").read())
         foot = re.search(r'<footer class="foot dark".*?</footer>', contact, re.S).group(0)
-        html = must_sub(r'<footer class="foot dark ft".*?</footer>', lambda m: foot, html, "login footer")
+        html = must_sub(r'<footer class="foot dark ft".*?</footer>', lambda m: foot, html, "newer footer")
+        html = re.sub(r'<link rel="stylesheet" href="(?:\.\./)?v12/footer\.css">\s*', "", html)
     # footer: social links come from the fact sheet, legal links are real pages
     html = re.sub(r'<div><h4>Elsewhere</h4>(?:<a href="#">[^<]*</a>)+</div>', "{{footer_social}}", html)
     html = html.replace('<nav><a href="#">Privacy</a><a href="#">Terms</a></nav>',
@@ -535,7 +537,7 @@ def bundle_css():
 
 # Case studies drawn by React in the browser. Their full markup is also written into the page, so search
 # engines, AI crawlers and anything else that does not run scripts can read them.
-PRERENDER = {"work-warrantyos": "wx-root", "work-govscape": "gx-root"}
+PRERENDER = {"work-warrantyos": "wx-root", "work-govscape": "gx-root", "work-wilbolaw": "wx-root"}
 
 
 def prerender_case_studies():

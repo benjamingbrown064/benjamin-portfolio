@@ -1,0 +1,25 @@
+/* WilboLaw type — Archivo for everything spoken, Martian Mono for references, codes, dates. No italics. */
+:root{
+--fdisp:"Archivo",system-ui,sans-serif; /* @kind font */
+--fsans:"Archivo",system-ui,sans-serif; /* @kind font */
+--fmono:"Martian Mono",ui-monospace,monospace; /* @kind font */
+
+--font-display:var(--fdisp);--font-body:var(--fsans);--font-mono:var(--fmono);
+/* scale (size / line-height / weight / tracking) */
+--type-display-size:60px;--type-display-lh:.95;--type-display-weight:760;--type-display-track:-.045em;
+--type-cover-size:66px;--type-cover-weight:760;--type-cover-track:-.042em;
+--type-section-size:30px;--type-section-weight:720;
+--type-headline-size:28px;--type-headline-lh:1.1;--type-headline-weight:720;--type-headline-track:-.028em;
+--type-promise-size:21px;--type-promise-weight:680;--type-promise-track:-.03em;
+--type-figure-size:44px;--type-figure-weight:750;--type-figure-track:-.04em;
+--type-lede-size:17px;--type-lede-lh:1.6;
+--type-body-size:15px;--type-body-lh:1.55;--type-body-weight:400;
+--type-ui-size:13.5px;--type-ui-weight:600;
+--type-small-size:12.5px;
+--type-kicker-size:10px;--type-kicker-weight:500;--type-kicker-track:.12em;
+--type-caption-size:9.5px;
+--heading-track:-.028em;
+--heading-lh:1.08; /* @kind other */
+
+--measure-read:72ch;--measure-explain:60ch;
+}
