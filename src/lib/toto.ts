@@ -15,7 +15,7 @@ const PRICES: Record<string, { in: number; out: number; cacheWrite: number; cach
   "claude-opus-5-5": { in: 4, out: 20, cacheWrite: 5, cacheRead: 0.2 },
 };
 
-export const PAGES = ["/", "/work", "/work/warrantyos", "/work/taskbox", "/work/govscape", "/method", "/discovery", "/journal", "/contact"] as const;
+export const PAGES = ["/", "/work", "/work/warrantyos", "/work/taskbox", "/work/govscape", "/work/wilbolaw", "/method", "/discovery", "/journal", "/contact"] as const;
 export const HOME_SECTIONS = ["work", "method", "pricing", "testimonials"] as const;
 export const REQUEST_TYPES = ["project", "discovery", "files", "bug", "support", "assets"] as const;
 
@@ -168,6 +168,7 @@ const PAGE_NAMES: Record<string, string> = {
   "/work/warrantyos": "the WarrantyOS case study",
   "/work/taskbox": "the Taskbox case study",
   "/work/govscape": "the Govscape case study",
+  "/work/wilbolaw": "the WilboLaw case study",
   "/method": "the method",
   "/discovery": "the discovery questionnaire",
   "/journal": "Notes",

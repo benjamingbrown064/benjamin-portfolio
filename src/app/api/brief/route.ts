@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { insert } from "@/lib/db";
 import { fail, guard, str } from "@/lib/guard";
 
 export const maxDuration = 30;
@@ -28,7 +29,7 @@ function cleanSchema(v: unknown): FormType[] {
 // every value against its own options again before using it, and the visitor reviews it before sending.
 export async function POST(request: Request) {
   if (!process.env.ANTHROPIC_API_KEY) return fail(503, "This is not connected yet.");
-  const g = await guard(request, { table: "chat_voice", perHour: 20, perDay: 3000, maxBytes: 20_000 });
+  const g = await guard(request, { table: "brief_log", perHour: 12, perDay: 400, maxBytes: 20_000, bot: true });
   if (!g.ok) return g.response;
   const said = str(g.body.said, 2500);
   const types = cleanSchema(g.body.schema);
@@ -47,6 +48,8 @@ The form:
 ${JSON.stringify(types)}`;
 
   try {
+    // Counted before the model is called, so the hourly and daily limits above hold even if the call fails.
+    await insert("brief_log", { ip_hash: g.ip });
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },

@@ -86,20 +86,15 @@ export async function GET(request: Request) {
   const ip = ipHash(request);
 
   try {
-    // The allowance check and the voice request run side by side, so the check adds no delay.
-    const [decision, res] = await Promise.all([
-      voiceAllowed(session, ip),
-      fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}/stream?output_format=mp3_44100_128`, {
-        method: "POST",
-        headers: { "xi-api-key": key, "Content-Type": "application/json" },
-        body: JSON.stringify({ text, model_id: ELEVEN_MODEL, voice_settings: { speed: ELEVEN_SPEED } }),
-        signal: AbortSignal.timeout(20_000),
-      }),
-    ]);
-    if (!decision.allow) {
-      await res.body?.cancel().catch(() => {});
-      return Response.json({ ok: false, gate: decision.gate, error: decision.message }, { status: 429 });
-    }
+    // The allowance is checked first, so a visitor who has used theirs up costs nothing more.
+    const decision = await voiceAllowed(session, ip);
+    if (!decision.allow) return Response.json({ ok: false, gate: decision.gate, error: decision.message }, { status: 429 });
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}/stream?output_format=mp3_44100_128`, {
+      method: "POST",
+      headers: { "xi-api-key": key, "Content-Type": "application/json" },
+      body: JSON.stringify({ text, model_id: ELEVEN_MODEL, voice_settings: { speed: ELEVEN_SPEED } }),
+      signal: AbortSignal.timeout(20_000),
+    });
     if (!res.ok || !res.body) throw new Error(`speech failed (${res.status}): ${(await res.text().catch(() => "")).slice(0, 200)}`);
     const seconds = Math.max(1, text.length / 15);
     await rpc("voice_log", { p_session: session, p_ip: ip, p_kind: "speak", p_seconds: seconds, p_cost: seconds * VOICE.elevenSpeakPerSecond });

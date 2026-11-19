@@ -8,7 +8,7 @@ export function GET() {
       url: "/privacy",
       title: "Privacy",
       description: "What this site collects, why, how long it is kept and how to have it removed.",
-      updated: "16 November 2026",
+      updated: "19 November 2026",
     }),
   );
 }

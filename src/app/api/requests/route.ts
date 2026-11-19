@@ -14,7 +14,7 @@ type FileMeta = { name?: unknown; size?: unknown; type?: unknown };
 // Saves a contact request. Files do not pass through this server: the reply contains one-time
 // upload addresses and the browser sends each file straight to private storage.
 export async function POST(request: Request) {
-  const g = await guard(request, { table: "requests", perHour: 6, perDay: 300 });
+  const g = await guard(request, { table: "requests", perHour: 6, perDay: 300, bot: true });
   if (!g.ok) return g.response;
   const b = g.body;
 

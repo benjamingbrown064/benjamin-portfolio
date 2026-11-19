@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   if (audio.byteLength < 800) return fail(400, "I did not catch that.");
   if (audio.byteLength > VOICE.maxClipBytes) return fail(413, "That was too long. Try a shorter message.");
   const claimed = Number(request.headers.get("x-toto-seconds"));
-  const seconds = Math.max(1, Math.min(VOICE.maxClipSeconds, Number.isFinite(claimed) && claimed > 0 ? claimed : audio.byteLength / 4000));
+  const seconds = Math.max(1, Math.min(VOICE.maxClipSeconds, Math.max(Number.isFinite(claimed) && claimed > 0 ? claimed : 0, audio.byteLength / 8000)));
 
   const ip = ipHash(request);
   try {

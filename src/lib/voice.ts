@@ -43,6 +43,9 @@ export async function voiceAllowed(session: string, ip: string): Promise<VoiceDe
   if (!c.known && Number(c.session_seconds) >= VOICE.anonSessionSeconds) {
     return { allow: false, gate: true, message: "Leave your name and email below to keep talking. You can still type." };
   }
+  if (!c.known && Number(c.ip_day_seconds) >= VOICE.anonIpDaySeconds) {
+    return { allow: false, gate: true, message: "Leave your name and email below to keep talking. You can still type." };
+  }
   if (Number(c.ip_day_seconds) >= VOICE.knownDaySeconds) {
     return { allow: false, gate: false, message: "That is today’s voice allowance used. You can still type." };
   }

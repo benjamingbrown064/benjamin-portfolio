@@ -2,6 +2,7 @@
 // database (so they hold across server instances). A spam challenge can be added here later.
 import { NextResponse } from "next/server";
 import { count, dbConfigured, ipHash } from "./db";
+import { isBot } from "./bot";
 
 const ALLOWED_HOSTS = /^(?:(?:www\.)?benjaminbrown\.co|localhost(?::\d+)?|127\.0\.0\.1(?::\d+)?|benjamin-portfolio-[a-z0-9-]+\.vercel\.app)$/;
 
@@ -21,10 +22,12 @@ export function originAllowed(request: Request): boolean {
   }
 }
 
-export async function guard(request: Request, opts: { table?: string; perHour?: number; perDay?: number; maxBytes?: number }): Promise<Guarded> {
+export async function guard(request: Request, opts: { table?: string; perHour?: number; perDay?: number; maxBytes?: number; bot?: boolean }): Promise<Guarded> {
   if (!dbConfigured()) return { ok: false, response: fail(503, "This form is not connected yet. Please email instead.") };
 
   if (!originAllowed(request)) return { ok: false, response: fail(403, "Request not allowed.") };
+  // Forms that send an email or cost money are for people in a browser, not scripts.
+  if (opts.bot && (await isBot(request))) return { ok: false, response: fail(403, "That could not be sent from this browser. Please email instead.") };
 
   const text = await request.text();
   if (text.length > (opts.maxBytes ?? 60_000)) return { ok: false, response: fail(413, "That is too long to send.") };
