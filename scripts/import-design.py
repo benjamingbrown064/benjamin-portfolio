@@ -313,7 +313,7 @@ def home_hide_sections(html):
 # Home banner (Ben, 19 Nov 2026): a single still photo replaced the flick slideshow. The slideshow (frames in
 # public/site/v13/hero-flick/, script hero-flick.js) is kept: set HERO_FLICK = True to bring it back.
 HERO_FLICK = False
-HERO_STILL = "/site/v13/hero/ben-loft-sofa.webp"
+HERO_STILL = "/site/v13/hero/ben-room-sofa.webp"  # was ben-loft-sofa.webp (19 Nov, earlier)
 
 
 def home_hero_flick(html):
