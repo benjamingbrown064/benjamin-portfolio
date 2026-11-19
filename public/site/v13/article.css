@@ -131,4 +131,4 @@
 
 /* site (Ben, 19 Nov): in prompt blocks, the parts the reader fills in ([client], [reason]...) are orange. Colour only:
    the Copy button copies the code's plain text, so the copied prompt is unchanged. [CHECK] is an instruction, left plain. */
-.ax-code .ph{color:#FF6B1F}
+.ax-code .ax-fill{display:inline;color:#FF6B1F} /* not ".ph": the home page uses .ph for its phases block (display:grid) */
