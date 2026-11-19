@@ -1,5 +1,6 @@
-/* v12: The method, as a device (Blender renders, method-v6: live screen meters, green finish light; previous: device-v2.js). Scroll runs 0–4.6, one unit per stage. At each stage layer P(k) lowers onto stack S(k-1);
-   in the last tenth of the drop the full render S(k) fades in over it with its true contact shadows, and only the newest settled stack stays visible.
+/* v12: The method, as a device (Blender renders, method-v8, 20 Nov 2026: satin finish, device D1..D5 and floor shadow H1..H5 as separate layers; live screen meters, green finish light).
+   Timing, easing and the weighted scroll are unchanged from the version before (Ben: "keep the current speed"). Scroll runs 0–4.6, one unit per stage. At each stage layer P(k) lowers onto device D(k-1);
+   in the last tenth of the drop D(k) fades in over it, and only the newest settled one stays visible. The floor shadow mixes from H(k-1) to H(k) as the layer comes down.
    Scroll is eased toward its target every frame so the motion reads as weight, not as the wheel. Previous version: device-v1.js. */
 (function () {
 var root = document.querySelector('.ms'); if (!root) return;
@@ -14,6 +15,7 @@ var parts = [2, 3, 4, 5].map(function (k) {
   return { part: stage.querySelector('[data-part="' + k + '"]'), cast: stage.querySelector('[data-cast="' + k + '"]') };
 });
 var fulls = [1, 2, 3, 4, 5].map(function (k) { return stage.querySelector('[data-stage="' + k + '"]'); });
+var shadows = [1, 2, 3, 4, 5].map(function (k) { return stage.querySelector('[data-shadow="' + k + '"]'); });
 var N = 5, T_MAX = 4.6, LIFT = .28, START = .3, DUR = 1;
 function cl(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
 function inOut(v) { return v < .5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2; }
@@ -46,6 +48,9 @@ function render(t) {
   var fade = [1].concat(lands.map(function (q) { return q >= 1 ? 1 : soft(cl((q - .9) / .1)); })), settled = 0;
   fade.forEach(function (f, j) { if (f > .999) settled = j; });
   fade.forEach(function (f, j) { fulls[j].style.opacity = (j < settled ? 0 : f).toFixed(3); });
+  // the floor shadow grows with each layer: one smooth mix between the shadow before and after, weighted by how far the layer has dropped
+  var sh = lands.reduce(function (a, q) { return a + glide(q); }, 0), sj = Math.min(3, Math.floor(sh)), sw = sh - sj;
+  shadows.forEach(function (el, n) { el.style.opacity = (n === sj ? 1 - sw : n === sj + 1 ? sw : 0).toFixed(4); });
   var last = soft(lands[lands.length - 1]), tt = soft(cl((last - .4) / .6));
   title.style.opacity = tt.toFixed(3);
   title.style.transform = reduce ? '' : 'translate3d(0,' + ((1 - tt) * 8).toFixed(2) + 'px,0)';
@@ -56,18 +61,25 @@ function render(t) {
   fitScreen();
 }
 
-// live meters. Screen graphic is 2000×520; the canvas covers its meter area from (1290,70). TL/TR/BL are the screen corners in the 1440×1360 render.
+// live meters. Screen graphic is 2000×520; the canvas covers its meter area from (1290,70).
 var finish = stage.querySelector('.md-finish'), screenEl = stage.querySelector('.md-screen'), canvas = screenEl.querySelector('canvas'), ctx = canvas.getContext('2d');
 (function () {
-  var TL = [374.48, 877.45], TR = [618.86, 999.64], BL = [374.48, 955.05];
-  var a = (TR[0] - TL[0]) / 2000, b = (TR[1] - TL[1]) / 2000, c = (BL[0] - TL[0]) / 520, d = (BL[1] - TL[1]) / 520;
-  canvas.style.transform = 'matrix(' + [a, b, c, d, TL[0] + a * 1290 + c * 70, TL[1] + b * 1290 + d * 70].join(',') + ')';
+  // Screen corners projected into the 1440×1360 render (python device.py project). v8's camera is a real perspective
+  // lens, so the canvas is fitted with a full projective (homography) transform rather than a flat one.
+  var P = { tl: [373.49, 877.80], tr: [611.67, 1014.12], br: [613.09, 1093.37], bl: [377.74, 953.74] };
+  var x0 = P.tl[0], y0 = P.tl[1], x1 = P.tr[0], y1 = P.tr[1], x2 = P.br[0], y2 = P.br[1], x3 = P.bl[0], y3 = P.bl[1];
+  var dx1 = x1 - x2, dx2 = x3 - x2, dx3 = x0 - x1 + x2 - x3, dy1 = y1 - y2, dy2 = y3 - y2, dy3 = y0 - y1 + y2 - y3;
+  var den = dx1 * dy2 - dx2 * dy1, g = (dx3 * dy2 - dx2 * dy3) / den, h = (dx1 * dy3 - dx3 * dy1) / den;
+  var a = x1 - x0 + g * x1, b = x3 - x0 + h * x3, c = x0, d = y1 - y0 + g * y1, e = y3 - y0 + h * y3, f = y0;
+  // canvas pixel (px, py) is screen-graphic pixel (1290 + px, 70 + py) of 2000×520
+  var su = 1 / 2000, sv = 1 / 520, ou = 1290 / 2000, ov = 70 / 520;
+  canvas.style.transform = 'matrix3d(' + [a * su, d * su, 0, g * su, b * sv, e * sv, 0, h * sv, 0, 0, 1, 0, a * ou + b * ov + c, d * ou + e * ov + f, 0, g * ou + h * ov + 1].join(',') + ')';
 })();
 // the stage shows source 200–1300 on both axes
 function fitScreen() { var s = stage.clientWidth / 1100; screenEl.style.transform = 'translate(' + (-200 * s) + 'px,' + (-200 * s) + 'px) scale(' + s + ')'; }
 var M = { x0: 10, top: 8, colw: 104, gap: 52, segs: 9, segh: 24, seggap: 9, r: 7 };
 var awake = [1, 0, 0, 0], level = [0, 0, 0, 0], peak = [0, 0, 0, 0], hold = [0, 0, 0, 0], seed = [0, 1.7, 3.1, 4.6];
-var LIT = 'rgb(208,93,40)', HOT = 'rgb(232,168,122)', PEAK = 'rgba(226,140,92,.9)';
+var LIT = 'rgb(230,104,50)', HOT = 'rgb(246,176,140)', PEAK = 'rgba(240,140,96,.9)'; // matched to the v8 rendered screen
 function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); ctx.fill(); }
 function sig(i, t) { var s = seed[i]; return cl(.52 + .22 * Math.sin(t * 1.9 + s) + .14 * Math.sin(t * 5.3 + s * 2.3) + .12 * Math.sin(t * 11.7 + s * .7) + (Math.random() < .04 ? .3 : 0)); }
 function draw(t, dt) {
