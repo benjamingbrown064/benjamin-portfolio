@@ -14,6 +14,21 @@ belong in PATCHES below or in public/site/v13/ (hand-written, never overwritten)
 import hashlib, os, re, shutil, subprocess, sys, urllib.parse, urllib.request, json
 
 SRC = sys.argv[1]
+# Files Ben sent after the main design export live in scripts/design-overrides/ (same paths as the design folder).
+# They are laid over a temporary copy of the design, so the original export is never modified.
+OVERRIDES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "design-overrides")
+if os.path.isdir(OVERRIDES):
+    import tempfile
+    _merged = os.path.join(tempfile.mkdtemp(prefix="bb-design-"), "design")
+    shutil.copytree(SRC, _merged)
+    for _d, _dirs, _fs in os.walk(OVERRIDES):
+        for _f in _fs:
+            if _f == "README.md" and _d == OVERRIDES:
+                continue
+            _rel = os.path.relpath(os.path.join(_d, _f), OVERRIDES)
+            os.makedirs(os.path.dirname(os.path.join(_merged, _rel)), exist_ok=True)
+            shutil.copyfile(os.path.join(_d, _f), os.path.join(_merged, _rel))
+    SRC = _merged
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGES_OUT = os.path.join(ROOT, "site", "pages")
 PUB = os.path.join(ROOT, "public", "site")
@@ -28,6 +43,7 @@ PAGES = {
     "journal-article.html": ("journal-article", "/journal"),  # template only; articles are added one by one
     "contact.html": ("contact", "/contact"),
     "discovery.html": ("discovery", "/discovery"),
+    "login.html": ("login", "/login"),  # client sign-in (19 Nov 2026): front end only, no backend yet
     "work/warrantyos-v3.html": ("work-warrantyos", "/work/warrantyos"),
     "work/warrantyos-v2.html": (None, "/work/warrantyos"),
     "work/taskbox-v2.html": ("work-taskbox", "/work/taskbox"),
@@ -342,6 +358,12 @@ def home_side_project(html):
 def structural_edits(src_rel, html):
     """Edits that depend on page structure rather than exact text. Blocks wrapped in
     <!--block:name--> markers are kept, removed or replaced by src/lib/site.ts."""
+    if src_rel == "login.html":
+        # The sign-in page arrived with a newer footer design (".ft", needs v12/footer.css) than the rest of the site.
+        # Give it the same footer as every other page; restyle all footers together if the new one is wanted.
+        contact = open(os.path.join(SRC, "contact.html"), encoding="utf-8").read()
+        foot = re.search(r'<footer class="foot dark".*?</footer>', contact, re.S).group(0)
+        html = must_sub(r'<footer class="foot dark ft".*?</footer>', lambda m: foot, html, "login footer")
     # footer: social links come from the fact sheet, legal links are real pages
     html = re.sub(r'<div><h4>Elsewhere</h4>(?:<a href="#">[^<]*</a>)+</div>', "{{footer_social}}", html)
     html = html.replace('<nav><a href="#">Privacy</a><a href="#">Terms</a></nav>',

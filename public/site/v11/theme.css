@@ -6,10 +6,24 @@
 .nav-btn:active,.th-btn:active{transform:scale(.94)}
 .nb-ic,.nav-btn svg,.th-btn svg{width:22px;height:22px}
 .th-btn svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
-.th-btn .sun{opacity:0;transform:rotate(-90deg) scale(.6)}
-[data-theme="dark"] .th-btn .sun{opacity:1;transform:none}
-[data-theme="dark"] .th-btn .moon{opacity:0;transform:rotate(90deg) scale(.6)}
-@media(prefers-reduced-motion:reduce){.th-btn svg{transition:none}}
+/* moonphase dial: one disc turning on a pivot below the aperture (12,27) */
+.th-dial .th-wind,.th-dial .th-disc{transform-box:view-box;transform-origin:12px 27px}
+.th-dial .th-disc{transform:rotate(var(--disc,0deg));transition:transform .95s cubic-bezier(.7,0,.2,1)}
+[data-theme="dark"] .th-dial .th-disc:not([style]){--disc:180deg}
+.th-dial .spk{fill:currentColor;stroke:none}
+.th-btn.is-wind .th-wind{animation:th-wind 1.2s cubic-bezier(.65,0,.25,1)}
+@keyframes th-wind{0%{transform:rotate(0)}12%{transform:rotate(-14deg)}100%{transform:rotate(360deg)}}
+/* login: padlock, the shackle lifts and swings open on hover */
+.lk .lk-sh{transform-box:view-box;transform-origin:15.5px 10.5px;transition:transform .5s cubic-bezier(.34,1.4,.5,1)}
+.lk .lk-kh{transition:stroke .3s}
+.lg-btn:hover .lk .lk-sh,.lg-btn:focus-visible .lk .lk-sh{transform:translateY(-2.2px) rotate(16deg)}
+.lg-btn:hover .lk .lk-kh,.lg-btn:focus-visible .lk .lk-kh{stroke:#FF6B1F}
+@media(prefers-reduced-motion:reduce){.lk .lk-sh{transition:none}}
+.th-btn{view-transition-name:th-btn}
+::view-transition-old(th-btn){display:none}
+::view-transition-new(th-btn){animation:none}
+::view-transition-group(th-btn){animation-duration:0s}
+@media(prefers-reduced-motion:reduce){.th-dial .th-disc{transition:none}.th-btn.is-wind .th-wind{animation:none}}
 
 /* dark: tokens flip, dark bands stay as they are */
 html[data-theme="dark"]{--ink:#F5F5F7;--bone:#000;--bone-2:#1D1D1F;--bone-3:#2C2C2E;--line:rgba(255,255,255,.16);--mute:#A1A1A6;--fg:#F5F5F7;color-scheme:dark}
