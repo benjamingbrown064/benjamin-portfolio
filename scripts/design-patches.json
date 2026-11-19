@@ -836,5 +836,17 @@
     "old": "function WlFilm({ src = 'wilbolaw-film.html',",
     "new": "function WlFilm({ src = '/site/work/wilbolaw-film.html',",
     "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<img style=\"object-position:60% 50%\" src=\"assets/web/wilbolaw-desk-2.jpg\" alt=\"Woman reading a laptop at a sunlit desk\"",
+    "new": "<img style=\"object-position:50% 50%\" src=\"assets/web/wilbolaw-card-home.jpg\" alt=\"An attorney reviewing a report with a pen at a dark wooden table, laptop open, a colleague in the foreground\"",
+    "count": 1
+  },
+  {
+    "file": "work.html",
+    "old": "<img style=\"object-position:60% 50%\" src=\"assets/web/wilbolaw-desk-2.jpg\" alt=\"Woman reading a laptop at a sunlit desk\"",
+    "new": "<img style=\"object-position:50% 64%\" src=\"assets/web/wilbolaw-card.jpg\" alt=\"An attorney reviewing a report with a pen at a dark wooden table, laptop open, a colleague in the foreground\"",
+    "count": 1
   }
 ]

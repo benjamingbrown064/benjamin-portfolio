@@ -9,3 +9,4 @@ the file at the same path in the design. Text fixes on top still go in `design-p
 - 19 Nov 2026: `assets/ben-window-arms-folded.jpg`, the home "About" photo (replaces ben-desk-bw; patch in design-patches.json).
 - 19 Nov 2026: `assets/ben-study-laptop.jpg`, the sign-in page photo (replaces ben-desk-bw-crop; patch in design-patches.json).
 - 19 Nov 2026, WilboLaw Case Study Export: `work/wilbolaw.{html,jsx,css}`, `work/wilbolaw-mocks.jsx`, `work/wilbolaw-film.html`, `work/wl-anim/*.html`, `assets/web/wl/`, `assets/web/wilbolaw/`, `_ds/wilbolaw-design-system-…/`.
+- 19 Nov 2026: `assets/web/wilbolaw-card.jpg` (work page) and `wilbolaw-card-home.jpg` (home, cropped so her face clears the centred logo), the WilboLaw card pictures (patches in design-patches.json).
