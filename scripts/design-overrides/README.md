@@ -6,3 +6,4 @@ the file at the same path in the design. Text fixes on top still go in `design-p
 
 - 19 Nov 2026, Header Icons + Login Page exports: `v11/theme.js`, `v11/theme.css` (moon/sun dial, padlock),
   `login.html`, `v12/login.css`, `assets/ben-desk-bw-crop.jpg` (converted from his 6.4 MB PNG; client sign-in page, not wired to a backend yet).
+- 19 Nov 2026: `assets/ben-window-arms-folded.jpg`, the home "About" photo (replaces ben-desk-bw; patch in design-patches.json).

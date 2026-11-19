@@ -806,5 +806,11 @@
     "old": "src=\"assets/ben-desk-bw-crop.png\"",
     "new": "src=\"assets/ben-desk-bw-crop.jpg\"",
     "count": 1
+  },
+  {
+    "file": "Ben Brown Portfolio v12.html",
+    "old": "<img src=\"assets/ben-desk-bw.png\" alt=\"Ben reading on a tablet beside a desk by the window\"",
+    "new": "<img src=\"assets/ben-window-arms-folded.jpg\" alt=\"Ben standing by a tall window with his arms folded, looking at the camera\"",
+    "count": 1
   }
 ]
