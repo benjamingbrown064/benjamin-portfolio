@@ -210,3 +210,6 @@ section[hidden]{display:none!important}
 
 /* Journal entries marked grey: cover and thumbnails in greyscale, like the journal photos (The 1% No. 1, Ben 19 Nov) */
 .jx-cover.art.grey img,.ax-cover.art.grey img,.post .media.art.grey img{filter:grayscale(1)}
+
+/* Home banner flick (hero-flick.js): the one photo shows in light and dark mode (the dark-mode portrait is gone) */
+.hero-fig .frame img.h-flick{display:block}
