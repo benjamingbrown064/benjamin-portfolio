@@ -310,6 +310,15 @@ def home_hide_sections(html):
     return html
 
 
+def home_hero_flick(html):
+    """Home banner: the "flick" slideshow (Ben, 19 Nov 2026). One photo element in light and dark mode (the dark-mode
+    portrait is dropped), starting on frame 1; public/site/v13/hero-flick.js runs the 15 frames once and stops on the moon."""
+    html = must_sub(r'<img class="h-dk" src="/?(?:site/)?assets/ben-portrait\.jpg"[^>]*>\s*', "", html, "hero dark-mode portrait")
+    html = must_sub(r'<img class="h-lt" src="[^"]*ben-sofa-bw-2\.jpg"',
+                    '<img class="h-lt h-flick" src="/site/v13/hero-flick/01.webp" fetchpriority="high"', html, "hero sofa photo")
+    return html.replace("</body>", '<script src="/site/v13/hero-flick.js" defer></script>\n</body>', 1)
+
+
 def home_side_project(html):
     """Home page banner: a pill in the bottom-right corner linking to the BomberBot side project."""
     pill = ('<a class="hero-game" href="https://www.bomberbot.app" target="_blank" rel="noopener">'
@@ -337,6 +346,7 @@ def structural_edits(src_rel, html):
         html = home_side_project(html)
         html = home_method_stack(html)
         html = home_hide_sections(html)
+        html = home_hero_flick(html)
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
         html = must_sub(r'<section class="sec grey" id="pricing".*?</section>', pricing, html, "home pricing")
         # "Latest project" tile: the Taskbox "Talk it through" animation sits over the right of the photo.
