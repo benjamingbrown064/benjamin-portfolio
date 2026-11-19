@@ -6,8 +6,8 @@
    Without them it shows sample weekday slots and fires a 'bb:coffee' event with the booking. */
 (function () {
   if (window.BBCoffee) return;
-  const TZ = "America/Los_Angeles",
-    TZL = "Costa Mesa time (PT)",
+  const TZ = "Europe/London",
+    TZL = "UK time",
     DAYS_AHEAD = 42;
   const esc = (s) =>
     String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -172,7 +172,7 @@
       try {
         s = window.BBCoffee.availability ? await window.BBCoffee.availability(new Date(d), S.fmt) : sample(d);
       } catch (e) {
-        s = sample(d);
+        s = [];
       }
       if (S.day !== d) return;
       S.slots = s || [];
@@ -193,7 +193,7 @@
         }
       }
     };
-    const label = () => WDL[S.day.getDay()] + " " + S.day.getDate() + " " + MON[S.day.getMonth()] + " · " + nice(S.time) + " PT";
+    const label = () => WDL[S.day.getDay()] + " " + S.day.getDate() + " " + MON[S.day.getMonth()] + " · " + nice(S.time) + " UK time";
     const drawForm = () => {
       const f = fmtOf();
       pick.innerHTML =

@@ -33,5 +33,21 @@
       "url": "https://uk.linkedin.com/in/imbenbrown"
     }
   ],
-  "gtm": "GTM-WLRQ8ZVX"
+  "gtm": "GTM-WLRQ8ZVX",
+  "coffee": {
+    "_note": "When coffee can be booked. Times are in timeZone. Busy times come from Ben's calendar (CALENDAR_ICS_URL).",
+    "timeZone": "Europe/London",
+    "timeZoneLabel": "UK time",
+    "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "from": "10:30",
+    "to": "15:30",
+    "slotMinutes": 30,
+    "daysAhead": 42
+  }
 }

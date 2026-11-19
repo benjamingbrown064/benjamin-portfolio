@@ -860,5 +860,23 @@
     "old": "<iframe ref={ref} className=\"wl-film\" src={src} title={title} onLoad={onLoad} tabIndex={-1} loading={loopLazy(once, controlled)} />",
     "new": "<iframe ref={ref} className=\"wl-film\" src={near ? src : undefined} title={title} onLoad={near ? onLoad : undefined} tabIndex={-1} loading={loopLazy(once, controlled)} />",
     "count": 1
+  },
+  {
+    "file": "v12/coffee.js",
+    "old": "const TZ='America/Los_Angeles',TZL='Costa Mesa time (PT)',DAYS_AHEAD=42;",
+    "new": "const TZ='Europe/London',TZL='UK time',DAYS_AHEAD=42;",
+    "count": 1
+  },
+  {
+    "file": "v12/coffee.js",
+    "old": "catch(e){s=sample(d)}",
+    "new": "catch(e){s=[]}",
+    "count": 1
+  },
+  {
+    "file": "v12/coffee.js",
+    "old": "+nice(S.time)+' PT';",
+    "new": "+nice(S.time)+' UK time';",
+    "count": 1
   }
 ]

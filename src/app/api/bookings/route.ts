@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { insert } from "@/lib/db";
 import { EMAIL_RE, fail, guard, str } from "@/lib/guard";
 import { sendNotice, sendReceipt } from "@/lib/mail";
+import { addToCalendarLink } from "@/lib/calendar";
 
-// Records a coffee request. The calendar is not connected yet, so this is a request for a time,
-// not a confirmed booking; it is confirmed by hand until the calendar stage is built.
+// Records a coffee request. The times offered come from Ben's calendar (see /api/availability), but nothing is
+// written to it: this is a request for a time, and Ben confirms it himself. His notice carries a link that adds it.
 export async function POST(request: Request) {
   const g = await guard(request, { table: "booking_requests", perHour: 3, perDay: 60, maxBytes: 8000, bot: true });
   if (!g.ok) return g.response;
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
       data: { page: str(b.page, 300), duration: typeof b.duration === "number" ? b.duration : null },
       ip_hash: g.ip,
     });
-    await sendNotice(`New coffee request: ${str(b.name, 120) ?? email}`, [["Name", str(b.name, 120)], ["Email", email], ["When", [str(b.date, 20), str(b.time, 10), str(b.timeZone, 60)].filter(Boolean).join(" ")], ["Format", str(b.format, 20)], ["Note", str(b.note, 2000)]]);
+    await sendNotice(`New coffee request: ${str(b.name, 120) ?? email}`, [["Name", str(b.name, 120)], ["Email", email], ["When", [str(b.date, 20), str(b.time, 10), str(b.timeZone, 60)].filter(Boolean).join(" ")], ["Format", str(b.format, 20)], ["Note", str(b.note, 2000)], ["Add to your calendar", addToCalendarLink({ date: str(b.date, 20) ?? "", time: str(b.time, 10) ?? "", name: str(b.name, 120), email, format: str(b.format, 20) })]]);
     await sendReceipt({ kind: "booking", to: email, name: str(b.name, 120), date: str(b.date, 20), time: str(b.time, 10), timeZone: str(b.timeZone, 60), format: str(b.format, 20) });
     return NextResponse.json({ ok: true });
   } catch (e) {
