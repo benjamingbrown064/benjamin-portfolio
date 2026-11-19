@@ -2,13 +2,25 @@
 <p>You type a question. You get an answer. Then it sits there and waits.</p>
 <p>That’s most AI today. A cookbook. Full of good answers, and no use until somebody opens it.</p>
 <p>What most businesses actually want is a pair of hands. Someone in the kitchen whether you’re there or not, watching the inbox, drafting the reply, flagging the problem, suggesting what to do next.</p>
+<figure class="dg">
+<h4 class="dg-h">A cookbook, <em>or a pair of hands.</em></h4>
+<div class="dg-pair">
+<div class="dg-card"><div class="dg-k"><span>A cookbook</span><span>Most AI today</span></div><ul class="dg-big sm"><li>You type a question</li><li>You get an answer</li><li>Then it sits there and waits</li></ul></div>
+<div class="dg-card ink"><div class="dg-k"><span>A pair of hands</span><span>An agent</span></div><ul class="dg-big sm"><li>Watching the inbox</li><li>Drafting the reply</li><li>Flagging the problem</li><li>Suggesting what to do next</li></ul></div>
+</div>
+</figure>
 <p><a href="https://openclaw.ai/blog/introducing-openclaw" target="_blank" rel="noopener">OpenClaw</a> is the project that, to me, put a pair of hands in everyone’s kitchen. It wasn’t the first thing to be called an agent. An agent is just an AI assistant that can take actions and keep going, instead of only answering. But OpenClaw showed a lot of people that one could live on their own machine, inside the apps they already use, and get on with things without being asked.</p>
 <p>I think of it as the agent that started the others. You can argue with that. I’d still say it.</p>
 <h2>A weekend project</h2>
 <p>Peter Steinberger started it over a weekend in November 2025. It began as a WhatsApp assistant, went through a few names, and <a href="https://openclaw.ai/blog/introducing-openclaw" target="_blank" rel="noopener">landed as OpenClaw</a> at the end of January 2026.</p>
 <p>In February 2026 Steinberger joined OpenAI, and OpenClaw moved to an independent foundation that OpenAI sponsors. Bear that in mind whenever OpenAI is the one describing it, including further down.</p>
+<figure class="dg">
+<h4 class="dg-h">A weekend project, <em>a year on.</em></h4>
+<ol class="dg-tl"><li><time>Nov 2025</time><b>Started over a weekend</b><span>A WhatsApp assistant</span></li><li><time>Jan 2026</time><b>Lands as OpenClaw</b><span>After a few names</span></li><li><time>Feb 2026</time><b>An independent foundation</b><span>Steinberger joins OpenAI</span></li><li><time>Jun 2026</time><b>Windows installer</b><span>Plus iPhone and Android apps</span></li><li><time>Sep 2026</time><b>Mac setup, then Enterprise</b><span>Enterprise launches 29 Sep</span></li><li class="hot"><time>12 Nov 2026</time><b>OpenAI shows its controls</b><span>How it secures agents internally</span></li></ol>
+</figure>
 <p>OpenAI later described a <a href="https://developers.openai.com/blog/securing-persistent-agents-like-openclaw-at-openai" target="_blank" rel="noopener">persistent agent</a> as one that can run all day and act without being asked each time. Steinberger still says <a href="https://x.com/steipete/status/2121667956489003381" target="_blank" rel="noopener">OpenClaw works best on a computer that stays on</a>.</p>
-<p>That’s the shift I care about. You stop treating AI like a clever search box. You start treating it like a junior in the kitchen. Someone who needs a clear job, some limits, and a person to taste the work before it goes out.</p>
+<p class="ax-rule">That’s the shift I care about. You stop treating AI like a clever search box. <strong>You start treating it like a junior in the kitchen.</strong></p>
+<p>Someone who needs a clear job, some limits, and a person to taste the work before it goes out.</p>
 <h2>Why I’d still pick it</h2>
 <p>If you want a workflow built entirely around your business, with any model you like, I still think OpenClaw is the best option. Especially if you want a local model.</p>
 <p>There are others. Hermes Agent is safer out of the box, and NanoClaw is small enough to read every line of. I’d still pick OpenClaw for how far you can bend it.</p>
@@ -17,39 +29,77 @@
 <p>This is where it gets interesting for customer data. Pulling records together, cleaning them, finding the duplicates, checking an address against a postcode. Dull, valuable work, and work you might not want on anyone else’s servers.</p>
 <p>With a local model, the thinking happens on your machine. Set it up with no cloud backup, no chat app in the middle and no web tools, and the data’s got no reason to leave the building.</p>
 <p>That takes setting up on purpose, though. OpenClaw’s own guidance is to keep a cloud model as a backup, and a backup will send your data out the moment the local model falls over. So for this job, turn it off, use a machine you own, and give the agent a copy of the data, not the original. The data protection rules still apply. Keeping it local just makes them easier to meet.</p>
-<figure><img src="/media/journal/enterprise-agent-small-company/windows-local-ai.jpg" alt="OpenClaw&#x27;s Windows app showing a local AI model downloaded, verified and running on the computer." width="1600" height="791" loading="lazy" decoding="async"><figcaption>A local model running on a Windows PC. The address 127.0.0.1 means this computer and nowhere else. Screenshot: OpenClaw.</figcaption></figure>
+<figure class="dg">
+<h4 class="dg-h">Your machines, your rules, <em>your choice of model.</em></h4>
+<div class="dg-roles dg-mix">
+<div class="dg-card"><div class="dg-k"><span>Cloud model</span><span>Stronger</span></div><ul class="dg-big sm"><li>The hard work</li></ul></div>
+<div class="dg-card ink"><div class="dg-k"><span>Local model</span><span>On your machine</span></div><ul class="dg-big sm"><li>Routine drafts</li><li>Customer data</li></ul></div>
+<div class="dg-card dg-perm"><div class="dg-k"><span>For customer data · set up on purpose</span></div><ul><li><span>Cloud backup</span><span class="dg-pill">Off</span></li><li><span>Chat app in the middle</span><span class="dg-pill">None</span></li><li><span>Web tools</span><span class="dg-pill">None</span></li><li><span>The machine</span><span class="dg-pill">One you own</span></li><li><span>The data</span><span class="dg-pill">A copy, not the original</span></li></ul><p>The data protection rules still apply.</p></div>
+</div>
+</figure>
+<figure class="ax-fig nat ax-black"><img src="/media/journal/enterprise-agent-small-company/windows-local-ai.jpg" alt="OpenClaw&#x27;s Windows app showing a local AI model downloaded, verified and running on the computer." width="1600" height="791" loading="lazy" decoding="async"><figcaption>A local model running on a Windows PC. The address 127.0.0.1 means this computer and nowhere else. Screenshot: OpenClaw.</figcaption></figure>
 <h2>It’s never been easier to start</h2>
 <p>Nine months ago, getting going meant a terminal window and a lot of patience. A <a href="https://docs.openclaw.ai/install/" target="_blank" rel="noopener">native app</a> is now part of the official way in.</p>
 <p>Windows got an installer in June. The Mac got <a href="https://openclaw.ai/blog/macos-installer-windows-local-ai" target="_blank" rel="noopener">normal, click-through setup</a> in September. Download it, click through, and you’ve got a working assistant. No terminal.</p>
-<figure><img src="/media/journal/enterprise-agent-small-company/mac-installer.jpg" alt="The Welcome to OpenClaw setup window on a Mac desktop." width="1020" height="640" loading="lazy" decoding="async"><figcaption>The Mac setup screen. Download, click through, done. Screenshot: OpenClaw.</figcaption></figure>
+<figure class="ax-fig nat"><img src="/media/journal/enterprise-agent-small-company/mac-installer.jpg" alt="The Welcome to OpenClaw setup window on a Mac desktop." width="1020" height="640" loading="lazy" decoding="async"><figcaption>The Mac setup screen. Download, click through, done. Screenshot: OpenClaw.</figcaption></figure>
 <p>Apps for iPhone and Android landed in June too. Think of them as a remote control for an agent that runs on your computer.</p>
-<p>The install isn’t the hard part any more. Deciding what the job is, that’s the hard part.</p>
+<p class="ax-pull">The install isn’t the hard part any more. Deciding what the job is, that’s the hard part.</p>
 <h2>Several agents, one small machine</h2>
 <p><a href="https://docs.openclaw.ai/concepts/multi-agent" target="_blank" rel="noopener">One OpenClaw Gateway can run several separate agents</a>, each with its own workspace, memory and job.</p>
+<figure class="dg">
+<h4 class="dg-h">Several agents, <em>one small machine.</em></h4>
+<div class="dg-gw">
+<div class="dg-card"><div class="dg-k"><span>Agent 1</span></div><ul class="dg-list"><li>Own workspace</li><li>Own memory</li><li>Own job</li></ul></div>
+<div class="dg-card"><div class="dg-k"><span>Agent 2</span></div><ul class="dg-list"><li>Own workspace</li><li>Own memory</li><li>Own job</li></ul></div>
+<div class="dg-card"><div class="dg-k"><span>Agent 3</span></div><ul class="dg-list"><li>Own workspace</li><li>Own memory</li><li>Own job</li></ul></div>
+<div class="dg-card ink dg-gw-base"><div class="dg-k"><span>One OpenClaw Gateway</span></div><div class="dg-gw-row"><div><b>Cloud models</b><span>A modest machine. Even a Raspberry Pi.</span></div><div><b>Local model</b><span>A properly capable computer. Test it on real work first.</span></div></div></div>
+</div>
+</figure>
 <p>If the models stay in the cloud, the machine can be modest. <a href="https://docs.openclaw.ai/platforms/raspberry-pi" target="_blank" rel="noopener">The official guidance</a> is that even a little always-on board, like a Raspberry Pi, can run the Gateway. A local model needs a properly capable computer, and you should test it on real work before you rely on it.</p>
-<p>The machine won’t be what holds you back. The number of jobs you can describe clearly will be.</p>
+<p class="ax-pull">The machine won’t be what holds you back. The number of jobs you can describe clearly will be.</p>
 <h2>The rules on the kitchen wall</h2>
 <p>This is why plenty of companies still ban tools like this. An assistant that can post, pay or change a record needs stronger rules than a chat window does.</p>
 <p>That’s the gap <a href="https://openclaw.ai/blog/openclaw-enterprise" target="_blank" rel="noopener">OpenClaw Enterprise</a> is trying to close. It launched on 29 September 2026 as a free, self-hosted control plane for persistent agents. In plain terms, a control plane is the rota and the rules on the kitchen wall. Who works here, what each of them can touch, and who signs off.</p>
-<figure><img src="/media/journal/enterprise-agent-small-company/openclaw-enterprise.jpg" alt="Illustration of three lobsters working at desks in separate walled rooms, linked by lines to a shared table." width="1600" height="800" loading="lazy" decoding="async"><figcaption>OpenClaw’s own picture of Enterprise: several agents, each in its own walled workspace. Image: OpenClaw.</figcaption></figure>
+<figure class="ax-fig nat ax-black"><img src="/media/journal/enterprise-agent-small-company/openclaw-enterprise.jpg" alt="Illustration of three lobsters working at desks in separate walled rooms, linked by lines to a shared table." width="1600" height="800" loading="lazy" decoding="async"><figcaption>OpenClaw’s own picture of Enterprise: several agents, each in its own walled workspace. Image: OpenClaw.</figcaption></figure>
 <p>It started inside OpenAI, was donated to the <a href="https://github.com/openclaw/openclaw-enterprise" target="_blank" rel="noopener">OpenClaw Foundation</a>, and is being built with Red Hat and Nvidia. You run it on your own servers. The software’s free. You pay for the machines and any cloud models.</p>
 <p>The security features are the whole point:</p>
-<ul><li>a fence round what the agent can reach</li><li>permissions</li><li>a second model that can check its actions</li><li>an audit trail</li></ul>
+<ul class="ax-tiles"><li><span class="n">01</span><span class="t">a fence round what the agent can reach</span></li><li><span class="n">02</span><span class="t">permissions</span></li><li><span class="n">03</span><span class="t">a second model that can check its actions</span></li><li><span class="n">04</span><span class="t">an audit trail</span></li></ul>
 <p>OpenAI and Red Hat are running internal pilots. On 12 November, <a href="https://developers.openai.com/blog/securing-persistent-agents-like-openclaw-at-openai" target="_blank" rel="noopener">OpenAI published how it uses those kinds of controls internally</a>.</p>
 <p>Now the honest bit. It’s still pre-1.0. It’s officially for internal pilots only, with 1.0 planned for later this year. Some of the security pieces are still being built. I wouldn’t put it on anything customer-facing yet, and you’ll still need someone technical.</p>
 <p>There’s a second honest bit, and it applies to every version of OpenClaw. Agents can install add-ons, called skills, from a public marketplace called ClawHub. In February, <a href="https://thehackernews.com/2026/02/researchers-find-341-malicious-clawhub.html" target="_blank" rel="noopener">researchers found 341 malicious skills among the 2,857 they checked</a>. Scanning’s been added since, and <a href="https://www.darkreading.com/cyber-risk/malicious-openclaw-skills-clawhub-threaten-ai-supply-chain" target="_blank" rel="noopener">a few still got through</a>.</p>
-<p>Treat a skill like an ingredient from a supplier you’ve never used. Check where it came from before it goes in the pot. Better still, start with none.</p>
+<figure class="dg">
+<h4 class="dg-h">Skills on ClawHub, <em>checked in February.</em></h4>
+<div class="dg-stats">
+<div class="dg-stat"><b>2,857</b><span>Skills checked by researchers</span></div>
+<div class="dg-stat hot"><b>341</b><span>Of them malicious</span></div>
+</div>
+<figcaption>Scanning’s been added since. A few still got through.</figcaption>
+</figure>
+<p class="ax-rule">Treat a skill like an ingredient from a supplier you’ve never used. Check where it came from before it goes in the pot. <strong>Better still, start with none.</strong></p>
 <p>Even so, I think OpenClaw Enterprise could become the first properly usable, self-hosted enterprise agent a smaller company can actually consider.</p>
 <h2>Four ways in</h2>
-<p><b>1. Stick with a hosted business plan.</b> ChatGPT, Claude or Grok Bot on a Team, Business or Enterprise plan. Best if you want something capable quickly, without much IT work. It costs a monthly subscription. You get less control over the model and the workflow.</p>
-<p><b>2. Run OpenClaw yourself, with cloud models.</b> Put the official app on a machine that stays on and start with one agent, or a few. Best for a small team that wants its own workflow and a mix of models. The software’s free. You pay for the machine and the model usage, and you look after the keys, updates and access.</p>
-<p><b>3. Run OpenClaw with a local model.</b> Same software, but the model runs on your own hardware. Best for work you don’t want leaving the building, or if you’re watching the AI bill. You’ll need a stronger machine, and you’ll need to have tested the quality.</p>
-<p><b>4. Pilot OpenClaw Enterprise.</b> Best once you’ve got an agent that’s useful and you need permissions, separation and an audit trail. The software’s free, but you’ll need technical help. Treat it as a trial on internal work. It isn’t finished.</p>
+<figure class="dg">
+<h4 class="dg-h">Four ways in. <em>Mixing them is fine.</em></h4>
+<ol class="dg-path dg-ways">
+<li class="dg-card"><h5>Hosted plan</h5><span class="dg-sub">ChatGPT, Claude or Grok Bot</span><ul><li>Capable, quickly</li><li>Not much IT work</li><li>Less control</li></ul><div class="dg-score"><span>A monthly subscription</span></div></li>
+<li class="dg-card"><h5>OpenClaw, cloud models</h5><span class="dg-sub">On a machine that stays on</span><ul><li>Your own workflow</li><li>A mix of models</li><li>You look after the keys</li></ul><div class="dg-score"><span>Free software. Pay for the machine and model usage</span></div></li>
+<li class="dg-card"><h5>OpenClaw, local model</h5><span class="dg-sub">On your own hardware</span><ul><li>Work that stays in the building</li><li>A smaller AI bill</li><li>A stronger machine</li></ul><div class="dg-score"><span>Free software. Test the quality first</span></div></li>
+<li class="dg-card ink"><h5>Enterprise pilot</h5><span class="dg-sub">Once an agent is useful</span><ul><li>Permissions</li><li>Separation</li><li>An audit trail</li></ul><div class="dg-score"><span>Free software. Needs technical help</span></div></li>
+</ol>
+</figure>
+<h3>1. Stick with a hosted business plan.</h3>
+<p>ChatGPT, Claude or Grok Bot on a Team, Business or Enterprise plan. Best if you want something capable quickly, without much IT work. It costs a monthly subscription. You get less control over the model and the workflow.</p>
+<h3>2. Run OpenClaw yourself, with cloud models.</h3>
+<p>Put the official app on a machine that stays on and start with one agent, or a few. Best for a small team that wants its own workflow and a mix of models. The software’s free. You pay for the machine and the model usage, and you look after the keys, updates and access.</p>
+<h3>3. Run OpenClaw with a local model.</h3>
+<p>Same software, but the model runs on your own hardware. Best for work you don’t want leaving the building, or if you’re watching the AI bill. You’ll need a stronger machine, and you’ll need to have tested the quality.</p>
+<h3>4. Pilot OpenClaw Enterprise.</h3>
+<p>Best once you’ve got an agent that’s useful and you need permissions, separation and an audit trail. The software’s free, but you’ll need technical help. Treat it as a trial on internal work. It isn’t finished.</p>
 <p>Mixing them is fine. A hosted plan for everyday questions, and a self-hosted agent for the work that needs its own workflow or a tighter boundary.</p>
 <h2>Thirty days</h2>
-<ul><li><b>Week 1.</b> Pick one internal job. Just one. Write a short brief, including what the agent must never do. Use a hosted plan if it already covers the job, or put OpenClaw on a computer that stays on. No add-on skills yet.</li><li><b>Week 2.</b> Run one agent on that job. A person checks every send, every spend and every change to a record. Put a spending limit on any cloud model key.</li><li><b>Week 3.</b> If the work’s good enough, add a second agent for a different job, or try a cheaper or local model for the routine bit.</li><li><b>Week 4.</b> Only if you need shared permissions and an audit trail, start an OpenClaw Enterprise pilot on the same internal work. Keep it away from customers. Then decide: keep it, stay with plain OpenClaw, or go back to a hosted plan.</li></ul>
+<ol class="ax-weeks"><li><span class="wk">Week 1</span><span>Pick one internal job. Just one. Write a short brief, including what the agent must never do. Use a hosted plan if it already covers the job, or put OpenClaw on a computer that stays on. No add-on skills yet.</span></li><li><span class="wk">Week 2</span><span>Run one agent on that job. A person checks every send, every spend and every change to a record. Put a spending limit on any cloud model key.</span></li><li><span class="wk">Week 3</span><span>If the work’s good enough, add a second agent for a different job, or try a cheaper or local model for the routine bit.</span></li><li><span class="wk">Week 4</span><span>Only if you need shared permissions and an audit trail, start an OpenClaw Enterprise pilot on the same internal work. Keep it away from customers. Then decide: keep it, stay with plain OpenClaw, or go back to a hosted plan.</span></li></ol>
 <h2>Before you leave the kitchen</h2>
-<p>A cookbook never burnt anything. A pair of hands can.</p>
+<p class="ax-pull">A cookbook never burnt anything. A pair of hands can.</p>
 <p>That’s the price of having someone in the kitchen who acts without being asked. It’s why the brief, the fence and the person checking matter more than which model you pick.</p>
 <p>OpenClaw is still, to me, the most flexible way to build a workflow round the model you choose. It’s easier to start than it’s ever been. Several agents can share one small machine. And a careful Enterprise pilot is a realistic way to add the rules.</p>
 <p>What would you trust it to cook while you’re out of the room?</p>
