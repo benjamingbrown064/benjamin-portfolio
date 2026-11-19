@@ -30,12 +30,15 @@
 .md-stage img{position:absolute;left:-18.182%;top:-18.182%;width:130.909%;height:123.636%;display:block;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .md-stage .md-part,.md-stage .md-cast,.md-stage .md-full{opacity:0;will-change:transform,opacity;backface-visibility:hidden}
 .md-stage .md-cast{filter:brightness(0) blur(.8cqi)}
-/* v6: green finish light. A 60px patch cut from the green render (source 786,969) snaps in over the side light when the lid lands; off instantly on the way back */
-.md-stage img.md-finish{left:53.273%;top:69.909%;width:5.455%;height:5.455%;opacity:0;transition:none}
+/* v8: the floor shadows are their own layer under the device (H1..H5). Neighbours are mixed with plus-lighter, an exact cross-fade, so the ground never darkens or flashes as a piece lands. */
+.md-stage .md-shadows{position:absolute;inset:0;isolation:isolate;pointer-events:none}
+.md-stage .md-shadows img{mix-blend-mode:plus-lighter;will-change:opacity}
+/* v6: green finish light. A 60px patch cut from the green render (v8: source 794,984) snaps in over the side light when the lid lands; off instantly on the way back */
+.md-stage img.md-finish{left:54%;top:71.273%;width:5.455%;height:5.455%;opacity:0;transition:none}
 .md-stage img.md-finish.on{opacity:1;transition:opacity .7s var(--ease) .1s}
-.md-glow{position:absolute;left:56.03%;top:72.55%;width:5.5%;aspect-ratio:1;translate:-50% -50%;background:radial-gradient(circle,rgba(70,230,110,.5),rgba(40,200,90,0) 65%);opacity:0;pointer-events:none;transition:none}
+.md-glow{position:absolute;left:56.71%;top:73.95%;width:5.5%;aspect-ratio:1;translate:-50% -50%;background:radial-gradient(circle,rgba(70,230,110,.5),rgba(40,200,90,0) 65%);opacity:0;pointer-events:none;transition:none}
 .md-glow.on{opacity:1;transition:opacity .7s var(--ease) .1s}
-/* live meters, drawn in the screen graphic's pixel space and mapped onto the screen face (orthographic camera, so one matrix is exact) */
+/* live meters, drawn in the screen graphic's pixel space and mapped onto the screen face (v8: a real perspective lens, so the canvas is fitted with a full projective transform in device.js) */
 .md-screen{position:absolute;left:0;top:0;width:1440px;height:1360px;transform-origin:0 0;pointer-events:none}
 .md-screen canvas{position:absolute;left:0;top:0;width:592px;height:310px;transform-origin:0 0}
 .md-title{position:absolute;left:4%;top:-1%;margin:0;color:var(--ink);opacity:0;font-size:clamp(22px,6.2cqi,46px);font-weight:600;letter-spacing:-.045em;line-height:1;will-change:opacity,transform}

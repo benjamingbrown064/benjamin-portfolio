@@ -230,5 +230,3 @@ html[data-theme=dark] .foot .foot-grid .fs-a{color:#a1a1a6}
 /* Small tap targets. */
 .bba-foot button{min-height:24px}
 a[data-agent-open]{display:inline-flex;align-items:center;min-height:24px}
-/* The client sign-in is not connected to anything yet, so its padlock is hidden until it is. */
-.lg-btn{display:none!important}
