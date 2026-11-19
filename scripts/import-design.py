@@ -377,6 +377,10 @@ def structural_edits(src_rel, html):
     if src_rel in ("Ben Brown Portfolio v12.html", "work.html"):
         html = coming_soon_cards(html, src_rel)
     if src_rel == "Ben Brown Portfolio v12.html":
+        # The home page had no <main>. It wraps everything between the menu and the footer and takes no box of its
+        # own (display:contents), so nothing moves; it is there for screen readers and the skip link.
+        html = must_sub(r'<header class="hero dark" id="top"', '<main id="main" style="display:contents">\n<header class="hero dark" id="top"', html, "home main open", flags=0)
+        html = must_sub(r'<footer class="foot dark"', '</main>\n<footer class="foot dark"', html, "home main close", flags=0)
         html = home_method_panel(html)
         html = home_what_changes(html)
         html = home_side_project(html)
