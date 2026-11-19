@@ -286,7 +286,7 @@ export function renderJournalEntry(slug: string): string | null {
 <div class="w ax-w ax-body rv">
 ${body}
 </div>
-<div class="w ax-w"><div class="ax-by rv"><img src="/site/assets/ben-portrait.jpg" alt=""><div><b>Ben</b></div></div></div>
+<div class="w ax-w"><div class="ax-by rv"><img src="/site/v13/ben-byline.jpg" alt="" width="48" height="48" loading="lazy" decoding="async"><div><b>Ben</b></div></div></div>
 </article>
 <section class="jx-sub grey" id="subscribe" data-screen-label="02 Subscribe"><div class="w rv">
 <span class="eyebrow">Subscribe</span>
