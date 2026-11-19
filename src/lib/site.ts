@@ -95,11 +95,11 @@ function journalIndex(): string {
   const older = rest.slice(4);
   const cats = Array.from(new Set(older.map((e) => e.category)));
   let html = `<section class="jx-sec" data-screen-label="02 Latest entry"><div class="w">
-<a class="jx-feat rv" href="/journal/${first.slug}"><div class="jx-cover art"><img src="${first.cover}" alt="${esc(first.coverAlt)}" decoding="async"></div>
+<a class="jx-feat rv" href="/journal/${first.slug}"><div class="jx-cover art${first.grey ? " grey" : ""}"><img src="${first.cover}" alt="${esc(first.coverAlt)}" decoding="async"></div>
 <div class="jx-ft">${meta(first, true)}<h2 class="h-m">${esc(first.title)}</h2><p>${esc(first.excerpt)}</p><span class="lnk">Read the entry</span></div></a>`;
   if (cards.length) {
     html += `<div class="jx-thumbs rv-g">${cards
-      .map((e) => `<a class="jx-th" href="/journal/${e.slug}"><div class="jx-cover art"><img src="${e.thumb}" alt="" loading="lazy" decoding="async"></div>${meta(e, false)}<h3>${esc(e.title)}</h3></a>`)
+      .map((e) => `<a class="jx-th" href="/journal/${e.slug}"><div class="jx-cover art${e.grey ? " grey" : ""}"><img src="${e.thumb}" alt="" loading="lazy" decoding="async"></div>${meta(e, false)}<h3>${esc(e.title)}</h3></a>`)
       .join("")}</div>`;
   }
   html += `</div></section>`;
@@ -131,7 +131,7 @@ function homeLatestJournal(): string {
 function homeJournal(html: string): string {
   if (JOURNAL.length < 3) return block(html, "home_journal", null);
   const posts = JOURNAL.slice(0, 3)
-    .map((e) => `<a class="post" href="/journal/${e.slug}"><div class="media img art${e.category === "The Handover" || e.category === "The 1%" ? " lettered" : ""}"><img src="${e.thumb}" alt="" loading="lazy" decoding="async"><span class="tag"><span class="sq"></span>${esc(e.category)}</span></div><h3>${esc(e.title)}</h3><div class="ps"><span class="small">${journalDate(e.date)}</span><span class="small">${e.minutes} min read</span></div></a>`)
+    .map((e) => `<a class="post" href="/journal/${e.slug}"><div class="media img art${e.grey ? " grey" : ""}${e.category === "The Handover" || e.category === "The 1%" ? " lettered" : ""}"><img src="${e.thumb}" alt="" loading="lazy" decoding="async"><span class="tag"><span class="sq"></span>${esc(e.category)}</span></div><h3>${esc(e.title)}</h3><div class="ps"><span class="small">${journalDate(e.date)}</span><span class="small">${e.minutes} min read</span></div></a>`)
     .join("");
   return block(html, "home_journal", undefined).replace(/<div class="posts rv-g">[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/, () => `<div class="posts rv-g">${posts}</div></div></section>`);
 }
@@ -273,7 +273,7 @@ export function renderJournalEntry(slug: string): string | null {
 <h1 class="ax-t rv">${esc(e.title)}</h1>
 <p class="lede rv">${esc(e.excerpt)}</p>
 </div></header>
-<div class="w"><figure class="ax-cover art rv"><img src="${e.cover}" alt="${esc(e.coverAlt)}" decoding="async" fetchpriority="high"></figure></div>
+<div class="w"><figure class="ax-cover art${e.grey ? " grey" : ""} rv"><img src="${e.cover}" alt="${esc(e.coverAlt)}" decoding="async" fetchpriority="high"></figure></div>
 <div class="w ax-w ax-body rv">
 ${body}
 </div>

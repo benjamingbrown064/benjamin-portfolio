@@ -207,3 +207,6 @@ html[data-theme="dark"] .why-dlg::backdrop{background:rgba(0,0,0,.6)}
 /* Sections hidden with the hidden attribute (see HIDDEN_HOME_SECTIONS in scripts/import-design.py) stay hidden whatever their own display rule. */
 section[hidden]{display:none!important}
 
+
+/* Journal entries marked grey: cover and thumbnails in greyscale, like the journal photos (The 1% No. 1, Ben 19 Nov) */
+.jx-cover.art.grey img,.ax-cover.art.grey img,.post .media.art.grey img{filter:grayscale(1)}
