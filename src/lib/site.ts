@@ -209,6 +209,9 @@ export function renderPage(name: string, opts: PageOptions): string {
   html = html.replace(/\{\{([a-z_.]+)\}\}/g, (m, key: string) => (key in tokens ? tokens[key] : m));
   // Hand-written scripts already in the page (for example the "What changes" dialog) get the same fingerprint.
   html = html.replace(/(<script src=")(\/site\/v1[0-9]\/[a-z0-9-]+\.js)(")/g, (_m, pre: string, src: string, post: string) => pre + versioned(src) + post);
+  // The home method device's renders and script are replaced in place under the same names when Ben sends a new
+  // version, so they are fingerprinted too; otherwise returning visitors keep the old ones for up to a day.
+  html = html.replace(/(src=")(\/site\/v13\/method\/[A-Za-z0-9-]+\.(?:js|webp))(")/g, (_m, pre: string, src: string, post: string) => pre + versioned(src) + post);
 
   const left = html.match(/\{\{[a-z_.]+\}\}/);
   if (left) throw new Error(`Unfilled token ${left[0]} in page "${name}"`);
