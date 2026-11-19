@@ -1,0 +1,130 @@
+/* v12: long-form "how to" articles. Extends v11/journal.css (.ax-*) with steps, tables, prompts, sample emails, callouts and sources. */
+.ax-cover.ax-colour img{filter:none}
+.ax-body h3{margin-top:1.8em;font-size:clamp(20px,1.7vw,22px);font-weight:600;letter-spacing:-.028em;line-height:1.25}
+.ax-body h2+h3{margin-top:.9em}
+.ax-body h2+*,.ax-body h3+*{margin-top:.7em}
+.ax-body strong{font-weight:600}
+.ax-body em{font-style:italic}
+.ax-body a{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;text-decoration-color:var(--line);transition:text-decoration-color .25s}
+.ax-body a:hover{text-decoration-color:currentColor}
+.ax-body .ax-pull{font-size:clamp(22px,2.2vw,28px);font-weight:600;letter-spacing:-.032em;line-height:1.25;text-wrap:balance}
+.ax-body .ax-rule{padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-weight:500}
+.ax-body .ax-rule strong{display:block;margin-top:2px;font-size:clamp(22px,2.2vw,28px);letter-spacing:-.032em;line-height:1.2}
+/* numbered steps */
+.ax-body ol.ax-steps{display:grid;margin-left:0;padding:0;list-style:none;counter-reset:st}
+.ax-steps li{display:grid;grid-template-columns:40px minmax(0,1fr);align-items:baseline;padding:14px 0;border-top:1px solid var(--line);counter-increment:st}
+.ax-steps li:last-child{border-bottom:1px solid var(--line)}
+.ax-steps li::before{content:counter(st,decimal-leading-zero);font-size:14px;font-weight:600;color:var(--mute);font-variant-numeric:tabular-nums}
+/* tables */
+.ax-tw{overflow-x:auto;margin-left:0;margin-right:0}
+.ax-table{width:100%;border-collapse:collapse;font-size:16px;line-height:1.45;text-align:left;border-bottom:1px solid var(--line)}
+.ax-table th{padding:0 16px 12px 0;font-size:13px;font-weight:600;color:var(--mute);vertical-align:bottom}
+.ax-table td{padding:14px 16px 14px 0;border-top:1px solid var(--line);vertical-align:top}
+.ax-table td:first-child{font-weight:600}
+.ax-table td:last-child,.ax-table th:last-child{padding-right:0}
+.ax-table td .s{display:block;font-size:14px;font-weight:400;color:var(--mute)}
+/* before/after sample emails */
+.ax-mails{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.ax-mail{margin:0;padding:22px 24px 24px;border-radius:var(--r-lg);background:var(--bone-2);font-size:16px;line-height:1.55}
+.ax-mail.ink{background:var(--ink);color:#F5F5F7}
+.ax-mail figcaption{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13px;font-weight:600;color:var(--mute)}
+.ax-mail.ink figcaption{color:#A1A1A6}
+.ax-mail p+p{margin-top:.8em}
+/* prompts */
+.ax-code{position:relative;border-radius:var(--r-lg);background:var(--ink);color:#F5F5F7}
+.ax-code pre{margin:0;padding:24px 96px 24px 24px;overflow-x:auto;font:400 14px/1.7 "Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:0;white-space:pre-wrap;word-break:break-word;tab-size:2}
+.ax-copy{position:absolute;top:12px;right:12px;min-height:32px;padding:0 14px;border-radius:var(--pill);background:rgba(255,255,255,.12);color:#F5F5F7;font-size:13px;font-weight:500;transition:background .25s}
+.ax-copy:hover{background:rgba(255,255,255,.2)}
+/* callout */
+.ax-note{padding:22px 24px 8px;border-radius:var(--r-lg);background:var(--bone-2);font-size:16px;line-height:1.55}
+.ax-note h4{margin:0 0 6px;font-size:16px;font-weight:600;letter-spacing:-.015em}
+.ax-note p{padding:12px 0;border-top:1px solid var(--bone-3)}
+/* sources */
+.ax-src{font-size:16px}
+.ax-body .ax-src a{text-decoration-color:var(--line)}
+@media(max-width:600px){.ax-code pre{padding:56px 20px 20px;font-size:13px}.ax-table{font-size:15px}.ax-mail,.ax-note{padding-left:20px;padding-right:20px}}
+.dark .ax-mail:not(.ink),.dark .ax-note{background:rgba(255,255,255,.08)}
+/* figures: diagrams and photos break out of the reading column */
+.ax-body .ax-fig{width:min(1040px,calc(100vw - 2*var(--gut)));margin:2em 0 2em 50%;translate:-50% 0}
+.ax-body h2+.ax-fig,.ax-body h3+.ax-fig{margin-top:1em}
+.ax-fig img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r-lg);background:var(--bone-2)}
+.ax-fig.ax-photo img{filter:grayscale(1)}
+.ax-fig figcaption{max-width:720px;margin:12px auto 0;font-size:14px;line-height:1.43;color:var(--mute)}
+.ax-sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media(max-width:900px){.ax-body .ax-fig{width:calc(100vw - 2*var(--gut))}.ax-fig figcaption{margin-left:0}}
+/* diagrams, built in HTML so they reflow on every screen */
+.ax-body .dg{width:min(1040px,calc(100vw - 2*var(--gut)));margin:2.2em 0 2.2em 50%;translate:-50% 0;padding:clamp(24px,4vw,56px);border-radius:var(--r-lg);background:var(--bone-2);font-size:16px;line-height:1.45}
+.ax-body h2+.dg,.ax-body h3+.dg{margin-top:1em}
+.dg ul,.dg ol{margin:0;padding:0;list-style:none;display:block}
+.dg em{font-style:normal;color:var(--signal)}
+.dg-h{margin:0 0 clamp(20px,3vw,36px);font-size:clamp(26px,3.6vw,44px);font-weight:600;letter-spacing:-.045em;line-height:1.05;text-wrap:balance}
+.dg figcaption,.dg>figcaption{margin-top:16px;font-size:14px;color:var(--mute)}
+.dg-card{padding:clamp(20px,2.4vw,32px);border-radius:var(--r-lg);background:#fff;box-shadow:0 0 0 1px var(--bone-3)}
+.dg-card.ink{background:var(--ink);color:#F5F5F7;box-shadow:none}
+.dg-k{display:flex;justify-content:space-between;gap:12px;margin-bottom:16px;font:400 12px/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.dg-card.ink .dg-k,.dg-card.ink .dg-sub,.dg-card.ink .dg-score span{color:#A1A1A6}
+/* 01 */
+.dg-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.dg-mail{font-size:clamp(16px,1.5vw,18px);line-height:1.55}
+.dg-mail p+p{margin-top:.8em}
+.dg-mail mark{background:none;color:inherit;text-decoration:underline;text-decoration-color:var(--signal);text-decoration-thickness:2px;text-underline-offset:5px}
+/* 02 */
+.dg-path{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.dg-path>li{display:flex!important;flex-direction:column}
+.dg-path h5{margin:0;font-size:clamp(26px,2.6vw,34px);font-weight:600;letter-spacing:-.045em;line-height:1}
+.dg-sub{margin-top:6px;font-size:15px;color:var(--mute)}
+.dg-path ul{margin:20px 0 24px}
+.dg-path ul li{padding:11px 0;border-top:1px solid var(--bone-3)}
+.dg-card.ink ul li{border-top-color:rgba(255,255,255,.14)}
+.dg-score{margin-top:auto;display:grid;gap:8px;font-size:14px;color:var(--mute)}
+.dg-dots{display:flex;gap:6px}.dg-dots i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--line)}.dg-dots i.on{background:var(--signal);box-shadow:none}
+.dg-card.ink .dg-dots i:not(.on){box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
+/* 03 */
+.dg-roles{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) minmax(0,1.6fr);gap:16px;align-items:stretch}
+.dg-arr{align-self:center;color:var(--mute)}.dg-arr svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.dg-big li{padding:10px 0;border-top:1px solid var(--bone-3);font-size:clamp(24px,2.4vw,30px);font-weight:600;letter-spacing:-.04em;line-height:1.1}
+.dg-card.ink .dg-big li{border-top-color:rgba(255,255,255,.14)}
+.dg-big li.red{color:#FF6A55}
+.dg-perm ul li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--bone-3)}
+.dg-perm code{font:400 14px/1.3 "Geist Mono",ui-monospace,monospace}
+.dg-pill{flex:none;padding:5px 12px;border-radius:var(--pill);background:rgba(224,68,52,.1);color:var(--ember);font-size:13px;font-weight:500}
+.dg-perm p{margin-top:14px;font-size:14px;color:var(--mute)}
+@media(max-width:820px){.dg-roles{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.dg-perm{grid-column:1/-1}}
+@media(max-width:480px){.dg-roles{grid-template-columns:minmax(0,1fr)}.dg-arr{justify-self:center;rotate:90deg}}
+/* 04 */
+.dg-scorewrap{display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:clamp(20px,3vw,40px);align-items:center}
+.dg-tablecard{padding:8px clamp(14px,2vw,28px);overflow-x:auto}
+.dg-table{width:100%;border-collapse:collapse}
+.dg-table thead th{padding:14px 4px 12px;font:400 12px/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);text-align:center;white-space:nowrap}
+.dg-table tbody th{padding:14px 12px 14px 0;text-align:left;font-size:16px;font-weight:600;letter-spacing:-.015em;line-height:1.3}
+.dg-table tbody th span{display:block;margin-top:2px;font-size:13px;font-weight:400;letter-spacing:0;color:var(--mute)}
+.dg-table td{width:13%;padding:14px 4px;text-align:center;font-weight:600}
+.dg-table tbody tr{border-top:1px solid var(--bone-3)}
+.dg-table svg{display:inline-block;width:20px;height:20px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
+.dg-table .ok{stroke:var(--ink)}.dg-table .no{stroke:var(--signal)}
+.dg-table td.red{color:var(--ember)}
+.dg-total b{display:flex;align-items:baseline;font-size:clamp(72px,9vw,120px);font-weight:600;letter-spacing:-.06em;line-height:.9}
+.dg-total b span{font-size:.42em;color:var(--mute);letter-spacing:-.03em}
+.dg-total p{margin-top:12px;font-size:16px;color:var(--ink)}
+@media(max-width:760px){.dg-scorewrap{grid-template-columns:minmax(0,1fr)}.dg-total{display:flex;align-items:center;gap:20px}.dg-total p{margin:0}.dg-table thead .l{display:none}}
+/* 05 */
+.dg-loopwrap{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.dg-loop{position:relative;aspect-ratio:1;max-width:520px;width:100%;justify-self:center}
+.dg-loop::before{content:"";position:absolute;inset:14%;border-radius:50%;border:2px dashed var(--line)}
+.dg-loop li{position:absolute;left:calc(50% + 36% * cos(calc(-90deg + var(--n) * 72deg)));top:calc(50% + 36% * sin(calc(-90deg + var(--n) * 72deg)));translate:-50% -50%;display:flex;align-items:center;gap:10px;width:min(200px,40%);padding:12px 14px;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--bone-3);font-size:15px;line-height:1.3}
+.dg-n{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:600}
+.dg-mid{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:4px;text-align:center}
+.dg-mid b{font-size:clamp(40px,5vw,64px);font-weight:600;letter-spacing:-.05em;line-height:1;color:var(--signal)}
+.dg-mid span{font-size:14px;color:var(--mute)}
+.dg-h2{font-size:clamp(24px,2.6vw,34px);font-weight:600;letter-spacing:-.04em;line-height:1.08;text-wrap:balance}
+.dg-side p+p{margin-top:12px;font-size:16px;color:var(--mute)}
+@media(max-width:820px){
+.dg-loopwrap{grid-template-columns:minmax(0,1fr)}
+.dg-loop{aspect-ratio:auto;max-width:none}.dg-loop::before{inset:22px auto 22px 26px;width:0;border-radius:0;border-width:0 0 0 2px}
+.dg-loop ol{position:relative;display:grid!important;gap:10px}
+.dg-loop li{position:relative;left:auto;top:auto;translate:none;width:auto}
+.dg-mid{position:static;display:flex;align-items:baseline;justify-content:flex-start;gap:12px;margin-top:16px;text-align:left}
+}
+/* byline sits under the sources rule, then air before the subscribe band */
+.ax-body:has(.ax-src:last-child)+.w .ax-by{padding-top:0;border-top:0}
+.ax+.jx-sub{margin-top:clamp(72px,9vw,128px)}

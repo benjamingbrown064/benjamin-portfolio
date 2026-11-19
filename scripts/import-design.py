@@ -346,6 +346,10 @@ def structural_edits(src_rel, html):
                         html, "latest project tile")
         html = must_sub(r'<section class="sec" id="journal".*?</section>', wrap("home_journal"), html, "home journal")
         html = must_sub(r'<a class="lt-c bw" href="journal-article\.html">.*?</a>', wrap("home_latest_journal"), html, "home latest journal tile")
+    if src_rel == "journal-article.html":
+        # Long-form how-to articles (steps, tables, prompt blocks, diagrams): Ben's v12/article.css, 18 Nov 2026,
+        # kept by hand in public/site/v13/article.css because it arrived with an article, not with a design export.
+        html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/article.css">\n</head>', 1)
     if src_rel == "journal.html":
         html = must_sub(r'<section class="jx-sec" data-screen-label="02 Latest entry">.*?</section>\s*<section class="jx-sec" id="entries".*?</section>',
                         wrap("journal_entries"), html, "journal entries")
@@ -447,7 +451,11 @@ def bundle_css():
         if not hrefs:
             continue
         parts = []
-        for h in hrefs + extra:
+        order = hrefs + extra
+        # The article stylesheet is the most specific layer for journal articles: it must come after v13/site.css,
+        # whose older article rules (figcaption spacing etc.) would otherwise win.
+        order = [h for h in order if h != "v13/article.css"] + [h for h in order if h == "v13/article.css"]
+        for h in order:
             rel_path = urllib.parse.unquote(h)
             css = open(os.path.join(PUB, rel_path), encoding="utf-8").read()
             if css.lstrip().startswith("@charset"):

@@ -6,6 +6,8 @@ export type JournalEntry = {
   title: string;
   date: string; // ISO date, e.g. 2026-11-30
   category: "Essay" | "Notes" | "Field notes" | "Build log" | "The Handover" | "The 1%";
+  /** Difficulty tag under the meta line, e.g. "Beginner · No experience needed" (how-to articles). */
+  level?: string;
   /** Shown beside the category, e.g. "No. 1" for a numbered series. */
   issue?: string;
   excerpt: string;
@@ -28,10 +30,11 @@ export const JOURNAL: JournalEntry[] = [
     date: "2026-11-18",
     category: "The 1%",
     issue: "No. 1",
+    level: "Beginner · No experience needed",
     excerpt: "Don’t rebuild your business with AI. Get 1% better at one thing you do every day. This week, that’s email.",
     minutes: 7,
     cover: "/media/journal/the-1-percent-email/cover.jpg",
-    coverAlt: "Ben Brown typing on a laptop at an airport window table, a plane on the runway behind. Lettering reads: Email that sounds like you, The 1%, number 1, 18 November 2026.",
+    coverAlt: "Ben working on a laptop at an airport window, with the title The 1% and No. 1",
     thumb: "/media/journal/the-1-percent-email/thumb.jpg",
   },
   {
