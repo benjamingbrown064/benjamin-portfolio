@@ -228,6 +228,14 @@ export function renderPage(name: string, opts: PageOptions): string {
   // version, so they are fingerprinted too; otherwise returning visitors keep the old ones for up to a day.
   html = html.replace(/(src=")(\/site\/v13\/method\/[A-Za-z0-9-]+\.(?:js|webp))(")/g, (_m, pre: string, src: string, post: string) => pre + versioned(src) + post);
 
+  // Skip link: the first thing a keyboard reaches, hidden until focused (v13/site.css).
+  const mainTag = html.match(/<main\b([^>]*)>/);
+  if (mainTag) {
+    const id = /\bid="([^"]+)"/.exec(mainTag[1])?.[1];
+    if (!id) html = html.replace(mainTag[0], () => `<main id="main"${mainTag[1]}>`);
+    html = html.replace(/<body([^>]*)>/, (_m, attrs: string) => `<body${attrs}>\n<a class="skip-link" href="#${id ?? "main"}">Skip to content</a>`);
+  }
+
   const left = html.match(/\{\{[a-z_.]+\}\}/);
   if (left) throw new Error(`Unfilled token ${left[0]} in page "${name}"`);
   return html;

@@ -171,7 +171,7 @@
     if (s.k === "intro") {
       var resume = S.j && S.last > 1 && list[S.last] && list[S.last].k !== "done";
       return (
-        '<div class="dq-in dq-intro"><span class="dq-k"><b>Discovery</b><span>Eleven steps · About five minutes</span></span><h1 class="dq-h">Ten areas. A few minutes. No wrong answers.</h1><p class="dq-lede">Most people don\'t know exactly what they need. That\'s what this is for.</p>' +
+        '<div class="dq-in dq-intro"><span class="dq-k"><b>Discovery</b><span>Eleven steps · About five minutes</span></span><h2 class="dq-h">Ten areas. A few minutes. No wrong answers.</h2><p class="dq-lede">Most people don\'t know exactly what they need. That\'s what this is for.</p>' +
         '<ol class="dq-route">' +
         ["Direction", "Foundations", "Customer", "Build", "Where to start"]
           .map(function (t, k) {
@@ -191,7 +191,7 @@
     }
     if (s.k === "fork") {
       return (
-        '<div class="dq-in"><span class="dq-k"><b>00</b><span>Before we start</span></span><h1 class="dq-q">What are we looking at?</h1><div class="dq-opts dq-fork" role="radiogroup">' +
+        '<div class="dq-in"><span class="dq-k"><b>00</b><span>Before we start</span></span><h2 class="dq-q">What are we looking at?</h2><div class="dq-opts dq-fork" role="radiogroup">' +
         [
           ["A", "Something new", "An idea, a new product or a new arm of a business."],
           ["B", "A business that's already running", "Something with customers, people and systems today."],
@@ -232,9 +232,9 @@
           esc(a.name) +
           "</span>" +
           (s.of[1] > 1 ? '<span class="dq-of">' + s.of[0] + " of " + s.of[1] + "</span>" : "") +
-          '</span><h1 class="dq-q">' +
+          '</span><h2 class="dq-q">' +
           esc(q.q) +
-          "</h1>",
+          "</h2>",
         body = "";
       if (q.t === "text")
         body =
@@ -263,7 +263,7 @@
     if (s.k === "contact") {
       var c = S.c || {};
       return (
-        '<div class="dq-in"><span class="dq-k"><b>→</b><span>Last step</span></span><h1 class="dq-q">Let\'s talk.</h1><div class="dq-form">' +
+        '<div class="dq-in"><span class="dq-k"><b>→</b><span>Last step</span></span><h2 class="dq-q">Let\'s talk.</h2><div class="dq-form">' +
         inp("name", "Name", c.name, "text", "name", 1) +
         inp("email", "Email", c.email, "email", "email", 1) +
         inp("company", "Company", c.company, "text", "organization", 0) +
@@ -277,9 +277,9 @@
       return (
         '<div class="dq-in dq-done"><span class="dq-k"><b>✓</b><span>Reference ' +
         esc(S.ref || "") +
-        '</span></span><h1 class="dq-h">' +
+        '</span></span><h2 class="dq-h">' +
         (first ? "Thank you, " + esc(first) + "." : "Thank you.") +
-        '</h1><p class="dq-lede">' +
+        '</h2><p class="dq-lede">' +
         (S.sentBy === "post"
           ? "Your answers have landed with me. A reply within one working day, from a person."
           : "Your email app has opened with everything filled in. Press send and it lands with me. A reply within one working day, from a person.") +
@@ -369,7 +369,7 @@
       .join("");
     var more = pick.length > 3 ? '<p class="dq-more">And ' + (pick.length - 3) + " more worth a look.</p>" : "";
     return (
-      '<div class="dq-in dq-wide"><span class="dq-k"><b>→</b><span>Your first read</span></span><h1 class="dq-q">Here\'s where I\'d look first.</h1>' +
+      '<div class="dq-in dq-wide"><span class="dq-k"><b>→</b><span>Your first read</span></span><h2 class="dq-q">Here\'s where I\'d look first.</h2>' +
       lead +
       map +
       (rows ? '<ol class="dq-res">' + rows + "</ol>" : "") +

@@ -217,3 +217,18 @@ section[hidden]{display:none!important}
 /* WilboLaw case study (19 Nov 2026): on phones the animation panels sized themselves to the iframe and pushed the page
    ~150px wider than the screen (also in the design file). Let the grid columns shrink to the screen. */
 .wlx .wx-row>*,.wlx .wx-film,.wlx .wx-stage{min-width:0;max-width:100%}
+
+/* --- 19 Nov audit: accessibility --- */
+/* Skip link: off screen until a keyboard lands on it. */
+.skip-link{position:fixed;left:12px;top:-60px;z-index:10000;padding:10px 16px;border-radius:999px;background:#1d1d1f;color:#fff;font-size:14px;font-weight:500;text-decoration:none;transition:top .15s}
+.skip-link:focus{top:12px;outline:2px solid #fff;outline-offset:2px}
+/* Visitors who ask their device for less motion: animations and transitions finish at once and nothing loops. */
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important;scroll-behavior:auto!important}}
+/* Footer address lines were too faint on the light footer. */
+.foot .foot-grid .fs-a{color:#6e6e73}
+html[data-theme=dark] .foot .foot-grid .fs-a{color:#a1a1a6}
+/* Small tap targets. */
+.bba-foot button{min-height:24px}
+a[data-agent-open]{display:inline-flex;align-items:center;min-height:24px}
+/* The client sign-in is not connected to anything yet, so its padlock is hidden until it is. */
+.lg-btn{display:none!important}
