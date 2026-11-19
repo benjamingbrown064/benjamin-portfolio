@@ -310,12 +310,20 @@ def home_hide_sections(html):
     return html
 
 
+# Home banner (Ben, 19 Nov 2026): a single still photo replaced the flick slideshow. The slideshow (frames in
+# public/site/v13/hero-flick/, script hero-flick.js) is kept: set HERO_FLICK = True to bring it back.
+HERO_FLICK = False
+HERO_STILL = "/site/v13/hero/ben-loft-sofa.webp"
+
+
 def home_hero_flick(html):
     """Home banner: the "flick" slideshow (Ben, 19 Nov 2026). One photo element in light and dark mode (the dark-mode
     portrait is dropped), starting on frame 1; public/site/v13/hero-flick.js runs the 15 frames once and stops on the moon."""
     html = must_sub(r'<img class="h-dk" src="/?(?:site/)?assets/ben-portrait\.jpg"[^>]*>\s*', "", html, "hero dark-mode portrait")
     html = must_sub(r'<img class="h-lt" src="[^"]*ben-sofa-bw-2\.jpg"',
-                    '<img class="h-lt h-flick" src="/site/v13/hero-flick/01.webp" fetchpriority="high"', html, "hero sofa photo")
+                    '<img class="h-lt h-flick" src="%s" fetchpriority="high"' % ("/site/v13/hero-flick/01.webp" if HERO_FLICK else HERO_STILL), html, "hero sofa photo")
+    if not HERO_FLICK:
+        return html
     return html.replace("</body>", '<script src="/site/v13/hero-flick.js" defer></script>\n</body>', 1)
 
 
