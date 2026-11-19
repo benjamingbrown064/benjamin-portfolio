@@ -316,6 +316,9 @@ document.addEventListener('click',function(e){
 
 /* Journal: a Copy button on every prompt block (.ax-prompt), so readers can paste it straight into Claude. */
 (function(){
+  [].forEach.call(document.querySelectorAll('.ax-copy'),function(b){
+    b.addEventListener('click',function(){var t=b.parentNode.querySelector('code').textContent,done=function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1800)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,done);else done()});
+  });
   var blocks=document.querySelectorAll('.ax-prompt');
   if(!blocks.length)return;
   [].forEach.call(blocks,function(b){

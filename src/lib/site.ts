@@ -269,7 +269,7 @@ export function renderJournalEntry(slug: string): string | null {
 <article class="ax" data-screen-label="01 Article">
 <header class="ax-head"><div class="w ax-w">
 <a class="ax-back rv" href="/journal"><span aria-hidden="true">←</span> Notes</a>
-<span class="jx-meta rv"><span>${esc(kind(e))}</span><span>${journalDate(e.date)}</span><span>${e.minutes} min read</span></span>
+<span class="jx-meta rv"><span>${esc(kind(e))}</span><span>${journalDate(e.date)}</span><span>${e.minutes} min read</span></span>${e.level ? `\n<span class="tag line rv" title="Difficulty"><span class="sq"></span>${esc(e.level)}</span>` : ""}
 <h1 class="ax-t rv">${esc(e.title)}</h1>
 <p class="lede rv">${esc(e.excerpt)}</p>
 </div></header>

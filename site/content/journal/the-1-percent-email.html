@@ -1,29 +1,49 @@
+
 <p>Most people I talk to about AI try to change everything at once. New system, new process, new way of working. Two weeks later it’s gathering dust and they’re back to doing it all by hand.</p>
 <p>I think that’s the wrong way round. Get 1% better at one thing you already do every day. Then do it again next week.</p>
 <p>For most of us, that’s email.</p>
 <p>Here’s where this ends up.</p>
-<p><b>Untrained:</b></p>
-<div class="ax-mail"><p>Hi Sarah,</p><p>I hope this email finds you well! Thank you so much for reaching out regarding a potential call. I would be absolutely delighted to connect on Thursday at 2pm, as that time works seamlessly with my schedule. Please don’t hesitate to reach out if anything changes.</p><p>Best regards,<br>Benjamin</p></div>
-<p><b>Trained:</b></p>
-<div class="ax-mail"><p>Hi Sarah,</p><p>Thursday at 2pm works. I’ll send an invite.</p><p>Cheers,<br>Ben</p></div>
-<p>Same request. One sounds like a machine. One sounds like you. The difference isn’t the AI. It’s the training.</p>
+<figure class="dg">
+<h4 class="dg-h">Same request. <em>One sounds like you.</em></h4>
+<div class="dg-pair">
+<div class="dg-card"><div class="dg-k"><span>Untrained</span><span>51 words</span></div><div class="dg-mail"><p>Hi Sarah,</p><p><mark>I hope this email finds you well!</mark> <mark>Thank you so much</mark> for reaching out regarding a potential call. I would be <mark>absolutely delighted</mark> to connect on Thursday at 2pm, as that time works <mark>seamlessly</mark> with my schedule. <mark>Please don’t hesitate to reach out</mark> if anything changes.</p><p><mark>Best regards,</mark><br><mark>Benjamin</mark></p></div></div>
+<div class="dg-card ink"><div class="dg-k"><span>Trained</span><span>12 words</span></div><div class="dg-mail"><p>Hi Sarah,</p><p>Thursday at 2pm works. I’ll send an invite.</p><p>Cheers,<br>Ben</p></div></div>
+</div>
+<figcaption>Underlined: the phrases the voice profile rules out.</figcaption>
+</figure>
+<p class="ax-pull">Same request. One sounds like a machine. One sounds like you. The difference isn’t the AI. It’s the training.</p>
 <h2>The path</h2>
-<div class="ax-tbl"><table><thead><tr><th>When</th><th>What you’ll do</th><th>You’ll know it’s working when</th></tr></thead><tbody><tr><td data-label="When"><b>Day 1</b> (about an hour)</td><td data-label="What you&#x27;ll do">Connect your email, lock sending, build your voice profile, run the test</td><td data-label="You&#x27;ll know it&#x27;s working when">3 out of 5 test emails pass</td></tr><tr><td data-label="When"><b>Week 1</b></td><td data-label="What you&#x27;ll do">Use it on real replies, and talk instead of typing</td><td data-label="You&#x27;ll know it&#x27;s working when">4 out of 5 pass</td></tr><tr><td data-label="When"><b>Week 4</b></td><td data-label="What you&#x27;ll do">Let it check your inbox and draft replies for you</td><td data-label="You&#x27;ll know it&#x27;s working when">5 out of 5, twice in a row</td></tr></tbody></table></div>
-<p>One rule the whole way through: <b>Claude drafts. You press send.</b></p>
+<figure class="dg">
+<ol class="dg-path">
+<li class="dg-card"><h5>Day 1</h5><span class="dg-sub">About an hour</span><ul><li>Connect email</li><li>Lock sending</li><li>Build your voice profile</li><li>Run the test</li></ul><div class="dg-score"><span class="dg-dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>3 out of 5 pass</span></div></li>
+<li class="dg-card"><h5>Week 1</h5><span class="dg-sub">Every day</span><ul><li>Real replies, checked by you</li><li>Talk instead of typing</li><li>Friday: add one rule</li></ul><div class="dg-score"><span class="dg-dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span>4 out of 5 pass</span></div></li>
+<li class="dg-card ink"><h5>Week 4</h5><span class="dg-sub">Hands off, mostly</span><ul><li>It checks your inbox</li><li>It drafts the replies</li><li>You press send</li></ul><div class="dg-score"><span class="dg-dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span>5 out of 5, twice in a row</span></div></li>
+</ol>
+</figure>
+<p class="ax-rule">One rule the whole way through: <strong>Claude drafts. You press send.</strong></p>
 <h2>Day 1</h2>
 <h3>1. Connect Gmail, and lock sending first</h3>
-<ol><li>In Claude, go to <b>Customize &gt; Connectors</b>. Find <b>Gmail</b>, click <b>Connect</b> and sign in with Google.</li><li>Open <b>Gmail</b> under Connectors, go to the <b>Permissions</b> tab, and set <b>send_message</b>, <b>reply</b> and <b>forward</b> to <b>Always ask</b>.</li></ol>
+<ol class="ax-steps"><li><span>In Claude, go to <strong>Customize &gt; Connectors</strong>. Find <strong>Gmail</strong>, click <strong>Connect</strong> and sign in with Google.</span></li><li><span>Open <strong>Gmail</strong> under Connectors, go to the <strong>Permissions</strong> tab, and set <strong>send_message</strong>, <strong>reply</strong> and <strong>forward</strong> to <strong>Always ask</strong>.</span></li></ol>
+<figure class="dg">
+<h4 class="dg-h">Claude drafts. <em>You press send.</em></h4>
+<div class="dg-roles">
+<div class="dg-card"><div class="dg-k"><span>Claude</span></div><ul class="dg-big"><li>Reads</li><li>Sorts</li><li>Drafts</li></ul></div>
+<span class="dg-arr" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h15M14 7l5 5-5 5"></path></svg></span>
+<div class="dg-card ink"><div class="dg-k"><span>You</span></div><ul class="dg-big"><li>Check</li><li class="red">Send</li></ul></div>
+<div class="dg-card dg-perm"><div class="dg-k"><span>Gmail connector · Permissions</span></div><ul><li><code>send_message</code><span class="dg-pill">Always ask</span></li><li><code>reply</code><span class="dg-pill">Always ask</span></li><li><code>forward</code><span class="dg-pill">Always ask</span></li></ul><p>Set these on day 1. Leave drafts and labels as they are.</p></div>
+</div>
+</figure>
 <p>Now it can draft as much as it likes, and nothing goes out without your yes.</p>
-<p>Using a company Google account and seeing "Access blocked"? Your Google admin needs to mark Claude as a trusted app. It takes about 15 minutes to kick in.</p>
-<div class="ax-box"><p class="ax-box-t">Not on Gmail?</p><ul><li><b>Microsoft 365:</b> go to Customize &gt; Connectors &gt; Microsoft 365. Work accounts usually need your IT team to switch it on once.</li><li><b>Outlook every day?</b> Claude for Outlook is an add-in from Microsoft AppSource. It only ever drafts, never sends. It’s in beta, needs a paid Claude plan and a Microsoft 365 mailbox.</li><li><b>Anything else (iCloud, Yahoo):</b> there’s no connector yet. Paste emails in and drafts out. Slower, same training.</li></ul></div>
+<p>Using a company Google account and seeing “Access blocked”? Your Google admin needs to mark Claude as a trusted app. It takes about 15 minutes to kick in.</p>
+<div class="ax-note"><h4>Not on Gmail?</h4><p><strong>Microsoft 365:</strong> go to Customize &gt; Connectors &gt; Microsoft 365. Work accounts usually need your IT team to switch it on once.</p><p><strong>Outlook every day?</strong> Claude for Outlook is an add-in from Microsoft AppSource. It only ever drafts, never sends. It’s in beta, needs a paid Claude plan and a Microsoft 365 mailbox.</p><p><strong>Anything else (iCloud, Yahoo):</strong> there’s no connector yet. Paste emails in and drafts out. Slower, same training.</p></div>
 <h3>2. Give it a home</h3>
-<p>In Claude, open <b>Projects</b>, create a new project and call it <b>Email</b>. Do everything below inside it.</p>
+<p>In Claude, open <strong>Projects</strong>, create a new project and call it <strong>Email</strong>. Do everything below inside it.</p>
 <h3>3. Gather 40 of your emails</h3>
 <p>Claude learns from what you’ve actually sent. Ask it to find a good mix:</p>
-<div class="ax-prompt"><pre><code>Search my Sent mail from the last 6 months. Find 40 emails I wrote myself: about 15 short replies, 15 normal emails, 5 longer ones, and at least 5 where I said no, chased something or gave bad news. Mix clients, my team and suppliers. Leave out forwards, auto-replies, templates and anything under 5 words. Show them as a numbered table. Don't analyse my style yet.</code></pre></div>
+<div class="ax-code"><pre><code>Search my Sent mail from the last 6 months. Find 40 emails I wrote myself: about 15 short replies, 15 normal emails, 5 longer ones, and at least 5 where I said no, chased something or gave bad news. Mix clients, my team and suppliers. Leave out forwards, auto-replies, templates and anything under 5 words. Show them as a numbered table. Don't analyse my style yet.</code></pre><button class="ax-copy" type="button">Copy</button></div>
 <p>Scan the table. Take out anything confidential or odd.</p>
 <h3>4. Build your voice profile</h3>
-<div class="ax-prompt"><pre><code>Using only those emails, write my "Email voice profile". Describe only what you can see, quote real examples, and don't flatter me.
+<div class="ax-code"><pre><code>Using only those emails, write my "Email voice profile". Describe only what you can see, quote real examples, and don't flatter me.
 
 Cover: how I come across in three sentences, my typical length for a quick reply and a normal email, my exact greetings and sign-offs by type of person, how I ask for things, say no and give bad news, phrases I use often, things I never do, and how my tone changes between clients, team and suppliers.
 
@@ -37,57 +57,81 @@ Then add these hard rules, even where my emails break them:
 - If you don't know a fact, write [CHECK: what]. Never make one up.
 - Draft only. Never send, reply or forward unless I type "send it".
 
-Finish with questions about anything you couldn't tell.</code></pre></div>
+Finish with questions about anything you couldn't tell.</code></pre><button class="ax-copy" type="button">Copy</button></div>
 <h3>5. Check it like a new starter’s notes</h3>
 <p>Read it as if a new assistant had written it about you.</p>
-<ul><li>Is the sign-off <b>exactly</b> what you type?</li><li>Are the greetings right for each kind of person?</li><li>Delete anything that could describe anyone. "Professional yet approachable" tells it nothing.</li><li>Add your own pet hates. Answer its questions.</li></ul>
+<ul><li>Is the sign-off <strong>exactly</strong> what you type?</li><li>Are the greetings right for each kind of person?</li><li>Delete anything that could describe anyone. “Professional yet approachable” tells it nothing.</li><li>Add your own pet hates. Answer its questions.</li></ul>
 <p>Then:</p>
-<div class="ax-prompt"><pre><code>Here are my corrections and answers: [list]. Rewrite the full profile.</code></pre></div>
+<div class="ax-code"><pre><code>Here are my corrections and answers: [list]. Rewrite the full profile.</code></pre><button class="ax-copy" type="button">Copy</button></div>
 <h3>6. Save it</h3>
-<p>Open the Email project, edit its <b>instructions</b> and paste in the profile. Every chat in the project now starts with it. Keep a copy in a document called <b>Email voice v1</b>.</p>
-<p>Want your voice outside the project too? Choose <b>Use style &gt; Create &amp; edit styles &gt; Create custom style &gt; Add writing example</b>, paste the profile and five of your best emails, and call it <b>My email voice</b>.</p>
+<p>Open the Email project, edit its <strong>instructions</strong> and paste in the profile. Every chat in the project now starts with it. Keep a copy in a document called <strong>Email voice v1</strong>.</p>
+<p>Want your voice outside the project too? Choose <strong>Use style &gt; Create &amp; edit styles &gt; Create custom style &gt; Add writing example</strong>, paste the profile and five of your best emails, and call it <strong>My email voice</strong>.</p>
 <h3>7. Run the test</h3>
 <p>Use the same five every time, so you can see the score move.</p>
-<div class="ax-prompt"><pre><code>Calibration test. Using my Email voice profile, draft these 5 emails. Don't send anything.
+<div class="ax-code"><pre><code>Calibration test. Using my Email voice profile, draft these 5 emails. Don't send anything.
 
 1. Reply to [colleague] confirming Thursday at 2pm works for a call.
 2. Chase [client] about an invoice that's 14 days overdue. Firm but friendly.
 3. Turn down [supplier]'s proposal on price. Leave the door open.
 4. Thank [team member] for [piece of work] and say what difference it made.
-5. Tell [client] the project's two weeks late because [reason]. Offer a new date and one thing we'll do to make up for it.</code></pre></div>
+5. Tell [client] the project's two weeks late because [reason]. Offer a new date and one thing we'll do to make up for it.</code></pre><button class="ax-copy" type="button">Copy</button></div>
+<figure class="ax-fig ax-photo"><img src="/media/journal/the-1-percent-email/photo-at-home.jpg" alt="Ben at a kitchen table with a coffee, reading his laptop." loading="lazy" decoding="async"></figure>
 <p>Not running a business? Swap in your own five: a school reply, a party RSVP, chasing a refund.</p>
 <p>A draft only passes if it gets all five:</p>
-<div class="ax-tbl"><table><thead><tr><th>Check</th><th>Pass if</th></tr></thead><tbody><tr><td data-label="Check">Would I send it?</td><td data-label="Pass if">Yes, or one or two words changed</td></tr><tr><td data-label="Check">Length</td><td data-label="Pass if">About what I’d really write</td></tr><tr><td data-label="Check">Greeting and sign-off</td><td data-label="Pass if">Exactly mine</td></tr><tr><td data-label="Check">Banned words and em dashes</td><td data-label="Pass if">None</td></tr><tr><td data-label="Check">Facts</td><td data-label="Pass if">Unknowns marked [CHECK], nothing made up</td></tr></tbody></table></div>
+<figure class="dg">
+<h4 class="dg-h">A draft only counts <em>if it passes all five.</em></h4>
+<div class="dg-scorewrap">
+<div class="dg-card dg-tablecard"><table class="dg-table"><thead><tr><th scope="col"><span class="ax-sr">Check</span></th><th scope="col"><span class="l">Draft </span>1</th><th scope="col"><span class="l">Draft </span>2</th><th scope="col"><span class="l">Draft </span>3</th><th scope="col"><span class="l">Draft </span>4</th><th scope="col"><span class="l">Draft </span>5</th></tr></thead><tbody>
+<tr><th scope="row">Would I send it?<span>Yes, or one or two words changed</span></th><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td></tr>
+<tr><th scope="row">Length<span>About what I’d really write</span></th><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="no" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg><span class="ax-sr">Fail</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td></tr>
+<tr><th scope="row">Greeting and sign-off<span>Exactly mine</span></th><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="no" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg><span class="ax-sr">Fail</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td></tr>
+<tr><th scope="row">Banned words and em dashes<span>None</span></th><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td></tr>
+<tr><th scope="row">Facts<span>Unknowns marked [CHECK], nothing made up</span></th><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td><td><svg class="ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="ax-sr">Pass</span></td></tr>
+<tr class="res"><th scope="row">Result</th><td>Pass</td><td class="red">Fail</td><td>Pass</td><td class="red">Fail</td><td>Pass</td></tr>
+</tbody></table></div>
+<div class="dg-total"><b>3<span>/5</span></b><p>A typical day 1. Get to 4 before it touches a real reply.</p></div>
+</div>
+<figcaption>Example scores, to show how the test works.</figcaption>
+</figure>
 <p>Expect about 3 out of 5. Don’t use it on real replies until you get 4.</p>
 <p>When one fails, don’t fix the draft. Fix the rule:</p>
-<div class="ax-prompt"><pre><code>Draft [number] failed because [reason]. Which rule in my profile was missing or unclear? Give me the exact wording to add.</code></pre></div>
+<div class="ax-code"><pre><code>Draft [number] failed because [reason]. Which rule in my profile was missing or unclear? Give me the exact wording to add.</code></pre><button class="ax-copy" type="button">Copy</button></div>
 <p>Add it to the profile and run the test again.</p>
 <h2>Week 1</h2>
 <h3>Use it on real replies</h3>
+<figure class="ax-fig ax-photo"><img src="/media/journal/the-1-percent-email/photo-checking-drafts.jpg" alt="Ben at an airport café, reading a draft on his phone." loading="lazy" decoding="async"></figure>
 <p>Inside the Email project:</p>
-<div class="ax-prompt"><pre><code>Draft a reply to [name]'s latest email about [topic]. Don't send it.</code></pre></div>
+<div class="ax-code"><pre><code>Draft a reply to [name]'s latest email about [topic]. Don't send it.</code></pre><button class="ax-copy" type="button">Copy</button></div>
 <p>Read it, change what’s wrong, send it yourself.</p>
 <h3>Talk instead of typing</h3>
+<figure class="ax-fig ax-photo"><img src="/media/journal/the-1-percent-email/photo-talk-instead-of-typing.jpg" alt="Ben walking through an airport, speaking into his phone." loading="lazy" decoding="async"></figure>
 <p>This is where the time really comes back. On your phone, open the Email project, tap the microphone and just talk:</p>
-<div class="ax-prompt"><pre><code>Turn what I'm about to say into an email in my voice. Keep only what matters. Draft it, don't send it.</code></pre></div>
-<p>Then ramble. <em>"Tell Sarah thanks for the deck, it’s good, but slide four, the Q3 numbers look off, can she check before Friday, I’m presenting Monday, oh and well done on hiring Tom."</em></p>
+<div class="ax-code"><pre><code>Turn what I'm about to say into an email in my voice. Keep only what matters. Draft it, don't send it.</code></pre><button class="ax-copy" type="button">Copy</button></div>
+<p>Then ramble. <em>“Tell Sarah thanks for the deck, it’s good, but slide four, the Q3 numbers look off, can she check before Friday, I’m presenting Monday, oh and well done on hiring Tom.”</em></p>
 <p>You should get four or five clean lines back, every point kept, nothing added. Do one a day.</p>
 <h3>Every Friday: your 1%</h3>
 <p>Ten minutes. Show Claude what you changed.</p>
-<div class="ax-prompt"><pre><code>Weekly voice update. Here are this week's drafts and what I actually sent: [paste pairs]. What did I change more than once? Suggest no more than 3 new rules for my profile, worded exactly. Don't change anything until I say yes.</code></pre></div>
+<figure class="dg">
+<h4 class="dg-h">The 1%, <em>every Friday.</em></h4>
+<div class="dg-loopwrap">
+<div class="dg-loop"><ol><li style="--n:0"><span class="dg-n">1</span>Claude drafts</li><li style="--n:1"><span class="dg-n">2</span>You fix what’s wrong</li><li style="--n:2"><span class="dg-n">3</span>Friday: what did you change twice?</li><li style="--n:3"><span class="dg-n">4</span>Add one rule</li><li style="--n:4"><span class="dg-n">5</span>Run the test again</li></ol><div class="dg-mid"><b>+1%</b><span>Ten minutes a week</span></div></div>
+<div class="dg-side"><p class="dg-h2">Don’t fix the draft. <em>Fix the rule.</em></p><p>Then rerun the same five test emails and write down the score.</p></div>
+</div>
+</figure>
+<div class="ax-code"><pre><code>Weekly voice update. Here are this week's drafts and what I actually sent: [paste pairs]. What did I change more than once? Suggest no more than 3 new rules for my profile, worded exactly. Don't change anything until I say yes.</code></pre><button class="ax-copy" type="button">Copy</button></div>
 <p>Approve the ones you agree with, save it as v2, rerun the test and write down the score. Watching that number climb is what builds the trust.</p>
 <h2>Week 4: let it watch your inbox</h2>
 <p>Only once you’ve scored 5 out of 5 twice in a row.</p>
-<p>On a paid plan, click <b>Scheduled</b> in the left sidebar, then <b>New task</b>. Or describe the job in a chat and click <b>Schedule</b> when Claude suggests it. Choose <b>Weekdays</b>.</p>
-<div class="ax-prompt"><pre><code>Every weekday morning, check my inbox for new mail since the last run. Ignore newsletters, receipts and anything I'm only cc'd on. For anything that needs me (a client, a deadline, money, a decision, a complaint, or someone waiting more than a day):
+<p>On a paid plan, click <strong>Scheduled</strong> in the left sidebar, then <strong>New task</strong>. Or describe the job in a chat and click <strong>Schedule</strong> when Claude suggests it. Choose <strong>Weekdays</strong>.</p>
+<div class="ax-code"><pre><code>Every weekday morning, check my inbox for new mail since the last run. Ignore newsletters, receipts and anything I'm only cc'd on. For anything that needs me (a client, a deadline, money, a decision, a complaint, or someone waiting more than a day):
 1. Add the label "Needs me".
 2. Draft a reply in my Email voice profile, marking anything uncertain [CHECK].
 3. Don't send, reply or forward anything.
-Finish with a short list: who, what they need, by when.</code></pre></div>
+Finish with a short list: who, what they need, by when.</code></pre><button class="ax-copy" type="button">Copy</button></div>
 <p>Want it more than once a day? Set up a second task for the afternoon.</p>
 <p>Because sending is set to Always ask, a scheduled check can’t send anything. It waits for you.</p>
-<p>To send, open the draft in Gmail and press Send. Or say "send it" in Claude and approve the card that pops up.</p>
-<p><b>Where I’d stop:</b> don’t switch sending to Always allow. Claude reads, sorts and drafts. You press send.</p>
+<p>To send, open the draft in Gmail and press Send. Or say “send it” in Claude and approve the card that pops up.</p>
+<p class="ax-rule">Where I’d stop: don’t switch sending to Always allow. <strong>Claude reads, sorts and drafts. You press send.</strong></p>
 <h2>Same rule, different tool</h2>
 <p>I run a small team of AI assistants. They read, they sort, they draft. None of them sends a thing without my yes. Autonomy on the boring bits. A person on the send button.</p>
 <h2>What it can’t do yet</h2>
@@ -96,6 +140,6 @@ Finish with a short list: who, what they need, by when.</code></pre></div>
 <h2>Your 1% this week</h2>
 <p>Don’t automate your whole inbox. Do Day 1. Write down your score.</p>
 <p>Next week, the same trick for your calendar.</p>
-<p>Not a new wheel. A slightly better one, every week.</p>
+<p class="ax-pull">Not a new wheel. A slightly better one, every week.</p>
 <h2>Sources</h2>
-<ul><li><a href="https://support.claude.com/en/articles/10166901-use-google-workspace-connectors" target="_blank" rel="noopener">Claude Help Center, Use Google Workspace connectors</a></li><li><a href="https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects" target="_blank" rel="noopener">Claude Help Center, Projects</a></li><li><a href="https://support.claude.com/en/articles/10181068" target="_blank" rel="noopener">Claude Help Center, Styles</a></li><li><a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork" target="_blank" rel="noopener">Claude Help Center, Schedule recurring tasks</a></li><li><a href="https://support.claude.com/en/articles/12542951-set-up-the-microsoft-365-connector" target="_blank" rel="noopener">Claude Help Center, Set up the Microsoft 365 connector</a></li><li><a href="https://claude.com/docs/office-agents/outlook" target="_blank" rel="noopener">Claude docs, Use Claude for Outlook</a></li><li><a href="https://support.claude.com/en/articles/10065434-use-dictation-on-claude-mobile" target="_blank" rel="noopener">Claude Help Center, Use dictation on Claude Mobile</a></li><li><a href="https://claude.com/pricing?country=GB" target="_blank" rel="noopener">Claude pricing</a></li></ul>
+<ul class="ax-src"><li><a href="https://support.claude.com/en/articles/10166901-use-google-workspace-connectors" target="_blank" rel="noopener">Claude Help Center, Use Google Workspace connectors</a></li><li><a href="https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects" target="_blank" rel="noopener">Claude Help Center, Projects</a></li><li><a href="https://support.claude.com/en/articles/10181068" target="_blank" rel="noopener">Claude Help Center, Styles</a></li><li><a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork" target="_blank" rel="noopener">Claude Help Center, Schedule recurring tasks</a></li><li><a href="https://support.claude.com/en/articles/12542951-set-up-the-microsoft-365-connector" target="_blank" rel="noopener">Claude Help Center, Set up the Microsoft 365 connector</a></li><li><a href="https://claude.com/docs/office-agents/outlook" target="_blank" rel="noopener">Claude docs, Use Claude for Outlook</a></li><li><a href="https://support.claude.com/en/articles/10065434-use-dictation-on-claude-mobile" target="_blank" rel="noopener">Claude Help Center, Use dictation on Claude Mobile</a></li><li><a href="https://claude.com/pricing?country=GB" target="_blank" rel="noopener">Claude pricing</a></li></ul>

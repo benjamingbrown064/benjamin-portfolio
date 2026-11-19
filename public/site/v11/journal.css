@@ -49,8 +49,8 @@
 .ax-body h2{margin-top:2em;font-size:clamp(24px,2.4vw,32px);font-weight:600;letter-spacing:-.035em;line-height:1.15}
 .ax-body blockquote{margin:1.8em 0;padding:0;font-size:clamp(26px,3vw,40px);font-weight:600;letter-spacing:-.042em;line-height:1.1;text-wrap:balance}
 .ax-body ul{display:grid;padding:0;list-style:none}
-.ax-body li{padding:14px 0;border-top:1px solid var(--line)}
-.ax-body li:last-child{border-bottom:1px solid var(--line)}
+.ax-body>ul>li{padding:14px 0;border-top:1px solid var(--line)}
+.ax-body>ul>li:last-child{border-bottom:1px solid var(--line)}
 .ax-by{display:flex;align-items:center;gap:14px;padding-top:28px;border-top:1px solid var(--line)}
 .ax-by img{width:48px;height:48px;flex:none;border-radius:50%;object-fit:cover;object-position:50% 20%;filter:grayscale(1)}
 .ax-by b{display:block;font-weight:600}

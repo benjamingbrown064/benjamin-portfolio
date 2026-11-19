@@ -776,5 +776,17 @@
     "old": "<div class=\"hero-cta\"><a class=\"btn\" href=\"#contact\" data-contact-open data-type=\"new\">Start a project</a><a class=\"btn ghost\" href=\"discovery.html\">Not sure yet? Take the discovery <span class=\"arr\">→</span></a><a class=\"lnk\" href=\"#\" data-agent-open>Ask Harvey</a></div>",
     "new": "<div class=\"hero-cta\"><a class=\"btn\" href=\"#contact\" data-contact-open data-type=\"new\">Start a project <span class=\"arr\">→</span></a><a class=\"btn ghost\" href=\"discovery.html\">Take the discovery</a></div>\n<p class=\"cx-alt\">Not sure yet? <a href=\"#\" data-agent-open>Ask Harvey <span aria-hidden=\"true\">→</span></a></p>",
     "count": 1
+  },
+  {
+    "file": "v11/journal.css",
+    "old": ".ax-body li{padding:14px 0;border-top:1px solid var(--line)}",
+    "new": ".ax-body>ul>li{padding:14px 0;border-top:1px solid var(--line)}",
+    "count": 1
+  },
+  {
+    "file": "v11/journal.css",
+    "old": ".ax-body li:last-child{",
+    "new": ".ax-body>ul>li:last-child{",
+    "count": 1
   }
 ]
