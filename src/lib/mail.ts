@@ -20,7 +20,8 @@ export type Receipt =
   | { kind: "request"; to: string; name?: string | null; ref: string; type: string }
   | { kind: "discovery"; to: string; name?: string | null; ref: string }
   | { kind: "booking"; to: string; name?: string | null; date?: string | null; time?: string | null; timeZone?: string | null; format?: string | null }
-  | { kind: "code"; to: string; name?: string | null; code: string };
+  | { kind: "code"; to: string; name?: string | null; code: string }
+  | { kind: "confirm"; to: string; token: string };
 
 /** A first name is used only when it is plainly a name: letters, hyphens and apostrophes, up to 30 characters. */
 function firstName(name?: string | null): string | null {
@@ -38,8 +39,8 @@ function when(r: Extract<Receipt, { kind: "booking" }>): string | null {
   return `${day} at ${r.time}${zone}${how}`;
 }
 
-export function receiptContent(r: Receipt): { subject: string; lines: string[] } {
-  const hello = firstName(r.name) ? `Hi ${firstName(r.name)},` : "Hello,";
+export function receiptContent(r: Receipt): { subject: string; lines: string[]; link?: { label: string; url: string }; foot?: string } {
+  const hello = "name" in r && firstName(r.name) ? `Hi ${firstName(r.name)},` : "Hello,";
   const sign = ["Ben", `${facts.name} · benjaminbrown.co`];
   if (r.kind === "request") {
     const what = REQUEST_KIND[r.type] ?? "request";
@@ -62,6 +63,19 @@ export function receiptContent(r: Receipt): { subject: string; lines: string[] }
         `I will read them myself, and you will get ${facts.replyPromise} with my first thoughts on where to start. If you want to add anything, reply to this email.`,
         ...sign,
       ],
+    };
+  }
+  if (r.kind === "confirm") {
+    return {
+      subject: "Confirm your subscription to The Handover",
+      lines: [
+        hello,
+        "Thanks for signing up to The Handover, my weekly note on what changed in AI and what to do about it.",
+        "Please confirm this is your address, and the next one comes to you.",
+        ...sign,
+      ],
+      link: { label: "Confirm my subscription", url: `${facts.siteUrl}/api/subscribe/confirm?t=${r.token}` },
+      foot: `You are receiving this because this address was entered in the newsletter box on benjaminbrown.co. If that was not you, ignore this email and nothing more will be sent. To be removed at any time: ${facts.siteUrl}/unsubscribe?t=${r.token}`,
     };
   }
   if (r.kind === "code") {
@@ -98,14 +112,15 @@ export async function sendReceipt(r: Receipt): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return false;
   try {
-    const { subject, lines } = receiptContent(r);
+    const { subject, lines, link, foot = FOOT } = receiptContent(r);
     const body = lines.slice(0, -2), sign = lines.slice(-2);
-    const text = [...body, sign.join("\n"), "--", FOOT].join("\n\n");
+    const text = [...body, ...(link ? [`${link.label}: ${link.url}`] : []), sign.join("\n"), "--", foot].join("\n\n");
     const html =
       `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#1d1d1f;max-width:560px">` +
       body.map((l) => `<p style="margin:0 0 16px">${esc(l)}</p>`).join("") +
+      (link ? `<p style="margin:8px 0 24px"><a href="${esc(link.url)}" style="display:inline-block;background:#1d1d1f;color:#fff;text-decoration:none;padding:12px 20px;border-radius:999px;font-weight:500">${esc(link.label)}</a></p>` : "") +
       `<p style="margin:24px 0 0">${esc(sign[0])}<br><span style="color:#6e6e73">${esc(sign[1])}</span></p>` +
-      `<p style="margin:28px 0 0;padding-top:16px;border-top:1px solid #e8e8ed;font-size:12.5px;line-height:1.5;color:#6e6e73">${esc(FOOT)}</p></div>`;
+      `<p style="margin:28px 0 0;padding-top:16px;border-top:1px solid #e8e8ed;font-size:12.5px;line-height:1.5;color:#6e6e73">${esc(foot)}</p></div>`;
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },

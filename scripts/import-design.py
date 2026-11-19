@@ -549,7 +549,7 @@ def prerender_case_studies():
     """Open each React case study in headless Chrome (served from the files just written, no network),
     take the markup React produced and place it inside the page's root element. A one-line script after
     the root empties it again before the first paint, so visitors with scripts see exactly what they did
-    before (React draws into an empty root), while readers without scripts get the whole case study."""
+    before (React draws into an empty root; the root keeps a screen of height meanwhile so the footer does not jump), while readers without scripts get the whole case study."""
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -594,10 +594,78 @@ def prerender_case_studies():
             # Embedded films are not started from the static copy (it is emptied before paint); React loads them.
             inner = re.sub(r"(<iframe\b[^>]*?)\ssrc=", r"\1 data-src=", inner)
             filled = ('<main%sid="%s"%s data-prerendered>' % (empty.group(1), root_id, empty.group(2)) + inner + "</main>"
-                      + "<script>document.getElementById('%s').textContent=''</script>" % root_id)
+                      + "<script>(function(r){r.textContent='';r.style.minHeight='101vh'})(document.getElementById('%s'))</script>" % root_id)
             open(path, "w", encoding="utf-8").write(html[:empty.start()] + filled + html[empty.end():])
             print("prerendered %s: %d words" % (name, words))
         browser.close()
+
+
+# Phone-sized copies of the large photographs. A 2200px photo is right for a big desktop screen and far more than
+# a phone needs; each one gets a 1300px copy and the pages offer both, so the browser takes the smaller on phones.
+SMALL_W = 1300
+
+
+def responsive_images():
+    sizes = {}  # public path -> (full width, small path)
+    assets = os.path.join(PUB, "assets")
+    for d, _, fs in os.walk(assets):
+        for f in fs:
+            if not f.lower().endswith(".jpg") or f.endswith("-%d.jpg" % SMALL_W):
+                continue
+            full = os.path.join(d, f)
+            try:
+                w = int(re.search(r"pixelWidth: (\d+)", run(["sips", "-g", "pixelWidth", full]).stdout).group(1))
+            except Exception:
+                continue
+            if w < 1700 or os.path.getsize(full) < 150_000:
+                continue
+            small = full[:-4] + "-%d.jpg" % SMALL_W
+            run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "76", "--resampleWidth", str(SMALL_W), full, "--out", small])
+            if os.path.getsize(small) < os.path.getsize(full) * 0.75:
+                pub = "/site/" + os.path.relpath(full, PUB).replace(os.sep, "/")
+                sizes[pub] = (w, pub[:-4] + "-%d.jpg" % SMALL_W)
+            else:
+                os.remove(small)
+
+    def srcset(pub):
+        w, small = sizes[pub]
+        return "%s %dw, %s %dw" % (small, SMALL_W, pub, w)
+
+    n = 0
+    for name in os.listdir(PAGES_OUT):
+        path = os.path.join(PAGES_OUT, name)
+        html = open(path, encoding="utf-8").read()
+
+        def tag(m):
+            nonlocal n
+            t = m.group(0)
+            src = re.search(r'\ssrc="([^"]+)"', t)
+            if "srcset=" in t or not src or src.group(1) not in sizes:
+                return t
+            n += 1
+            return t.replace(src.group(0), '%s srcset="%s"' % (src.group(0), srcset(src.group(1))), 1)
+
+        out = re.sub(r"<img\b[^>]*>", tag, html)
+        if out != html:
+            open(path, "w", encoding="utf-8").write(out)
+    # The React case studies draw their own pictures, often from lists of data, so the pair is offered there by a
+    # small wrapper around React.createElement placed at the top of each case-study script: any <img> whose src has
+    # a phone-sized copy gets the matching srcSet.
+    work = os.path.join(PUB, "work")
+    for name in sorted(os.listdir(work)):
+        path = os.path.join(work, name)
+        if not name.endswith(".js"):
+            continue
+        code = open(path, encoding="utf-8").read()
+        used = {k: srcset(k) for k in sizes if '"%s"' % k in code}
+        if not used or "createRoot" not in code:
+            continue
+        n += len(used)
+        shim = ("(function(){var M=%s,R=window.React;if(!R||R.__small)return;R.__small=1;var ce=R.createElement;"
+                "R.createElement=function(t,p){if(t===\"img\"&&p&&M[p.src]&&!p.srcSet){p=Object.assign({},p,{srcSet:M[p.src]})}"
+                "var a=[t,p];for(var i=2;i<arguments.length;i++)a.push(arguments[i]);return ce.apply(R,a)}})();\n" % json.dumps(used))
+        open(path, "w", encoding="utf-8").write(shim + code)
+    print("phone-sized photos: %d made, offered in %d places" % (len(sizes), n))
 
 
 def main():
@@ -670,6 +738,7 @@ def main():
             shutil.copyfile(src, dst)
 
     format_scripts()
+    responsive_images()
     bundle_css()
     if os.environ.get("PRERENDER", "1") != "0":
         prerender_case_studies()

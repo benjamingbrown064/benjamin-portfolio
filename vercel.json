@@ -1,7 +1,23 @@
 {
-  "regions": ["lhr1"],
+  "regions": [
+    "lhr1"
+  ],
   "functions": {
-    "src/app/api/voice/llm/route.ts": { "regions": ["iad1"] },
-    "src/app/api/voice/llm/chat/completions/route.ts": { "regions": ["iad1"] }
-  }
+    "src/app/api/voice/llm/route.ts": {
+      "regions": [
+        "iad1"
+      ]
+    },
+    "src/app/api/voice/llm/chat/completions/route.ts": {
+      "regions": [
+        "iad1"
+      ]
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/retention",
+      "schedule": "30 3 * * *"
+    }
+  ]
 }

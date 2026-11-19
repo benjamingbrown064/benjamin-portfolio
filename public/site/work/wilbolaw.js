@@ -1,3 +1,4 @@
+(function(){var M={"/site/assets/web/warrantyos-team.jpg": "/site/assets/web/warrantyos-team-1300.jpg 1300w, /site/assets/web/warrantyos-team.jpg 2200w", "/site/assets/web/wl/hero-window-reading.jpg": "/site/assets/web/wl/hero-window-reading-1300.jpg 1300w, /site/assets/web/wl/hero-window-reading.jpg 2200w", "/site/assets/web/wl/attorney-steps-phone-v2.jpg": "/site/assets/web/wl/attorney-steps-phone-v2-1300.jpg 1300w, /site/assets/web/wl/attorney-steps-phone-v2.jpg 2200w", "/site/assets/web/wl/attorney-desktop.jpg": "/site/assets/web/wl/attorney-desktop-1300.jpg 1300w, /site/assets/web/wl/attorney-desktop.jpg 2200w", "/site/assets/web/wl/demo-table-review.jpg": "/site/assets/web/wl/demo-table-review-1300.jpg 1300w, /site/assets/web/wl/demo-table-review.jpg 2200w", "/site/assets/web/wl/attorney-reading-table.jpg": "/site/assets/web/wl/attorney-reading-table-1300.jpg 1300w, /site/assets/web/wl/attorney-reading-table.jpg 2200w", "/site/assets/web/wl/meeting-room-doorway.jpg": "/site/assets/web/wl/meeting-room-doorway-1300.jpg 1300w, /site/assets/web/wl/meeting-room-doorway.jpg 2200w"},R=window.React;if(!R||R.__small)return;R.__small=1;var ce=R.createElement;R.createElement=function(t,p){if(t==="img"&&p&&M[p.src]&&!p.srcSet){p=Object.assign({},p,{srcSet:M[p.src]})}var a=[t,p];for(var i=2;i<arguments.length;i++)a.push(arguments[i]);return ce.apply(R,a)}})();
 const WL = window.WilboLawDesignSystem_c42bb7;
 const wlPad = (n) => String(n).padStart(2, "0");
 const WL_METHOD = [
@@ -191,6 +192,18 @@ function WlFilm({ src = "/site/work/wilbolaw-film.html", title = "WilboLaw demo:
   pauseRef.current = paused;
   endRef.current = onEnd;
   const [ended, setEnded] = React.useState(false);
+  const [near, setNear] = React.useState(!(once || controlled));
+  React.useEffect(() => {
+    if (near || !ref.current) return;
+    const o = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) {
+        o.disconnect();
+        setNear(true);
+      }
+    }, { rootMargin: "500px 0px" });
+    o.observe(ref.current);
+    return () => o.disconnect();
+  }, []);
   React.useEffect(() => () => ctl.current && ctl.current.stop(), []);
   React.useEffect(() => {
     const c = ctl.current;
@@ -339,7 +352,7 @@ function WlFilm({ src = "/site/work/wilbolaw-film.html", title = "WilboLaw demo:
     };
     strip();
   };
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("iframe", { ref, className: "wl-film", src, title, onLoad, tabIndex: -1, loading: loopLazy(once, controlled) }), once && /* @__PURE__ */ React.createElement("button", { type: "button", className: "wl-replay" + (ended ? " on" : ""), tabIndex: ended ? 0 : -1, "aria-hidden": !ended, onClick: () => ctl.current && ctl.current.play() }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" }), /* @__PURE__ */ React.createElement("path", { d: "M3 3v5h5" })), "Replay"));
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("iframe", { ref, className: "wl-film", src: near ? src : void 0, title, onLoad: near ? onLoad : void 0, tabIndex: -1, loading: loopLazy(once, controlled) }), once && /* @__PURE__ */ React.createElement("button", { type: "button", className: "wl-replay" + (ended ? " on" : ""), tabIndex: ended ? 0 : -1, "aria-hidden": !ended, onClick: () => ctl.current && ctl.current.play() }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" }), /* @__PURE__ */ React.createElement("path", { d: "M3 3v5h5" })), "Replay"));
 }
 function loopLazy(once, controlled) {
   return once || controlled ? "lazy" : "eager";

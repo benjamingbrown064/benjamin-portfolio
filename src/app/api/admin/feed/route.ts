@@ -17,6 +17,11 @@ export async function GET(request: Request) {
   if (!dbConfigured()) return NextResponse.json({ error: "Database not connected" }, { status: 503 });
 
   const url = new URL(request.url);
+  // Proves error reporting end to end: an admin-only request that writes one error to the log.
+  if (url.searchParams.get("selftest") === "error") {
+    console.error("admin/feed: error-reporting self-test", new Error("Self-test: this error was raised on purpose"));
+    return NextResponse.json({ ok: true, selftest: "error logged" });
+  }
   const sinceParam = url.searchParams.get("since");
   const since = sinceParam && !Number.isNaN(Date.parse(sinceParam)) ? new Date(sinceParam) : new Date(Date.now() - 86_400_000);
   const iso = encodeURIComponent(since.toISOString());

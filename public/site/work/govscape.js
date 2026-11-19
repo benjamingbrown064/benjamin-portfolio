@@ -1,3 +1,4 @@
+(function(){var M={"/site/assets/web/warrantyos-team.jpg": "/site/assets/web/warrantyos-team-1300.jpg 1300w, /site/assets/web/warrantyos-team.jpg 2200w", "/site/assets/web/gov/hero-analyst-desk.jpg": "/site/assets/web/gov/hero-analyst-desk-1300.jpg 1300w, /site/assets/web/gov/hero-analyst-desk.jpg 2400w"},R=window.React;if(!R||R.__small)return;R.__small=1;var ce=R.createElement;R.createElement=function(t,p){if(t==="img"&&p&&M[p.src]&&!p.srcSet){p=Object.assign({},p,{srcSet:M[p.src]})}var a=[t,p];for(var i=2;i<arguments.length;i++)a.push(arguments[i]);return ce.apply(R,a)}})();
 const GD = window.GX_DATA;
 const gxPad = (n) => String(n).padStart(2, "0");
 const gxPick = (arr, ix) => ix.map((i) => arr[i]);
