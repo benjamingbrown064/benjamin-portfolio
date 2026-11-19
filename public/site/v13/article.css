@@ -132,3 +132,32 @@
 /* site (Ben, 19 Nov): in prompt blocks, the parts the reader fills in ([client], [reason]...) are orange. Colour only:
    the Copy button copies the code's plain text, so the copied prompt is unchanged. [CHECK] is an instruction, left plain. */
 .ax-code .ax-fill{display:inline;color:#FF6B1F} /* not ".ph": the home page uses .ph for its phases block (display:grid) */
+
+/* site (Ben, 19 Nov): the two plain bullet lists in How-to articles, made easier to follow.
+   .ax-checks: a tick-off checklist (real checkboxes, nothing saved). .ax-limits: "what it can't do yet" as three tiles. */
+.ax-body>ul.ax-checks>li,.ax-body>ul.ax-limits>li,.ax-body>ul.ax-checks>li:last-child,.ax-body>ul.ax-limits>li:last-child{padding:0;border:0}
+.ax-body ul.ax-checks{display:grid;gap:8px;padding:clamp(14px,2vw,20px);border-radius:var(--r-lg);background:var(--bone-2)}
+.ax-checks label{display:grid;grid-template-columns:28px minmax(0,1fr);gap:14px;align-items:start;padding:14px 16px;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--bone-3);font-size:17px;line-height:1.45;cursor:pointer;transition:box-shadow .2s,opacity .2s}
+@media(hover:hover){.ax-checks label:hover{box-shadow:0 0 0 1px var(--mute)}}
+.ax-checks input{position:absolute;opacity:0;pointer-events:none}
+.ax-tick{display:grid;place-items:center;width:26px;height:26px;margin-top:1px;border-radius:8px;box-shadow:inset 0 0 0 1.5px var(--bone-3);transition:background .2s,box-shadow .2s}
+.ax-tick svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .2s}
+.ax-checks input:checked+.ax-tick{background:#FF6B1F;box-shadow:none}
+.ax-checks input:checked+.ax-tick svg{opacity:1}
+.ax-checks input:checked~span:last-child{color:var(--mute)}
+.ax-checks input:focus-visible+.ax-tick{outline:2px solid var(--ink);outline-offset:2px}
+.ax-body ul.ax-limits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ax-limits li{display:flex;flex-direction:column;gap:8px;padding:clamp(18px,2vw,24px)!important;border-radius:var(--r-lg);background:var(--bone-2)}
+.ax-lim-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.ax-lim-i{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--bone-3)}
+.ax-lim-i svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ax-ny{padding:4px 10px;border-radius:var(--pill,999px);background:rgba(255,107,31,.12);color:#D9531A;font-size:12px;font-weight:600;letter-spacing:.01em}
+.ax-limits b{font-size:18px;font-weight:600;letter-spacing:-.025em;line-height:1.2}
+.ax-lim-t{font-size:15px;line-height:1.45;color:var(--mute)}
+@media(max-width:700px){.ax-body ul.ax-limits{grid-template-columns:minmax(0,1fr)}.ax-checks label{font-size:16px}}
+html[data-theme="dark"] .ax-checks label,html[data-theme="dark"] .ax-lim-i{background:rgba(255,255,255,.06);box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.ax-tick{box-shadow:inset 0 0 0 1.5px var(--mute)}
+.ax-ny{color:#B8430F}
+html[data-theme="dark"] .ax-tick{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5)}
+html[data-theme="dark"] .ax-checks input:checked+.ax-tick{box-shadow:none}
+html[data-theme="dark"] .ax-ny{background:rgba(255,107,31,.2);color:#FF9A5C}
