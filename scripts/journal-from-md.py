@@ -60,11 +60,15 @@ def figure(f):
 def reflow(lines):
     """A prompt in the Markdown is hard-wrapped at about 75 characters to keep the file tidy. On the page (and when
     copied) those breaks fall mid-sentence, so join each wrapped line onto the one before. A new line starts only at a
-    blank line, a "- " item or a "1. " item."""
+    blank line, a "- " item, a "1. " item, or an unindented line straight after an item."""
     out = []
     for line in lines:
         t = line.strip()
         starts = not t or re.match(r"(?:- |\d+\.\s)", t)
+        # under a list item only an indented line continues it; an unindented one is a new line after the list
+        in_item = bool(out) and re.match(r"(?:- |\d+\.\s)", out[-1])
+        if in_item and not line[:1].isspace():
+            starts = True
         if out and out[-1] and not starts:
             out[-1] += " " + t
         else:
