@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
       // Addresses from the previous site. Case studies that exist keep their address; the rest and the
       // old journal entries land on the nearest index page instead of a 404.
       { source: "/services", destination: "/method", permanent: true },
-      { source: "/work/:slug((?!warrantyos$|taskbox$|govscape$)[^/]+)", destination: "/work", permanent: false },
+      { source: "/work/:slug((?!warrantyos$|taskbox$|govscape$|wilbolaw$)[^/]+)", destination: "/work", permanent: false },
       // Real entries are left alone; every other /journal/... address (the old site's entries) goes to the index.
       { source: `/journal/:slug((?!(?:${JOURNAL.map((e) => e.slug).join("|") || "-"})$).*)`, destination: "/journal", permanent: false },
       // The journal has never lived at /blog, but people type it and old links use it.

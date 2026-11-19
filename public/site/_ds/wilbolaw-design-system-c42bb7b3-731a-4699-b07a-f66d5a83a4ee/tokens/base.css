@@ -1,0 +1,11 @@
+/* WilboLaw base element styles */
+*{box-sizing:border-box}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--fsans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;text-wrap:pretty;color-scheme:light}
+h1,h2,h3,h4{margin:0;font-family:var(--fdisp);letter-spacing:-.028em;line-height:1.08}
+p{margin:0}
+a{color:var(--acc-deep);text-decoration:none;border-bottom:1px solid var(--line-2)}
+a:hover{color:var(--acc);border-color:var(--acc)}
+::selection{background:var(--ink);color:#fff}
+.wl-mono{font-family:var(--fmono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.wl-input::placeholder,input::placeholder{color:var(--ink-4)}
+.wl-treat{filter:grayscale(1) contrast(1.06) brightness(1.02)}
