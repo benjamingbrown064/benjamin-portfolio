@@ -2,7 +2,7 @@
 .ax-cover.ax-colour img{filter:none}
 .ax-body h3{margin-top:1.8em;font-size:clamp(20px,1.7vw,22px);font-weight:600;letter-spacing:-.028em;line-height:1.25}
 .ax-body h2+h3{margin-top:.9em}
-.ax-body h2+*,.ax-body h3+*{margin-top:.7em}
+.ax-body h3+*{margin-top:.7em} /* site: after an h2 keep the journal's usual 1.2em, so all articles share one rhythm (Ben, 19 Nov) */
 .ax-body strong{font-weight:600}
 .ax-body em{font-style:italic}
 .ax-body a{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;text-decoration-color:var(--line);transition:text-decoration-color .25s}
@@ -46,7 +46,7 @@
 .dark .ax-mail:not(.ink),.dark .ax-note{background:rgba(255,255,255,.08)}
 /* figures: diagrams and photos break out of the reading column */
 .ax-body .ax-fig{width:min(1040px,calc(100vw - 2*var(--gut)));margin:2em 0 2em 50%;translate:-50% 0}
-.ax-body h2+.ax-fig,.ax-body h3+.ax-fig{margin-top:1em}
+.ax-body h3+.ax-fig{margin-top:1em}
 .ax-fig img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r-lg);background:var(--bone-2)}
 .ax-fig.ax-photo img{filter:grayscale(1)}
 .ax-fig figcaption{max-width:720px;margin:12px auto 0;font-size:14px;line-height:1.43;color:var(--mute)}
@@ -54,7 +54,7 @@
 @media(max-width:900px){.ax-body .ax-fig{width:calc(100vw - 2*var(--gut))}.ax-fig figcaption{margin-left:0}}
 /* diagrams, built in HTML so they reflow on every screen */
 .ax-body .dg{width:min(1040px,calc(100vw - 2*var(--gut)));margin:2.2em 0 2.2em 50%;translate:-50% 0;padding:clamp(24px,4vw,56px);border-radius:var(--r-lg);background:var(--bone-2);font-size:16px;line-height:1.45}
-.ax-body h2+.dg,.ax-body h3+.dg{margin-top:1em}
+.ax-body h3+.dg{margin-top:1em}
 .dg ul,.dg ol{margin:0;padding:0;list-style:none;display:block}
 .dg em{font-style:normal;color:var(--signal)}
 .dg-h{margin:0 0 clamp(20px,3vw,36px);font-size:clamp(26px,3.6vw,44px);font-weight:600;letter-spacing:-.045em;line-height:1.05;text-wrap:balance}
@@ -126,5 +126,5 @@
 .dg-mid{position:static;display:flex;align-items:baseline;justify-content:flex-start;gap:12px;margin-top:16px;text-align:left}
 }
 /* byline sits under the sources rule, then air before the subscribe band */
-.ax-body:has(.ax-src:last-child)+.w .ax-by{padding-top:0;border-top:0}
+/* site: byline keeps its usual rule and spacing after a sources list, as on the other articles (Ben, 19 Nov) */
 .ax+.jx-sub{margin-top:clamp(72px,9vw,128px)}

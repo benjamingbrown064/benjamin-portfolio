@@ -296,7 +296,7 @@ def home_method_stack(html):
     block = open(os.path.join(BLOCKS, "method-stack.html"), encoding="utf-8").read().strip()
     html = must_sub(r'(?=<section class="sec grey" id="services")', lambda m: block, html, "home method stack")
     html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/method/stack.css">\n</head>', 1)
-    return html.replace("</body>", '<script src="/site/v13/method/device.js" defer></script>\n</body>', 1)
+    return html.replace("</body>", '<script src="/site/v13/method/device.js" defer></script>\n<script src="/site/v13/method/fit.js" defer></script>\n</body>', 1)
 
 
 # Home sections Ben has hidden (18 Nov 2026) but may bring back: still in the page, not shown.

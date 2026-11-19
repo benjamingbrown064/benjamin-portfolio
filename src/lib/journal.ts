@@ -6,6 +6,8 @@ export type JournalEntry = {
   title: string;
   date: string; // ISO date, e.g. 2026-11-30
   category: "Essay" | "Notes" | "Field notes" | "Build log" | "The Handover" | "The 1%";
+  /** Show the cover and thumbnail in greyscale, like the journal photos (default: in colour, as artwork). */
+  grey?: boolean;
   /** Difficulty tag under the meta line, e.g. "Beginner · No experience needed" (how-to articles). */
   level?: string;
   /** Shown beside the category, e.g. "No. 1" for a numbered series. */
@@ -31,6 +33,7 @@ export const JOURNAL: JournalEntry[] = [
     category: "The 1%",
     issue: "No. 1",
     level: "Beginner · No experience needed",
+    grey: true,
     excerpt: "Don’t rebuild your business with AI. Get 1% better at one thing you do every day. This week, that’s email.",
     minutes: 7,
     cover: "/media/journal/the-1-percent-email/cover.jpg",
