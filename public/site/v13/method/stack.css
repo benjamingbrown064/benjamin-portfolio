@@ -44,25 +44,55 @@
 @media(min-width:861px) and (max-height:820px){.ms-k{margin-bottom:12px}.ms-h{margin-bottom:10px}.ms-s{margin-bottom:18px}.ms-list{gap:6px}.ms-hd{min-height:50px;font-size:20px}.ms-hd .pl{width:34px;height:34px}.ms-bd li{padding:9px 0}.ms-bd li b{font-size:15px}.ms-bd li span{font-size:13px;line-height:1.35}}
 @media(min-width:861px) and (max-height:680px){.ms-k,.ms-s{display:none}.ms-bd li span{display:none}.ms-bd li i{grid-row:auto}}
 @media(max-width:860px){
+/* mobile: the frame is one column that always fits the screen. Kicker, title, pills and the open card keep their size; the device takes whatever height is left. */
 .ms-pin{height:500vh}
-.ms-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:14px;align-items:start;padding-top:64px}
-.md-wrap{order:-1;height:auto}
-.md-wrap{height:auto}.md-stage{width:min(100%,40svh)}
-.ms-ui{padding-top:0}
-.ms-k,.ms-s{display:none}.ms-h{margin-bottom:10px}
-.ms-list{flex-direction:row;flex-wrap:wrap;width:100%;gap:6px}
-.ms-it:not(.on) .ms-hd{padding:0 16px;min-height:40px}
-.ms-it:not(.on) .ms-hd b,.ms-it:not(.on) .ms-hd .pl{display:none}
-.ms-it{width:auto}.ms-it.on{order:9;width:100%}
-.ms-hd{font-size:18px;min-height:52px}
-.ms-it:not(.on) .ms-hd .n{width:auto}
-.ms-bd ul{padding:0 18px 12px}
-.ms-bd li{padding:9px 0}
+.ms-grid{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding-top:76px;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+.md-wrap{order:-1;flex:1 1 0;min-height:140px;width:100%;height:auto;align-self:stretch;container-type:size}
+.md-stage{width:min(100cqw,100cqh)}
+.ms-ui{flex:none;width:100%;padding-top:0}
+.ms-k,.ms-s{display:none}.ms-h{margin-bottom:12px;font-size:min(40px,11.2cqi)}
+.ms-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;align-items:stretch}
+.ms-it,.ms-it.on{display:contents}
+.ms-hd{grid-row:1;justify-content:center;gap:0;min-height:44px;padding:0;border-radius:999px;background:var(--bone);box-shadow:0 0 0 1px rgba(0,0,0,.05);font-size:15px;transition:background .25s var(--ease),color .25s var(--ease)}
+.ms-hd b,.ms-hd .pl{display:none}
+.ms-hd .n{width:auto;font-size:15px;color:var(--mute);transition:color .25s var(--ease)}
+.ms-it.on .ms-hd{background:var(--ink)}.ms-it.on .ms-hd .n{color:var(--bone)}
+.ms-bd{display:none}
+.ms-it.on .ms-bd{display:block;grid-row:2;grid-column:1/-1;width:auto;min-width:0;margin-top:2px;border-radius:24px;background:var(--bone);box-shadow:0 0 0 1px rgba(0,0,0,.05),0 20px 40px -28px rgba(0,0,0,.3)}
+.ms-bd>div{overflow:visible}
+.ms-bd::before{content:attr(data-t);display:block;padding:18px 18px 12px;font-size:22px;font-weight:600;letter-spacing:-.036em;line-height:1.1}
+.ms-bd ul{padding:0 18px 8px}
+.ms-bd li{grid-template-columns:32px minmax(0,1fr);padding:10px 0}
 .ms-bd li b{font-size:15px}.ms-bd li span{font-size:13px}
 }
-@media(max-width:860px) and (max-height:700px){.ms-bd li span{display:none}.ms-bd li i{grid-row:auto}}
+@media(max-width:860px) and (max-height:820px){.ms-bd li span{display:none}.ms-bd li i{grid-row:auto}.ms-bd li{padding:9px 0}}
+@media(max-width:860px) and (max-height:640px){.ms-grid{gap:8px;padding-top:68px;padding-bottom:16px}.ms-h{margin-bottom:8px;font-size:26px}.ms-hd{min-height:40px}.ms-bd::before{padding:14px 18px 8px;font-size:18px}.ms-bd ul{padding-right:72px}.ms-bd li{padding:7px 0}.ms-bd li b{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.ms-it,.ms-bd,.ms-hd .pl{transition:none}}
 
-/* Site additions (Doug, 18 Nov 2026): on phones the stage sat under the 52px sticky nav, so the lowering layers
-   and the "Superhuman" title were cut off. Give the stage room below the nav and keep the title inside it. */
-@media(max-width:860px){.ms-grid{padding-top:96px}.md-stage{width:min(100%,34svh)}.md-title{top:6%}}
+/* Site additions (Doug, 19 Nov 2026, agreed with Ben) on top of Ben's mobile fix:
+   1. One device size per screen: every stage's card sits in the same grid cell (the closed ones invisible), so the card
+      area is always as tall as the tallest stage and the device no longer grows and shrinks as you scroll.
+   2. The "Superhuman" title sits inside the device's area, clear of the menu bar on short phones.
+   3. Phones held sideways: device on the left, list on the right.
+   4. See below. */
+@media(max-width:860px){
+.ms-bd{display:block;grid-row:2;grid-column:1/-1;align-self:start;visibility:hidden;pointer-events:none}
+.ms-it.on .ms-bd{visibility:visible;pointer-events:auto}
+.md-title{top:8%}
+}
+/* 4. Descriptions: with the device a fixed size, showing them on a phone makes the device smaller for every stage
+      (390x844: 165px). So phones (up to 960px tall) show the area names only; tablets keep the descriptions. */
+@media(max-width:860px) and (max-height:960px){.ms-bd li span{display:none}.ms-bd li i{grid-row:auto}}
+@media(max-width:860px) and (max-height:500px) and (orientation:landscape){
+.ms-grid{flex-direction:row;align-items:stretch;gap:24px;padding-top:84px;padding-bottom:12px}
+.md-wrap{order:-1;flex:0 0 38%;min-height:0;height:auto}
+.ms-ui{flex:1 1 0;min-width:0;align-self:center;padding-right:64px}
+.ms-h{font-size:24px;margin-bottom:8px}
+.ms-hd{min-height:36px}
+.ms-bd li span{display:none}
+.ms-bd li i{grid-row:auto}
+.ms-bd::before{padding:12px 16px 6px;font-size:17px}
+.ms-bd ul{padding:0 16px 6px}
+.ms-bd li{padding:6px 0}
+.ms-cta{padding:4px 16px 14px}
+}
