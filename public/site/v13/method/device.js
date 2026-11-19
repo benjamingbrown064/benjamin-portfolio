@@ -5,6 +5,8 @@
 var root = document.querySelector('.ms'); if (!root) return;
 var pin = root.querySelector('.ms-pin'), stage = root.querySelector('.md-stage');
 var items = [].slice.call(root.querySelectorAll('.ms-it')), heads = items.map(function (it) { return it.querySelector('.ms-hd'); });
+// mobile card title comes from the area name
+items.forEach(function (it) { var bd = it.querySelector('.ms-bd'), nm = it.querySelector('.ms-hd b'); if (bd && nm) bd.setAttribute('data-t', nm.textContent); });
 var glow = stage.querySelector('.md-glow'), title = stage.querySelector('.md-title');
 var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
