@@ -313,3 +313,18 @@ document.addEventListener('click',function(e){
     if(a)track('side_project_click',{link_url:a.href});
   });
 })();
+
+/* Journal: a Copy button on every prompt block (.ax-prompt), so readers can paste it straight into Claude. */
+(function(){
+  var blocks=document.querySelectorAll('.ax-prompt');
+  if(!blocks.length)return;
+  [].forEach.call(blocks,function(b){
+    var btn=document.createElement('button');btn.type='button';btn.className='ax-copy';btn.textContent='Copy';
+    btn.addEventListener('click',function(){
+      var text=b.querySelector('code').textContent;
+      var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy';},1600);};
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done,function(){});
+    });
+    b.appendChild(btn);
+  });
+})();

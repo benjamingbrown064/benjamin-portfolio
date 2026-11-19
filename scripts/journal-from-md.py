@@ -27,10 +27,13 @@ src = open(md_path, encoding="utf-8").read()
 # "Notes for ..." heading, is the author's working notes and must never be published.
 parts = src.split("\n---\n")
 body = parts[1] if len(parts) > 1 else src
+# A "## Sources" section after the closing rule is part of the article; anything else after it is not.
+extra = [x for x in parts[2:] if x.strip().startswith("## Sources")]
+body += "".join("\n\n" + x for x in extra)
 notes_cut = re.search(r"(?m)^## Notes for\b", body)
 if notes_cut:
     body = body[: notes_cut.start()]
-left_out = len(parts) > 2 or bool(notes_cut)
+left_out = len(parts) > 2 + len(extra) or bool(notes_cut)
 BASE = "/media/journal/%s/" % slug
 
 
@@ -54,13 +57,71 @@ def figure(f):
         ' class="ax-narrow"' if f.get("narrow") else "", BASE, f["file"], html.escape(f["alt"], quote=True), f["width"], f["height"], inline(f["caption"]))
 
 
+def blocks_of(text):
+    """Blank-line separated blocks, except that a fenced ``` block is kept whole even if it has blank lines."""
+    res, buf, fence = [], [], False
+    for line in text.split("\n"):
+        if line.strip().startswith("```"):
+            fence = not fence
+            buf.append(line)
+            continue
+        if not fence and not line.strip():
+            if buf:
+                res.append("\n".join(buf)); buf = []
+            continue
+        buf.append(line)
+    if buf:
+        res.append("\n".join(buf))
+    return res
+
+
+def li_item(t):
+    m = re.match(r"(.+?):\s+(https?://\S+)$", t)  # "Name: URL" (a sources list) becomes a link
+    return '<a href="%s" target="_blank" rel="noopener">%s</a>' % (m.group(2), inline(m.group(1))) if m else inline(t)
+
+
+def table(lines):
+    rows = [[c.strip() for c in l.strip().strip("|").split("|")] for l in lines]
+    if len(rows) < 2 or not all(re.fullmatch(r":?-{3,}:?", c) for c in rows[1]):
+        raise SystemExit("table without a header rule: " + lines[0][:60])
+    head = "".join("<th>%s</th>" % inline(c) for c in rows[0])
+    labels = [html.escape(re.sub(r"\*\*", "", c), quote=True) for c in rows[0]]  # shown above each cell on phones
+    body_rows = "".join("<tr>%s</tr>" % "".join('<td data-label="%s">%s</td>' % (labels[i], inline(c)) for i, c in enumerate(r)) for r in rows[2:])
+    return '<div class="ax-tbl"><table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>' % (head, body_rows)
+
+
+def quote(lines):
+    """A > block. One that opens with a bold-only line is a boxed aside (title + content); any other is an example
+    email, shown as a letter with its line breaks kept."""
+    inner = "\n".join(re.sub(r"^>\s?", "", l) for l in lines)
+    parts_ = [b.strip() for b in re.split(r"\n\s*\n", inner) if b.strip()]
+    box = re.fullmatch(r"\*\*[^*]+\*\*", parts_[0]) is not None
+    html_ = []
+    for i, b in enumerate(parts_):
+        ls = b.splitlines()
+        if box and i == 0:
+            html_.append('<p class="ax-box-t">%s</p>' % inline(b[2:-2]))
+        elif all(l.lstrip().startswith("- ") for l in ls):
+            html_.append("<ul>" + "".join("<li>%s</li>" % inline(l.lstrip()[2:].strip()) for l in ls) + "</ul>")
+        else:
+            html_.append("<p>%s</p>" % "<br>".join(inline(l.strip()) for l in ls))
+    return '<div class="%s">%s</div>' % ("ax-box" if box else "ax-mail", "".join(html_))
+
+
 out, heading, n, used, dropped = [], "", 0, set(), []
-for block in re.split(r"\n\s*\n", body):
+for block in blocks_of(body):
     block = block.strip()
     if not block or block.startswith("# "):
         continue
     if block.startswith("[NEEDS"):
         dropped.append(block[:90])
+        continue
+    if block.startswith("```"):
+        code = "\n".join(block.splitlines()[1:-1])
+        out.append('<div class="ax-prompt"><pre><code>%s</code></pre></div>' % html.escape(code, quote=False))
+        continue
+    if block.startswith("### "):
+        out.append("<h3>%s</h3>" % inline(block[4:].strip()))
         continue
     if block.startswith("## "):
         heading, n = block[3:].strip(), 0
@@ -68,7 +129,16 @@ for block in re.split(r"\n\s*\n", body):
         continue
     lines = block.splitlines()
     if all(l.lstrip().startswith("- ") for l in lines):
-        out.append("<ul>" + "".join("<li>%s</li>" % inline(l.lstrip()[2:].strip()) for l in lines) + "</ul>")
+        out.append("<ul>" + "".join("<li>%s</li>" % li_item(l.lstrip()[2:].strip()) for l in lines) + "</ul>")
+        continue
+    if all(re.match(r"\s*\d+\.\s", l) for l in lines):
+        out.append("<ol>" + "".join("<li>%s</li>" % inline(re.sub(r"^\s*\d+\.\s+", "", l)) for l in lines) + "</ol>")
+        continue
+    if all(l.lstrip().startswith("|") for l in lines):
+        out.append(table(lines))
+        continue
+    if all(l.lstrip().startswith(">") for l in lines):
+        out.append(quote(lines))
         continue
     if block[0] in "#>|":
         raise SystemExit("unsupported Markdown block: " + block[:60])
