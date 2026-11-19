@@ -57,6 +57,21 @@ def figure(f):
         ' class="ax-narrow"' if f.get("narrow") else "", BASE, f["file"], html.escape(f["alt"], quote=True), f["width"], f["height"], inline(f["caption"]))
 
 
+def reflow(lines):
+    """A prompt in the Markdown is hard-wrapped at about 75 characters to keep the file tidy. On the page (and when
+    copied) those breaks fall mid-sentence, so join each wrapped line onto the one before. A new line starts only at a
+    blank line, a "- " item or a "1. " item."""
+    out = []
+    for line in lines:
+        t = line.strip()
+        starts = not t or re.match(r"(?:- |\d+\.\s)", t)
+        if out and out[-1] and not starts:
+            out[-1] += " " + t
+        else:
+            out.append(t)
+    return "\n".join(out)
+
+
 def blocks_of(text):
     """Blank-line separated blocks, except that a fenced ``` block is kept whole even if it has blank lines."""
     res, buf, fence = [], [], False
@@ -117,7 +132,7 @@ for block in blocks_of(body):
         dropped.append(block[:90])
         continue
     if block.startswith("```"):
-        code = "\n".join(block.splitlines()[1:-1])
+        code = reflow(block.splitlines()[1:-1])
         out.append('<div class="ax-prompt"><pre><code>%s</code></pre></div>' % html.escape(code, quote=False))
         continue
     if block.startswith("### "):
