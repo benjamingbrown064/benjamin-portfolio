@@ -362,7 +362,7 @@ def structural_edits(src_rel, html):
     if src_rel == "login.html":
         # The sign-in page arrived with a newer footer design (".ft", needs v12/footer.css) than the rest of the site.
         # Give it the same footer as every other page; restyle all footers together if the new one is wanted.
-        contact = open(os.path.join(SRC, "contact.html"), encoding="utf-8").read()
+        contact = apply_patches("contact.html", open(os.path.join(SRC, "contact.html"), encoding="utf-8").read())
         foot = re.search(r'<footer class="foot dark".*?</footer>', contact, re.S).group(0)
         html = must_sub(r'<footer class="foot dark ft".*?</footer>', lambda m: foot, html, "login footer")
     # footer: social links come from the fact sheet, legal links are real pages
