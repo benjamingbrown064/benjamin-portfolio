@@ -788,5 +788,23 @@
     "old": ".ax-body li:last-child{",
     "new": ".ax-body>ul>li:last-child{",
     "count": 1
+  },
+  {
+    "file": "v11/theme.js",
+    "old": "lg.href=TB+'login.html';if(/\\/login\\.html$/.test(location.pathname))",
+    "new": "lg.href='/login';if(/^\\/login\\/?$/.test(location.pathname))",
+    "count": 1
+  },
+  {
+    "file": "login.html",
+    "old": "<link rel=\"stylesheet\" href=\"v12/footer.css\">",
+    "new": "",
+    "count": 1
+  },
+  {
+    "file": "login.html",
+    "old": "src=\"assets/ben-desk-bw-crop.png\"",
+    "new": "src=\"assets/ben-desk-bw-crop.jpg\"",
+    "count": 1
   }
 ]
