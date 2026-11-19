@@ -365,6 +365,9 @@ def structural_edits(src_rel, html):
         # v12/footer.css). Give them the same footer as every other page; restyle all footers together if wanted.
         contact = apply_patches("contact.html", open(os.path.join(SRC, "contact.html"), encoding="utf-8").read())
         foot = re.search(r'<footer class="foot dark".*?</footer>', contact, re.S).group(0)
+        if os.path.dirname(src_rel):
+            # The footer is taken from a page at the top level, so its relative links need to climb out of this folder.
+            foot = re.sub(r'((?:href|src)=")(?!https?:|/|#|mailto:|tel:|\.\./)', r'\1../', foot)
         html = must_sub(r'<footer class="foot dark ft".*?</footer>', lambda m: foot, html, "newer footer")
         html = re.sub(r'<link rel="stylesheet" href="(?:\.\./)?v12/footer\.css">\s*', "", html)
     # footer: social links come from the fact sheet, legal links are real pages
@@ -417,6 +420,8 @@ def process_page(src_rel, out_name):
     html = re.sub(r'<script type="text/babel" src="([^"]+)\.jsx"', r'<script src="\1.js"', html)
     html = re.sub(r'<template id="__bundler_thumbnail">.*?</template>\s*', "", html, flags=re.S)
     html = rewrite_html(html, base_dir)
+    # Embedded animations are heavy; any frame the design did not mark either way loads when it is scrolled near.
+    html = re.sub(r'<iframe(?![^>]*\bloading=)', '<iframe loading="lazy"', html)
     # tokens filled in by src/lib/site.ts
     html = html.replace("</head>", "{{head}}\n</head>", 1)
     html = html.replace("</body>", "{{body_end}}\n</body>", 1)

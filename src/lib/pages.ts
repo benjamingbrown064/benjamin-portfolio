@@ -10,6 +10,7 @@ const PAGES: { file: string; path: string; name: string }[] = [
   { file: "work-taskbox", path: "/work/taskbox", name: "Taskbox case study" },
   { file: "work-warrantyos", path: "/work/warrantyos", name: "WarrantyOS case study" },
   { file: "work-govscape", path: "/work/govscape", name: "Govscape case study" },
+  { file: "work-wilbolaw", path: "/work/wilbolaw", name: "WilboLaw case study" },
   { file: "method", path: "/method", name: "The method" },
   { file: "contact", path: "/contact", name: "Let's talk" },
 ];

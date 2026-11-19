@@ -6,7 +6,7 @@ import { sendNotice, sendReceipt } from "@/lib/mail";
 // Records a coffee request. The calendar is not connected yet, so this is a request for a time,
 // not a confirmed booking; it is confirmed by hand until the calendar stage is built.
 export async function POST(request: Request) {
-  const g = await guard(request, { table: "booking_requests", perHour: 3, perDay: 60, maxBytes: 8000 });
+  const g = await guard(request, { table: "booking_requests", perHour: 3, perDay: 60, maxBytes: 8000, bot: true });
   if (!g.ok) return g.response;
   const b = g.body;
   const email = str(b.email, 200);

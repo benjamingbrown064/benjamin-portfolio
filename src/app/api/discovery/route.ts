@@ -9,7 +9,7 @@ function obj(v: unknown): Record<string, unknown> {
 }
 
 export async function POST(request: Request) {
-  const g = await guard(request, { table: "discovery_submissions", perHour: 4, perDay: 200, maxBytes: 120_000 });
+  const g = await guard(request, { table: "discovery_submissions", perHour: 4, perDay: 200, maxBytes: 120_000, bot: true });
   if (!g.ok) return g.response;
   const b = g.body;
   const c = obj(b.contact);

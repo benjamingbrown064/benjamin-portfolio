@@ -167,6 +167,15 @@ export function renderPage(name: string, opts: PageOptions): string {
   const analytics = gtm
     ? `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}(function(){var c=null;try{c=localStorage.getItem("bb:consent")}catch(e){}gtag("consent","default",{ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",analytics_storage:c==="granted"?"granted":"denied"});if(!/(^|\\.)benjaminbrown\\.co$/.test(location.hostname))return;dataLayer.push({"gtm.start":new Date().getTime(),event:"gtm.js"});var j=document.createElement("script");j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id=${gtm}";document.head.appendChild(j)})();</script>`
     : "";
+  const person = name === "home"
+    ? `<script type="application/ld+json">${JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          { "@type": "WebSite", "@id": `${SITE_URL}/#site`, url: SITE_URL, name: facts.name, publisher: { "@id": `${SITE_URL}/#ben` } },
+          { "@type": "Person", "@id": `${SITE_URL}/#ben`, name: facts.name, alternateName: "Ben Brown", url: SITE_URL, email: facts.email, image: `${SITE_URL}/site/assets/ben-portrait.jpg`, jobTitle: "Founder and product builder", description, sameAs: (facts.social as { url: string }[]).map((l) => l.url) },
+        ],
+      }).replace(/</g, "\\u003c")}</script>`
+    : "";
   const head = [
     `<link rel="canonical" href="${canonical}">`,
     `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`,
@@ -182,17 +191,17 @@ export function renderPage(name: string, opts: PageOptions): string {
     `<meta name="twitter:title" content="${title}">`,
     description ? `<meta name="twitter:description" content="${description}">` : "",
     `<meta name="twitter:image" content="${SITE_URL}${opts.image ?? SHARE_IMAGE}">`,
+    person,
     analytics,
   ]
     .filter(Boolean)
     .join("\n");
   // The assistant is on every page except the discovery questionnaire, which is a focused full-screen flow.
+  // BotID tags the requests that send a form, start a call or send an email code. The assistant is on every page except
+  // the discovery questionnaire, which is a focused full-screen flow; the call library itself loads only when a call starts.
   const bodyEnd =
-    `<script src="${versioned("/site/v13/site.js")}" defer></script>` +
-    (name === "discovery"
-      ? ""
-      : // BotID tags the requests that start a call or send an email code; the call library itself loads only when a call starts.
-        `\n<script src="${versioned("/site/v13/vendor/botid.js")}" defer></script>\n<script src="${versioned("/site/v13/toto.js")}" data-call="${versioned("/site/v13/vendor/call.mjs")}" defer></script>`);
+    `<script src="${versioned("/site/v13/site.js")}" defer></script>\n<script src="${versioned("/site/v13/vendor/botid.js")}" defer></script>` +
+    (name === "discovery" ? "" : `\n<script src="${versioned("/site/v13/toto.js")}" data-call="${versioned("/site/v13/vendor/call.mjs")}" defer></script>`);
 
   const tokens: Record<string, string> = {
     head,
