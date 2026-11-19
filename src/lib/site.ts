@@ -273,7 +273,7 @@ export function renderJournalEntry(slug: string): string | null {
 <h1 class="ax-t rv">${esc(e.title)}</h1>
 <p class="lede rv">${esc(e.excerpt)}</p>
 </div></header>
-<div class="w"><figure class="ax-cover art${e.grey ? " grey" : ""} rv"><img src="${e.cover}" alt="${esc(e.coverAlt)}" decoding="async" fetchpriority="high"></figure></div>
+<div class="w"><figure class="ax-cover art${e.grey ? " grey" : ""} rv"><img src="${e.hero ?? e.cover}" alt="${esc(e.hero ? e.heroAlt ?? e.coverAlt : e.coverAlt)}" decoding="async" fetchpriority="high"></figure></div>
 <div class="w ax-w ax-body rv">
 ${body}
 </div>
