@@ -17,6 +17,9 @@ export type JournalEntry = {
   /** 2:1 picture at the top of the article and on the journal index. */
   cover: string;
   coverAlt: string;
+  /** Optional picture for the top of the article page only (no title lettering, since the page has its own title). Falls back to cover. */
+  hero?: string;
+  heroAlt?: string;
   /** 4:3 picture for the smaller cards. */
   thumb: string;
   /** A picture with no lettering in it. Only used on the home page tile when there is no weekly roundup to show there. */
@@ -37,7 +40,9 @@ export const JOURNAL: JournalEntry[] = [
     minutes: 7,
     cover: "/media/journal/the-1-percent-email/cover-2.jpg",
     coverAlt: "A woman at a laptop in warm window light. Beside her, a 12-second voice note (Tell Sarah we’re two weeks late, new date’s the 4th) becomes a short email drafted by Claude in her voice. Lettering: The 1%. Email that sounds like you. No. 1, 18 Nov 2026",
-    thumb: "/media/journal/the-1-percent-email/thumb-2.jpg",
+    hero: "/media/journal/the-1-percent-email/hero.jpg",
+    heroAlt: "A woman at a laptop in warm window light. A 12-second voice note beside her becomes a short email drafted by Claude in her voice: Hi Sarah, straight answer: we’re two weeks behind. New date is Friday 4 December, and I’ll run your team’s training myself to make up for it.",
+    thumb: "/media/journal/the-1-percent-email/thumb-3.jpg",
   },
   {
     slug: "ai-answers-my-website",
