@@ -96,3 +96,14 @@
 .ms-bd li{padding:6px 0}
 .ms-cta{padding:4px 16px 14px}
 }
+
+/* 5. iPhone fit (Ben, 19 Nov, screenshot from a 393px iPhone): the device was small, the "Superhuman" title sat on its lid,
+      and the 80px kept free for the chat button left dead space under the card. On portrait phones the card now runs down
+      to near the bottom with its text kept clear of the chat button on the right, so the device gets that height back.
+      The "Superhuman / The Method." title over the device is hidden on portrait phones: there is no clear spot for it
+      at this size, and the open card already reads "Superhuman. The Method." at that stage. */
+@media(max-width:860px) and (orientation:portrait){
+.ms-grid{padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+.ms-bd ul,.ms-cta{padding-right:72px}
+.md-title{display:none}
+}
