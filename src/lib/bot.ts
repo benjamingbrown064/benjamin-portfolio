@@ -1,12 +1,13 @@
 // Vercel BotID: tells people from scripts on the requests that cost money (starting a call, sending an email code).
-// The browser side is public/site/v13/vendor/botid.js. My own test runs can pass the admin token instead.
+// The browser side is public/site/v13/vendor/botid.js. Test runs pass SITE_TEST_TOKEN in the x-site-test header instead.
 import { checkBotId } from "botid/server";
 import { createHash, timingSafeEqual } from "node:crypto";
 
 export async function isBot(request: Request): Promise<boolean> {
-  const admin = process.env.SITE_ADMIN_TOKEN ?? "";
+  // Its own secret, not the admin token: a leaked test secret must not open the leads feed.
+  const test = process.env.SITE_TEST_TOKEN ?? "";
   const given = request.headers.get("x-site-test") ?? "";
-  if (admin && given.length === admin.length && timingSafeEqual(Buffer.from(admin), Buffer.from(given))) return false;
+  if (test.length >= 32 && given.length === test.length && timingSafeEqual(Buffer.from(test), Buffer.from(given))) return false;
   try {
     const v = await checkBotId();
     return v.isBot;
