@@ -167,6 +167,11 @@ export function renderPage(name: string, opts: PageOptions): string {
   const analytics = gtm
     ? `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}(function(){var c=null;try{c=localStorage.getItem("bb:consent")}catch(e){}gtag("consent","default",{ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",analytics_storage:c==="granted"?"granted":"denied"});if(!/(^|\\.)benjaminbrown\\.co$/.test(location.hostname))return;dataLayer.push({"gtm.start":new Date().getTime(),event:"gtm.js"});var j=document.createElement("script");j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id=${gtm}";document.head.appendChild(j)})();</script>`
     : "";
+  // Browser error reporting: Sentry's loader is tiny and fetches the full reporter only when an error happens.
+  const sentryKey = /^https:\/\/([0-9a-f]{32})@/.exec(process.env.SENTRY_DSN ?? "")?.[1];
+  const errors = sentryKey
+    ? `<script>if(/(^|\\.)benjaminbrown\\.co$/.test(location.hostname)){window.sentryOnLoad=function(){Sentry.init({tracesSampleRate:0,dataCollection:{userInfo:false,cookies:false,httpHeaders:false,httpBodies:[],urlQueryParams:false}})};var s=document.createElement("script");s.src="https://js.sentry-cdn.com/${sentryKey}.min.js";s.crossOrigin="anonymous";document.head.appendChild(s)}</script>`
+    : "";
   const person = name === "home"
     ? `<script type="application/ld+json">${JSON.stringify({
         "@context": "https://schema.org",
@@ -193,6 +198,7 @@ export function renderPage(name: string, opts: PageOptions): string {
     `<meta name="twitter:image" content="${SITE_URL}${opts.image ?? SHARE_IMAGE}">`,
     person,
     analytics,
+    errors,
   ]
     .filter(Boolean)
     .join("\n");
@@ -255,6 +261,22 @@ ${body}
     description: opts.description,
     main,
   });
+}
+
+/** A short message page (newsletter confirmed, unsubscribe) in the article layout. Not for search engines. */
+export function renderMessagePage(opts: { url: string; title: string; lede: string; body?: string }): string {
+  const main = `
+<article class="ax" data-screen-label="01 ${esc(opts.title)}">
+<header class="ax-head"><div class="w ax-w">
+<h1 class="ax-t rv">${esc(opts.title)}</h1>
+<p class="lede rv">${esc(opts.lede)}</p>
+</div></header>
+<div class="w ax-w ax-body rv">
+${opts.body ?? ""}
+</div>
+</article>
+`;
+  return renderPage("journal-article", { url: opts.url, title: `${opts.title} · Benjamin Brown®`, description: opts.lede, main, noindex: true });
 }
 
 /** A journal entry: its body comes from site/content/journal/<slug>.html. Returns null for an unknown slug. */

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import { JOURNAL } from "./src/lib/journal";
 
 const nextConfig: NextConfig = {
@@ -52,4 +53,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry wraps the server routes so errors are sent before a request ends. No source maps are uploaded.
+export default withSentryConfig(nextConfig, { silent: true, telemetry: false, sourcemaps: { disable: true } });

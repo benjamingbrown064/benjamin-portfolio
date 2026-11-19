@@ -61,6 +61,20 @@ export async function select<T = Record<string, unknown>>(table: string, query: 
   return (await res.json()) as T[];
 }
 
+/** Change rows matching a PostgREST filter. Returns the changed rows. */
+export async function update<T = Record<string, unknown>>(table: string, filter: string, patch: Record<string, unknown>): Promise<T[]> {
+  const res = await fetch(`${URL_}/rest/v1/${table}?${filter}`, { method: "PATCH", headers: headers({ Prefer: "return=representation" }), body: JSON.stringify(patch) });
+  if (!res.ok) throw new DbError(res.status, await res.text().catch(() => ""));
+  return (await res.json()) as T[];
+}
+
+/** Delete files from private storage. */
+export async function removeFiles(bucket: string, paths: string[]): Promise<void> {
+  if (!paths.length) return;
+  const res = await fetch(`${URL_}/storage/v1/object/${bucket}`, { method: "DELETE", headers: headers(), body: JSON.stringify({ prefixes: paths }) });
+  if (!res.ok) throw new DbError(res.status, await res.text().catch(() => ""));
+}
+
 /** Call a database function. */
 export async function rpc<T = unknown>(fn: string, args: Record<string, unknown>): Promise<T> {
   const res = await fetch(`${URL_}/rest/v1/rpc/${fn}`, { method: "POST", headers: headers(), body: JSON.stringify(args) });
