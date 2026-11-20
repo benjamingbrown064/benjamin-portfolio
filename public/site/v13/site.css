@@ -230,3 +230,5 @@ html[data-theme=dark] .foot .foot-grid .fs-a{color:#a1a1a6}
 /* Small tap targets. */
 .bba-foot button{min-height:24px}
 a[data-agent-open]{display:inline-flex;align-items:center;min-height:24px}
+/* Home squares graphic: no hover effects while the page is scrolling (see site.js). */
+.h2-waffle.is-scrolling i{transform:none!important;opacity:1!important}
