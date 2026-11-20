@@ -3,5 +3,5 @@ import { htmlResponse, renderPage } from "@/lib/site";
 export const dynamic = "force-static";
 
 export function GET() {
-  return htmlResponse(renderPage("work-wilbolaw", { url: "/work/wilbolaw", image: "/og/work-wilbolaw.jpg" }));
+  return htmlResponse(renderPage("work-wilbolaw", { url: "/work/wilbolaw", image: "/og/work-wilbolaw-logo.jpg" }));
 }
