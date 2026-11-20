@@ -31,8 +31,8 @@
   if(window.BBDiscovery)window.BBDiscovery.endpoint='/api/discovery';
 
   /* Coffee: recorded as a request for a time. It is confirmed by email until the calendar is connected. */
-  /* Times on offer come from the server: Ben's hours, less what his calendar and earlier requests have taken. */
-  if(window.BBCoffee)window.BBCoffee.availability=function(d){var day=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');return fetch('/api/availability?date='+day).then(function(r){return r.json()}).then(function(j){return j.slots||[]}).catch(function(){return[]})};
+  /* Times on offer come from the server: Ben's hours, less what his calendar and earlier requests have taken, shown on the visitor's own clock. */
+  if(window.BBCoffee)window.BBCoffee.availability=function(d){var day=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}return fetch('/api/availability?date='+day+'&tz='+encodeURIComponent(tz)).then(function(r){return r.json()}).then(function(j){return j.slots||[]}).catch(function(){return[]})};
   window.addEventListener('bb:coffee',function(e){post('/api/bookings',e.detail||{}).catch(function(){})});
 })();
 

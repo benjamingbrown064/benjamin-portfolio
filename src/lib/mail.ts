@@ -34,7 +34,8 @@ function when(r: Extract<Receipt, { kind: "booking" }>): string | null {
   const d = new Date(`${r.date}T12:00:00Z`);
   if (Number.isNaN(d.getTime())) return null;
   const day = d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
-  const zone = r.timeZone === facts.coffee.timeZone ? ` ${facts.coffee.timeZoneLabel}` : r.timeZone && /^[A-Za-z_]+(?:\/[A-Za-z0-9_+-]+){0,2}$/.test(r.timeZone) ? ` (${r.timeZone.replace(/_/g, " ")} time)` : "";
+  // "Europe/London" reads as "London time": the visitor booked on their own clock.
+  const zone = r.timeZone && /^[A-Za-z_]+(?:\/[A-Za-z0-9_+-]+){0,2}$/.test(r.timeZone) ? ` (${r.timeZone.split("/").pop()!.replace(/_/g, " ")} time)` : "";
   const how = r.format === "video" ? ", by video" : r.format === "in-person" || r.format === "person" ? ", in person" : "";
   return `${day} at ${r.time}${zone}${how}`;
 }

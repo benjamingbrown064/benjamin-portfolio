@@ -35,9 +35,17 @@
   ],
   "gtm": "GTM-WLRQ8ZVX",
   "coffee": {
-    "_note": "When coffee can be booked. Times are in timeZone. Busy times come from Ben's calendar (CALENDAR_ICS_URL).",
-    "timeZone": "Europe/London",
-    "timeZoneLabel": "UK time",
+    "_note": "When coffee can be booked. The hours apply in the time zone of wherever Ben is that day: 'home' unless his calendar has an all-day event whose title contains one of awayWords (for example 'California'), or location is set to 'away'. Busy times come from his calendar (CALENDAR_ICS_URL). Visitors see the times in their own time zone.",
+    "location": "home",
+    "home": {
+      "timeZone": "Europe/London",
+      "place": "York, UK"
+    },
+    "away": {
+      "timeZone": "America/Los_Angeles",
+      "place": "Costa Mesa, CA"
+    },
+    "awayWords": "california|costa mesa|los angeles|usa",
     "days": [
       1,
       2,
