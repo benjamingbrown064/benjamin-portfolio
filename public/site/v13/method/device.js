@@ -79,7 +79,7 @@ var finish = stage.querySelector('.md-finish'), screenEl = stage.querySelector('
 function fitScreen() { var s = stage.clientWidth / 1100; screenEl.style.transform = 'translate(' + (-200 * s) + 'px,' + (-200 * s) + 'px) scale(' + s + ')'; }
 var M = { x0: 10, top: 8, colw: 104, gap: 52, segs: 9, segh: 24, seggap: 9, r: 7 };
 var awake = [1, 0, 0, 0], level = [0, 0, 0, 0], peak = [0, 0, 0, 0], hold = [0, 0, 0, 0], seed = [0, 1.7, 3.1, 4.6];
-var LIT = 'rgb(230,104,50)', HOT = 'rgb(246,176,140)', PEAK = 'rgba(240,140,96,.9)'; // matched to the v8 rendered screen
+var LIT = 'rgb(186,80,30)', HOT = 'rgb(222,154,116)', PEAK = 'rgba(208,122,82,.9)'; // matched to the v9 rendered screen
 function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); ctx.fill(); }
 function sig(i, t) { var s = seed[i]; return cl(.52 + .22 * Math.sin(t * 1.9 + s) + .14 * Math.sin(t * 5.3 + s * 2.3) + .12 * Math.sin(t * 11.7 + s * .7) + (Math.random() < .04 ? .3 : 0)); }
 function draw(t, dt) {
