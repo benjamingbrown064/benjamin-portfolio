@@ -8,6 +8,12 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   const url = new URL(request.url);
   const token = url.searchParams.get("t") ?? "";
+  // A mail app's own Unsubscribe button posts this exact body and wants a plain answer, not a page.
+  const oneClick = (await request.text().catch(() => "")).includes("List-Unsubscribe=One-Click");
+  if (oneClick) {
+    if (/^[0-9a-f]{48}$/.test(token)) await update("subscribers", `confirm_token=eq.${token}`, { status: "unsubscribed", unsubscribed_at: new Date().toISOString() }).catch((e) => console.error("unsubscribe: failed", e));
+    return new NextResponse(null, { status: 200 });
+  }
   if (/^[0-9a-f]{48}$/.test(token)) {
     try {
       await update("subscribers", `confirm_token=eq.${token}`, { status: "unsubscribed", unsubscribed_at: new Date().toISOString() });
