@@ -106,10 +106,10 @@ const cache = new Map<string, { slots: Slot[]; made: number }>();
 
 /** The times still free on a day, for a visitor in a given time zone: each as the time on their own clock and the
  *  exact moment. `date` is the day on the visitor's calendar. Without a visitor zone, Ben's own zone is used. */
-export async function freeSlots(date: string, visitorZone?: string): Promise<Slot[]> {
+export async function freeSlots(date: string, visitorZone?: string, fresh = false): Promise<Slot[]> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(date))) return [];
   const key = `${date}|${visitorZone ?? ""}`, hit = cache.get(key);
-  if (hit && Date.now() - hit.made < 60_000) return hit.slots;
+  if (!fresh && hit && Date.now() - hit.made < 60_000) return hit.slots;
 
   // Ben's working day can fall on the day before or after on the visitor's calendar, so three of his days are looked at.
   const days = [shift(date, -1), date, shift(date, 1)];
@@ -137,6 +137,11 @@ export async function freeSlots(date: string, visitorZone?: string): Promise<Slo
   cache.set(key, { slots, made: Date.now() });
   if (cache.size > 400) cache.clear();
   return slots;
+}
+
+/** Called after a booking is saved, so the time stops being offered straight away. */
+export function forgetSlots(): void {
+  cache.clear();
 }
 
 function benZone(day: string, cal: Calendar): string {

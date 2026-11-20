@@ -13,7 +13,7 @@
         return "Europe/London";
       }
     })(),
-    TZL = "Times are in your local time (" + TZ.split("/").pop().replace(/_/g, " ") + ")",
+    TZL = "your local time (" + TZ.split("/").pop().replace(/_/g, " ") + ")",
     DAYS_AHEAD = 42;
   const esc = (s) =>
     String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -220,12 +220,8 @@
       pick.innerHTML =
         '<div class="cf-step cf-done" style="grid-column:1/-1"><span class="ok">' +
         CK +
-        "</span><h3>" +
-        (ok ? "See you then." : "Request sent.") +
-        "</h3><p>" +
-        (ok
-          ? "The invite is on its way to " + esc(b.email) + "."
-          : "Ben will confirm by email at " + esc(b.email) + " within one working day.") +
+        "</span><h3>You’re booked.</h3><p>" +
+        ("Your coffee with Ben is booked. A confirmation is on its way to " + esc(b.email) + ".") +
         '</p><div class="cf-sum"><span class="ic">' +
         f.ico +
         "</span><span><b>" +
@@ -316,7 +312,12 @@
       let ok = false;
       try {
         if (window.BBCoffee.book) ok = !!(await window.BBCoffee.book(b));
-      } catch (x) {}
+      } catch (x) {
+        btn.disabled = false;
+        btn.innerHTML = 'Book coffee <span class="arr">→</span>';
+        er.textContent = (x && x.message) || "That did not go through. Please try again, or email hello@benjaminbrown.co.";
+        return;
+      }
       try {
         const all = JSON.parse(localStorage.getItem("bb:coffee") || "[]");
         all.push(b);

@@ -30,10 +30,14 @@
   /* Discovery questionnaire (v12/discovery.js posts here). */
   if(window.BBDiscovery)window.BBDiscovery.endpoint='/api/discovery';
 
-  /* Coffee: recorded as a request for a time. It is confirmed by email until the calendar is connected. */
   /* Times on offer come from the server: Ben's hours, less what his calendar and earlier requests have taken, shown on the visitor's own clock. */
   if(window.BBCoffee)window.BBCoffee.availability=function(d){var day=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}return fetch('/api/availability?date='+day+'&tz='+encodeURIComponent(tz)).then(function(r){return r.json()}).then(function(j){return j.slots||[]}).catch(function(){return[]})};
-  window.addEventListener('bb:coffee',function(e){post('/api/bookings',e.detail||{}).catch(function(){})});
+  /* Coffee: the booking is saved before the success screen shows. If it cannot be saved (the time has just gone,
+     or the connection dropped) the visitor is told and can pick again; nothing is shown as booked that is not. */
+  if(window.BBCoffee)window.BBCoffee.book=function(b){
+    return fetch('/api/bookings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})
+      .then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok||!j.ok)throw new Error(j.error||'That did not go through. Please try again, or email hello@benjaminbrown.co.');return true})});
+  };
 })();
 
 /* Keyboard focus ring only while the keyboard is being used to move around. */

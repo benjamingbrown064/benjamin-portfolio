@@ -86,7 +86,7 @@
   {
     "file": "v12/coffee.js",
     "old": "<h3>See you then.</h3>",
-    "new": "<h3>'+(ok?'See you then.':'Request sent.')+'</h3>",
+    "new": "<h3>You’re booked.</h3>",
     "count": 1
   },
   {
@@ -882,7 +882,7 @@
   {
     "file": "v12/coffee.js",
     "old": "const TZ='America/Los_Angeles',TZL='Costa Mesa time (PT)',DAYS_AHEAD=42;",
-    "new": "const TZ=(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Europe/London'}catch(e){return 'Europe/London'}})(),TZL='Times are in your local time ('+TZ.split('/').pop().replace(/_/g,' ')+')',DAYS_AHEAD=42;",
+    "new": "const TZ=(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Europe/London'}catch(e){return 'Europe/London'}})(),TZL='your local time ('+TZ.split('/').pop().replace(/_/g,' ')+')',DAYS_AHEAD=42;",
     "count": 1
   },
   {
@@ -902,5 +902,17 @@
     "old": "' · Costa Mesa, address with the invite'",
     "new": "' · address with the invite'",
     "count": 2
+  },
+  {
+    "file": "v12/coffee.js",
+    "old": "(ok?'The invite is on its way to '+esc(b.email)+'.':'Ben will confirm by email at '+esc(b.email)+' within one working day.')",
+    "new": "('Your coffee with Ben is booked. A confirmation is on its way to '+esc(b.email)+'.')",
+    "count": 1
+  },
+  {
+    "file": "v12/coffee.js",
+    "old": "ok=!!(await window.BBCoffee.book(b))}catch(x){}",
+    "new": "ok=!!(await window.BBCoffee.book(b))}catch(x){btn.disabled=false;btn.innerHTML='Book coffee <span class=\"arr\">→</span>';er.textContent=(x&&x.message)||'That did not go through. Please try again, or email hello@benjaminbrown.co.';return}",
+    "count": 1
   }
 ]
