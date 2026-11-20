@@ -346,3 +346,23 @@ document.addEventListener('click',function(e){
   },{passive:true});
   addEventListener('pointermove',function(e){if(!t&&e.pointerType!=='touch')wf.classList.remove('is-scrolling')},{passive:true});
 })();
+
+/* Animations laid over photos on the home page (WarrantyOS phone, Taskbox card). Each is a self-contained player
+   file with its own dark backdrop and control bar, which it is meant to drop when embedded. On an iPad that did
+   not always happen, so this page makes sure: the backdrop is cleared and the bar hidden from here. */
+(function(){
+  var frames=document.querySelectorAll('.wos-ph iframe,.tbn-anim iframe');if(!frames.length)return;
+  var CSS='html,body{background:transparent!important}[data-omelette-chrome]{display:none!important}';
+  function clean(f){
+    try{
+      var d=f.contentDocument;if(!d||!d.head||!d.body||d.URL==='about:blank')return;
+      if(!d.getElementById('bb-clean')){var s=d.createElement('style');s.id='bb-clean';s.textContent=CSS;d.head.appendChild(s)}
+    }catch(e){}
+  }
+  [].forEach.call(frames,function(f){
+    // The player rebuilds its own page after loading, which drops anything added before, so keep checking for a
+    // while after each load (the frames load late, when their slide is scrolled near).
+    function watch(){clean(f);var n=0,t=setInterval(function(){clean(f);if(++n>40)clearInterval(t)},500)}
+    f.addEventListener('load',watch);watch();
+  });
+})();
