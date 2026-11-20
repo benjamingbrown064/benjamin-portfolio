@@ -424,6 +424,10 @@ def process_page(src_rel, out_name):
     html = re.sub(r'<script type="text/babel" src="([^"]+)\.jsx"', r'<script src="\1.js"', html)
     html = re.sub(r'<template id="__bundler_thumbnail">.*?</template>\s*', "", html, flags=re.S)
     html = rewrite_html(html, base_dir)
+    # The two animations laid over home-page photos are player exports that hide their control bar and dark backdrop
+    # with a flag set inside the file. On Ben's iPad that flag was not always set in time (20 Nov 2026), so the page
+    # asks for the clean mode in the address as well, which the player checks itself. v13/site.js clears the backdrop.
+    html = re.sub(r'(<iframe[^>]*\ssrc="/site/assets/web/(?:warrantyos-phone-sell-v4|taskbox-needs-you)\.html)"', r'\1?embed"', html)
     # Embedded animations are heavy; any frame the design did not mark either way loads when it is scrolled near.
     html = re.sub(r'<iframe(?![^>]*\bloading=)', '<iframe loading="lazy"', html)
     # tokens filled in by src/lib/site.ts
