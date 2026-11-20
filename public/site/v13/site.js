@@ -333,3 +333,16 @@ document.addEventListener('click',function(e){
     b.appendChild(btn);
   });
 })();
+
+/* "With the right set-up" squares (home): their hover highlight used to fire as the page scrolled under a resting
+   pointer, dimming and scaling squares on and off. While the page is scrolling the highlight is held off (the squares still
+   take clicks); it comes back when the mouse itself moves. */
+(function(){
+  var wf=document.querySelector('.h2-waffle');if(!wf)return;
+  var t=0;
+  addEventListener('scroll',function(){
+    if(!t)wf.classList.add('is-scrolling');
+    clearTimeout(t);t=setTimeout(function(){t=0},180);
+  },{passive:true});
+  addEventListener('pointermove',function(e){if(!t&&e.pointerType!=='touch')wf.classList.remove('is-scrolling')},{passive:true});
+})();
