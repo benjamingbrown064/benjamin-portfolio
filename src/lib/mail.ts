@@ -92,11 +92,11 @@ export function receiptContent(r: Receipt): { subject: string; lines: string[]; 
   }
   const slot = when(r);
   return {
-    subject: "Your coffee request has arrived",
+    subject: "Your coffee with Ben is booked",
     lines: [
       hello,
-      slot ? `Thanks for asking for a coffee. You asked for ${slot}.` : "Thanks for asking for a coffee.",
-      `This is a request, not a confirmed booking yet. I will confirm the time, or suggest another, and you will get ${facts.replyPromise}.`,
+      slot ? `Thanks for booking a coffee. You are booked for ${slot}.` : "Thanks for booking a coffee. You are booked.",
+      "A calendar invite will follow to this address. If you need to change the time, reply to this email.",
       ...sign,
     ],
   };
