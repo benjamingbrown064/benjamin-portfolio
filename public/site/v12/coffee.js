@@ -6,8 +6,14 @@
    Without them it shows sample weekday slots and fires a 'bb:coffee' event with the booking. */
 (function () {
   if (window.BBCoffee) return;
-  const TZ = "Europe/London",
-    TZL = "UK time",
+  const TZ = (() => {
+      try {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/London";
+      } catch (e) {
+        return "Europe/London";
+      }
+    })(),
+    TZL = "Times are in your local time (" + TZ.split("/").pop().replace(/_/g, " ") + ")",
     DAYS_AHEAD = 42;
   const esc = (s) =>
     String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -24,7 +30,7 @@
   const VID = svg('<rect x="3" y="6.5" width="12.5" height="11" rx="2.5"></rect><path d="M15.5 10.5l5-3v9l-5-3"></path>');
   const CAL = svg('<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"></rect><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"></path>');
   const FMT = [
-    { id: "person", n: "In person", d: "Costa Mesa, CA", ico: CUP },
+    { id: "person", n: "In person", d: "York or Costa Mesa", ico: CUP },
     { id: "video", n: "Video call", d: "Google Meet link", ico: VID },
   ];
   const MON = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -193,7 +199,7 @@
         }
       }
     };
-    const label = () => WDL[S.day.getDay()] + " " + S.day.getDate() + " " + MON[S.day.getMonth()] + " · " + nice(S.time) + " UK time";
+    const label = () => WDL[S.day.getDay()] + " " + S.day.getDate() + " " + MON[S.day.getMonth()] + " · " + nice(S.time);
     const drawForm = () => {
       const f = fmtOf();
       pick.innerHTML =
@@ -205,7 +211,7 @@
         esc(label()) +
         "</b><small>30 minutes · " +
         esc(f.n) +
-        (f.id === "person" ? " · Costa Mesa, address with the invite" : " · link with the invite") +
+        (f.id === "person" ? " · address with the invite" : " · link with the invite") +
         '</small></span></div><form class="cf-fl" novalidate><div class="cf-fd"><label for="cf-n">Name</label><input id="cf-n" name="name" autocomplete="name" placeholder="Your name"></div><div class="cf-fd"><label for="cf-e">Email</label><input id="cf-e" name="email" type="email" autocomplete="email" placeholder="you@company.com"></div><div class="cf-fd"><label for="cf-t">Anything to cover?<em>optional</em></label><textarea id="cf-t" name="note" rows="1" placeholder="A line or two is plenty"></textarea></div><div><button type="submit" class="cf-btn cf-go">Book coffee <span class="arr">→</span></button><div class="cf-err" aria-live="polite"></div></div></form></div>';
       setTimeout(() => pick.querySelector("#cf-n").focus({ preventScroll: true }), 200);
     };
@@ -244,7 +250,7 @@
               esc(label()) +
               "</b><small>30 minutes · " +
               esc(fmtOf().n) +
-              (S.fmt === "person" ? " · Costa Mesa, address with the invite" : " · link with the invite") +
+              (S.fmt === "person" ? " · address with the invite" : " · link with the invite") +
               "</small></span></div>";
             return x.innerHTML;
           })();
