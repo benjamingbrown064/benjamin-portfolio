@@ -74,9 +74,9 @@ export const JOURNAL: JournalEntry[] = [
     issue: "No. 1",
     excerpt: "Five things that changed in AI from 9 to 12 November, in plain English. And one thing to do about each this week.",
     minutes: 4,
-    cover: `${HANDOVER_1}/cover.jpg`,
-    coverAlt: "Ben Brown at his desk in a dark studio. Lettering reads: The Handover, weekly AI roundup, number 1, 13 November 2026.",
-    thumb: `${HANDOVER_1}/thumb.jpg`,
+    cover: `${HANDOVER_1}/cover-2.jpg`,
+    coverAlt: "Ben Brown at a desk in a dark studio, hands open mid-explanation. Lettering beside him on black with an orange glow reads: Ben Brown · Journal. Weekly AI roundup. The Handover. No. 1. 13 Nov 2026.",
+    thumb: `${HANDOVER_1}/thumb-2.jpg`,
     tile: `${HANDOVER_1}/portrait.jpg`,
   },
 ];
