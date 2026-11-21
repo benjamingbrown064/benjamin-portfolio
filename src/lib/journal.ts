@@ -27,8 +27,21 @@ export type JournalEntry = {
 };
 
 const HANDOVER_1 = "/media/journal/the-handover-1";
+const HANDOVER_2 = "/media/journal/the-handover-2";
 
 export const JOURNAL: JournalEntry[] = [
+  {
+    slug: "the-handover-2",
+    title: "This week, AI was given some jobs",
+    date: "2026-11-20",
+    category: "The Handover",
+    issue: "No. 2",
+    excerpt: "Five things that changed in AI from 17 to 20 November, in plain English. And one thing to do about each this week.",
+    minutes: 5,
+    cover: `${HANDOVER_2}/cover.jpg`,
+    coverAlt: "Ben Brown at a desk in a dark studio, chin resting on his hand. Lettering beside him on black with an orange glow reads: Ben Brown · Journal. Weekly AI roundup. The Handover. No. 2. 20 Nov 2026.",
+    thumb: `${HANDOVER_2}/thumb.jpg`,
+  },
   {
     slug: "the-1-percent-email",
     title: "The 1%: teach Claude to write your emails like you",
