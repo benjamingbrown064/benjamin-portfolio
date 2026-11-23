@@ -53,5 +53,15 @@ const nextConfig: NextConfig = {
   },
 };
 
-// Sentry wraps the server routes so errors are sent before a request ends. No source maps are uploaded.
-export default withSentryConfig(nextConfig, { silent: true, telemetry: false, sourcemaps: { disable: true } });
+// Sentry wraps the server routes so errors are sent before a request ends. Source maps are uploaded to Sentry only
+// when SENTRY_AUTH_TOKEN is set (Vercel production builds), so errors point at the real source lines. Browser maps
+// are deleted after upload so they are never served; previews and local builds upload nothing.
+const uploadMaps = Boolean(process.env.SENTRY_AUTH_TOKEN);
+export default withSentryConfig(nextConfig, {
+  org: "one-beyond-rj",
+  project: "benjaminbrown-website",
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  telemetry: false,
+  sourcemaps: { disable: !uploadMaps, deleteSourcemapsAfterUpload: true },
+});
