@@ -57,6 +57,9 @@ const nextConfig: NextConfig = {
 // when SENTRY_AUTH_TOKEN is set (Vercel production builds), so errors point at the real source lines. Browser maps
 // are deleted after upload so they are never served; previews and local builds upload nothing.
 const uploadMaps = Boolean(process.env.SENTRY_AUTH_TOKEN);
+// Turbopack's own debug-ID line is switched off: Sentry adds its own at upload, and with both present every server
+// file gained two extra top lines while the map allowed for one, so Sentry could not place any stack frame.
+nextConfig.turbopack = { ...nextConfig.turbopack, debugIds: false };
 export default withSentryConfig(nextConfig, {
   org: "one-beyond-rj",
   project: "benjaminbrown-website",
