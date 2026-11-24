@@ -601,9 +601,14 @@ def prerender_case_studies():
             inner = inner.replace(origin, "")
             # Embedded films are not started from the static copy (it is emptied before paint); React loads them.
             inner = re.sub(r"(<iframe\b[^>]*?)\ssrc=", r"\1 data-src=", inner)
-            filled = ('<main%sid="%s"%s data-prerendered>' % (empty.group(1), root_id, empty.group(2)) + inner + "</main>"
-                      + "<script>(function(r){r.textContent='';r.style.minHeight='101vh'})(document.getElementById('%s'))</script>" % root_id)
-            open(path, "w", encoding="utf-8").write(html[:empty.start()] + filled + html[empty.end():])
+            # The static copy stays on screen until React has drawn the page (React replaces it in one step), so a
+            # phone shows the case study at once instead of a blank screen while about 1 MB of script loads and runs.
+            # Revealed blocks are shown as they were in the copy; React's own observers take over once it has drawn.
+            filled = '<main%sid="%s"%s data-prerendered>' % (empty.group(1), root_id, empty.group(2)) + inner + "</main>"
+            rest = html[empty.end():]
+            # The React scripts no longer hold up the first paint: they run after the page has been read, in order.
+            rest = re.sub(r'<script src="(/site/(?:vendor/react|_ds/|work/)[^"]+)"></script>', r'<script src="\1" defer></script>', rest)
+            open(path, "w", encoding="utf-8").write(html[:empty.start()] + filled + rest)
             print("prerendered %s: %d words" % (name, words))
         browser.close()
 

@@ -232,3 +232,13 @@ html[data-theme=dark] .foot .foot-grid .fs-a{color:#a1a1a6}
 a[data-agent-open]{display:inline-flex;align-items:center;min-height:24px}
 /* Home squares graphic: no hover effects while the page is scrolling (see site.js). */
 .h2-waffle.is-scrolling i{transform:none!important;opacity:1!important}
+
+/* Case-study films: a still of each film fills its frame until the film itself has loaded (films now load only after the
+   page has finished loading, once scrolled near). Stills are in /site/v13/stills, taken from the films at 1440px. */
+:is(.tx-film,.tx-desk .scr,.gx-film,.wx-film):has(> iframe){background-position:center;background-size:cover;background-repeat:no-repeat}
+.tx-film:has(> iframe[title^="Taskbox desk app"]){background-image:url(/site/v13/stills/taskbox-voice.jpg)}
+.tx-desk .scr:has(> iframe[title^="Taskbox desktop web app"]){background-image:url(/site/v13/stills/taskbox-form.jpg)}
+.gx-film:has(> iframe[title="Govscape app walkthrough"]){background-image:url(/site/v13/stills/gov-walkthrough.jpg)}
+.wx-film:has(> iframe[title^="WarrantyOS dealer portal"]){background-image:url(/site/v13/stills/wos-sell.jpg)}
+.wx-film:has(> iframe[title^="WarrantyOS reports"]){background-image:url(/site/v13/stills/wos-reports.jpg)}
+.wx-film:has(> iframe[title^="Animation: overnight items land in Needs you"]){background-image:url(/site/v13/stills/wl-needs-you.jpg)}

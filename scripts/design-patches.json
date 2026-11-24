@@ -914,5 +914,59 @@
     "old": "ok=!!(await window.BBCoffee.book(b))}catch(x){}",
     "new": "ok=!!(await window.BBCoffee.book(b))}catch(x){btn.disabled=false;btn.innerHTML='Book coffee <span class=\"arr\">→</span>';er.textContent=(x&&x.message)||'That did not go through. Please try again, or email hello@benjaminbrown.co.';return}",
     "count": 1
+  },
+  {
+    "file": "work/govscape.jsx",
+    "count": 1,
+    "old": "function GxWalk({ src, title }) {\n  const fr = React.useRef(null);\n  const [on, setOn] = React.useState(false);\n  React.useEffect(() => {\n    const t0 = Date.now();",
+    "new": "// Films are fetched only after the page has finished loading and once their frame is within 300px of the screen (each is 0.4-1.8 MB and unpacks several MB of script). A still of the film shows in the frame until then.\nfunction useBbNear(ref) {\n  const [near, setNear] = React.useState(false);\n  React.useEffect(() => { if (near) return; let o; const go = () => { if (!ref.current) return; o = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { o.disconnect(); setNear(true); } }, { rootMargin: '300px 0px' }); o.observe(ref.current); }; if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); return () => { o && o.disconnect(); removeEventListener('load', go); }; }, []);\n  return near;\n}\nfunction GxWalk({ src, title }) {\n  const fr = React.useRef(null);\n  const [on, setOn] = React.useState(false);\n  const near = useBbNear(fr);\n  React.useEffect(() => {\n    if (!near) return;\n    const t0 = Date.now();"
+  },
+  {
+    "file": "work/govscape.jsx",
+    "count": 1,
+    "old": "    tick();\n    return () => clearTimeout(id);\n  }, []);\n  return <div className=\"gx-frame gx-film gx-rv\"><iframe ref={fr} src={src} title={title} loading=\"eager\"",
+    "new": "    tick();\n    return () => clearTimeout(id);\n  }, [near]);\n  return <div className=\"gx-frame gx-film gx-rv\"><iframe ref={fr} src={near ? src : undefined} title={title} loading=\"eager\""
+  },
+  {
+    "file": "work/warrantyos-v3.jsx",
+    "count": 1,
+    "old": "function WxFilm({ src, title, style }) {\n  const box = React.useRef(null), fr = React.useRef(null);\n  const [s, setS] = React.useState(0), [on, setOn] = React.useState(false);",
+    "new": "// Films are fetched only after the page has finished loading and once their frame is within 300px of the screen (each is 0.4-1.8 MB and unpacks several MB of script). A still of the film shows in the frame until then.\nfunction useBbNear(ref) {\n  const [near, setNear] = React.useState(false);\n  React.useEffect(() => { if (near) return; let o; const go = () => { if (!ref.current) return; o = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { o.disconnect(); setNear(true); } }, { rootMargin: '300px 0px' }); o.observe(ref.current); }; if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); return () => { o && o.disconnect(); removeEventListener('load', go); }; }, []);\n  return near;\n}\nfunction WxFilm({ src, title, style }) {\n  const box = React.useRef(null), fr = React.useRef(null);\n  const [s, setS] = React.useState(0), [on, setOn] = React.useState(false);\n  const near = useBbNear(box);"
+  },
+  {
+    "file": "work/warrantyos-v3.jsx",
+    "count": 1,
+    "old": "<iframe ref={fr} src={src} title={title} loading=\"eager\" scrolling=\"no\" tabIndex={-1} onLoad={load} style={{ position: 'absolute', left: 0, top: 0, width: 1920,",
+    "new": "<iframe ref={fr} src={near ? src : undefined} title={title} loading=\"eager\" scrolling=\"no\" tabIndex={-1} onLoad={near ? load : undefined} style={{ position: 'absolute', left: 0, top: 0, width: 1920,"
+  },
+  {
+    "file": "work/taskbox-v2.html",
+    "count": 1,
+    "old": "<iframe class=\"tb-vid\" src=\"../assets/web/taskbox-voice-video.html\"",
+    "new": "<iframe class=\"tb-vid\" data-src=\"/site/assets/web/taskbox-voice-video.html\""
+  },
+  {
+    "file": "work/taskbox-v2.html",
+    "count": 1,
+    "old": "<iframe src=\"../assets/web/taskbox-talk-fast.html\"",
+    "new": "<iframe data-src=\"/site/assets/web/taskbox-talk-fast.html\""
+  },
+  {
+    "file": "work/taskbox-v2.html",
+    "count": 1,
+    "old": "<iframe class=\"tb-vid\" src=\"../assets/web/taskbox-form-video.html\"",
+    "new": "<iframe class=\"tb-vid\" data-src=\"/site/assets/web/taskbox-form-video.html\""
+  },
+  {
+    "file": "work/taskbox-v2.html",
+    "count": 1,
+    "old": "<video src=\"https://taskbox-media.vercel.app/taskbox-teamwork-1080.mp4#t=0.1\" preload=\"metadata\"",
+    "new": "<video src=\"https://taskbox-media.vercel.app/taskbox-teamwork-1080.mp4\" poster=\"/site/v13/stills/taskbox-teamwork.jpg\" preload=\"none\""
+  },
+  {
+    "file": "work/taskbox-v2.html",
+    "count": 1,
+    "old": "<script src=\"taskbox-v2.js\"></script>",
+    "new": "<script>/* Films load after the page has finished loading, once within 300px of the screen; a still shows until then. */(function(){function go(){var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){o.unobserve(e.target);e.target.src=e.target.getAttribute('data-src')}})},{rootMargin:'300px 0px'});document.querySelectorAll('iframe[data-src]').forEach(function(f){o.observe(f)})}if(document.readyState==='complete')go();else addEventListener('load',go,{once:true})})()</script>\n<script src=\"taskbox-v2.js\"></script>"
   }
 ]

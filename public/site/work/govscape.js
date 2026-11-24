@@ -173,10 +173,36 @@ function GxStory() {
 function GxGroups({ onOpen }) {
   return /* @__PURE__ */ React.createElement(GxRail, { className: "gx-pr" }, GX_GROUPS.map(([name, items], i) => /* @__PURE__ */ React.createElement("article", { key: name, className: "gx-it" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "gx-card gx-grp", "aria-label": name + ", " + items.length + " functions", onClick: () => onOpen(name, items) }, /* @__PURE__ */ React.createElement("span", { className: "hd" }, /* @__PURE__ */ React.createElement("b", null, gxPad(items.length)), /* @__PURE__ */ React.createElement("i", null, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M12 5v14M5 12h14" })))), /* @__PURE__ */ React.createElement("ul", null, items.slice(0, 5).map((f) => /* @__PURE__ */ React.createElement("li", { key: f.n }, f.n)), items.length > 5 ? /* @__PURE__ */ React.createElement("li", { className: "more" }, "+ " + (items.length - 5) + " more") : null)), /* @__PURE__ */ React.createElement("div", { className: "gx-capt" }, /* @__PURE__ */ React.createElement("span", { className: "k" }, gxPad(i + 1)), /* @__PURE__ */ React.createElement("p", null, name)))));
 }
+function useBbNear(ref) {
+  const [near, setNear] = React.useState(false);
+  React.useEffect(() => {
+    if (near) return;
+    let o;
+    const go = () => {
+      if (!ref.current) return;
+      o = new IntersectionObserver((es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          o.disconnect();
+          setNear(true);
+        }
+      }, { rootMargin: "300px 0px" });
+      o.observe(ref.current);
+    };
+    if (document.readyState === "complete") go();
+    else addEventListener("load", go, { once: true });
+    return () => {
+      o && o.disconnect();
+      removeEventListener("load", go);
+    };
+  }, []);
+  return near;
+}
 function GxWalk({ src, title }) {
   const fr = React.useRef(null);
   const [on, setOn] = React.useState(false);
+  const near = useBbNear(fr);
   React.useEffect(() => {
+    if (!near) return;
     const t0 = Date.now();
     let id = 0, shown = false;
     const tick = () => {
@@ -200,8 +226,8 @@ function GxWalk({ src, title }) {
     };
     tick();
     return () => clearTimeout(id);
-  }, []);
-  return /* @__PURE__ */ React.createElement("div", { className: "gx-frame gx-film gx-rv" }, /* @__PURE__ */ React.createElement("iframe", { ref: fr, src, title, loading: "eager", scrolling: "no", tabIndex: -1, style: { opacity: on ? 1 : 0 } }));
+  }, [near]);
+  return /* @__PURE__ */ React.createElement("div", { className: "gx-frame gx-film gx-rv" }, /* @__PURE__ */ React.createElement("iframe", { ref: fr, src: near ? src : void 0, title, loading: "eager", scrolling: "no", tabIndex: -1, style: { opacity: on ? 1 : 0 } }));
 }
 function GxModal({ m, onClose }) {
   const { Kicker } = GS;
