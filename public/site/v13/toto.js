@@ -161,6 +161,14 @@
     b.addEventListener('click', function () { ask(text); });
     starters.appendChild(b);
   });
+  // Desktop: "Ask Harvey anything"; phones: the voice-aware prompt. Kept in sync as the viewport crosses the breakpoint.
+  function syncPlaceholder() {
+    input.placeholder = (window.matchMedia && matchMedia('(min-width:761px)').matches)
+      ? 'Ask Harvey anything'
+      : (window.BBVoice && window.BBVoice.supported ? 'Type, or tap the mic to call…' : 'Ask anything…');
+  }
+  syncPlaceholder();
+  addEventListener('resize', syncPlaceholder);
 
   /* The caption dock shows the live and previous line; the full transcript opens above it. On a call the
      spoken-to text is revealed word by word on a timer, since the call library only hands over full lines. */
@@ -187,7 +195,7 @@
     if (on == null) on = !panel.classList.contains('open-log');
     panel.classList.toggle('open-log', on);
     trBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
-    if (on) log.scrollTop = log.scrollHeight;
+    if (on) { log.scrollTop = log.scrollHeight; hideMoveToast(); } // the open transcript must never sit under the note
   }
   trBtn.addEventListener('click', function () { openLog(); });
 
@@ -206,7 +214,7 @@
       log.appendChild(n);
       if (m.report) log.appendChild(reportCard(m.report));
     });
-    starters.style.display = history.some(function (m) { return m.role === 'user'; }) ? 'none' : '';
+    panel.classList.toggle('has-talked', history.some(function (m) { return m.role === 'user'; }));
     if (gate) { log.appendChild(gate); openLog(true); } // the gate is a form: it must not be hidden in the caption dock
     log.scrollTop = log.scrollHeight;
     updateCaption();
@@ -256,6 +264,20 @@
      Scrolling runs its own tween rather than the browser's smooth scroll, and re-reads the target's position
      every frame, because images loading in above it shift the page while it moves. */
   var moveTok = 0, prevScrollY = null, ringTimer = null, toastTimer = null;
+  // A page move is recorded once: finishTurn notes it before the reply it came with, then this section's own
+  // call (moments later, to run the actual scroll) must not log it again. A plain "last entry" check alone
+  // cannot catch that - the assistant's reply has since been pushed after it - so a short-lived in-memory
+  // note also covers it; the "last entry" check on its own still covers a visitor resuming on a fresh page
+  // load, where the note already arrived with the saved history and nothing else has been pushed after it.
+  var recentNav = {};
+  function noteNavInHistory(label) {
+    var now = Date.now();
+    if (recentNav[label] && now - recentNav[label] < 5000) return;
+    recentNav[label] = now;
+    var last = history[history.length - 1];
+    if (last && last.role === 'nav' && last.text === label) return;
+    history.push({ role: 'nav', text: label }); save(); render();
+  }
   function labelFor(id, target) {
     if (SECTION_LABELS[id]) return SECTION_LABELS[id];
     var h = target && target.querySelector && target.querySelector('h1,h2');
@@ -358,7 +380,7 @@
     if (!target || target.hidden || !target.offsetParent) return false;
     noteTopic(id);
     var label = labelFor(id, target);
-    history.push({ role: 'nav', text: label }); save(); render();
+    noteNavInHistory(label);
     compactChat();
     prevScrollY = fromVisitor ? null : window.scrollY;
     hideRing();
@@ -431,6 +453,12 @@
       if (aborted) return;
       finished = true;
       if (j.known) write(localStorage, KEYS.known, '1');
+      // A page move belongs between the question and the answer, so it is logged here, before the reply itself.
+      (j.actions || []).forEach(function (a) {
+        if (a.type !== 'go_to') return;
+        var id = a.section && (HOME_SECTIONS[a.section] || a.section);
+        if (id) noteNavInHistory(labelFor(id, document.getElementById(id)));
+      });
       history.push({ role: 'assistant', text: j.reply, local: !!j.limited });
       save(); render();
       if (!talk || talk.dead) setState('idle');
@@ -535,6 +563,7 @@
     }, 60);
   }
   function showGate() {
+    hideMoveToast(); // the note must never sit over the details form
     if (gate) { render(); revealGate(); return; }
     gate = el('form', 'bba-gate',
       '<p class="bba-gate-in">To keep talking, leave your name and email. I’ll send a six-digit code to check it’s you.</p>' +

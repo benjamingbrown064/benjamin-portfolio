@@ -14,20 +14,20 @@
 .hv-root>*{pointer-events:auto}
 
 /* Launcher: an orange "b", with a black badge for the message count once a chat has happened. */
-.hv-launch{position:fixed;right:22px;bottom:22px;z-index:80;width:60px;height:60px;border-radius:50%;background:#ff5a1f;color:#fff;display:grid;place-items:center;box-shadow:0 14px 30px -8px rgba(10,10,10,.35),0 2px 6px rgba(10,10,10,.14);transition:opacity .3s,transform .5s var(--ease,cubic-bezier(.32,.72,0,1)),box-shadow .3s}
+.hv-launch{position:fixed;right:22px;bottom:22px;z-index:80;width:60px;height:60px;border-radius:50%;background:#FF6B1F;color:#fff;display:grid;place-items:center;box-shadow:0 14px 30px -8px rgba(10,10,10,.35),0 2px 6px rgba(10,10,10,.14);transition:opacity .3s,transform .5s var(--ease,cubic-bezier(.32,.72,0,1)),box-shadow .3s}
 .hv-launch:hover{transform:scale(1.05);box-shadow:0 16px 34px -6px rgba(10,10,10,.4)}
 .hv-launch:active{transform:scale(.95)}
 .hv-launch .mark{width:28px;height:28px}
 .hv-launch .hv-bd{position:absolute;right:-2px;top:-2px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--ink,#1d1d1f);color:#fff;font:600 11px/22px var(--sans,inherit);font-style:normal;text-align:center;box-shadow:0 0 0 2px #fff}
 .hv-launch .hv-bd:empty{display:none}
 .hv-root[data-phase="closed"] .hv-launch.speaking{animation:hvpulse .8s ease-in-out infinite}
-@keyframes hvpulse{50%{box-shadow:0 0 0 7px rgba(255,90,31,.3)}}
+@keyframes hvpulse{50%{box-shadow:0 0 0 7px rgba(255,107,31,.3)}}
 .hv-root:not([data-phase="closed"]) .hv-launch{opacity:0;transform:scale(.6);pointer-events:none}
 
 /* The ring + "Moved to" note sit over the page itself, not the panel, so they can mark any heading on it. */
-.hv-ring{position:absolute;z-index:70;border-radius:14px;box-shadow:0 0 0 2px #ff5a1f,0 0 0 9px rgba(255,90,31,.18);opacity:0;transform:scale(1.03);transition:opacity .4s,transform .6s var(--ease,cubic-bezier(.32,.72,0,1));pointer-events:none}
+.hv-ring{position:absolute;z-index:70;border-radius:14px;box-shadow:0 0 0 2px #FF6B1F,0 0 0 4px rgba(255,107,31,.18);opacity:0;transform:scale(1.03);transition:opacity .4s,transform .6s var(--ease,cubic-bezier(.32,.72,0,1));pointer-events:none}
 .hv-ring.on{opacity:1;transform:none}
-.hv-ring b{position:absolute;left:-2px;top:-32px;padding:5px 11px;border-radius:999px;background:#ff5a1f;color:#fff;font:600 12px/1.3 var(--sans,inherit);white-space:nowrap}
+.hv-ring b{position:absolute;left:-2px;top:-32px;padding:5px 11px;border-radius:999px;background:#FF6B1F;color:#fff;font:600 12px/1.3 var(--sans,inherit);white-space:nowrap}
 /* left/right/top/bottom and --tx are set from JS (positionToast()), since where the note can sit without
    overlapping the dock header or the panel depends on the dock/panel's actual height and width. */
 .hv-toast{position:fixed;z-index:81;transform:translate(var(--tx,-50%),8px);display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-radius:999px;background:var(--bone,#fff);color:var(--ink,#1d1d1f);font:500 13.5px/1.3 var(--sans,inherit);white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.08),0 12px 30px -8px rgba(0,0,0,.3);opacity:0;transition:opacity .35s,transform .45s var(--ease,cubic-bezier(.32,.72,0,1));pointer-events:none;max-width:calc(100vw - 20px)}
@@ -45,33 +45,46 @@
 html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;--mute:#98989D;--line:rgba(255,255,255,.1)}
 .bba.bba.on{pointer-events:auto;opacity:1}
 .bba-head.bba-head{display:flex;align-items:center;gap:10px;padding:16px 10px 12px 16px;flex:none}
-.hv-bm{position:relative;width:34px;height:34px;border-radius:50%;background:#ff5a1f;color:#fff;display:grid;place-items:center;flex:none}
+.hv-bm{position:relative;width:34px;height:34px;border-radius:50%;background:#FF6B1F;color:#fff;display:grid;place-items:center;flex:none}
 .hv-bm svg{width:17px;height:17px}
 .bba-head.bba-head .bba-who.bba-who{flex:1;min-width:0}
 .bba-head.bba-head b{display:block;font-size:15px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
 .hv-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mute);line-height:1.3;margin-top:1px;transition:color .3s}
 .hv-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--mute);flex:none;transition:background .3s}
-.bba.bba[data-state=listening] .hv-status,.bba.bba[data-state=hearing] .hv-status,.bba.bba[data-state=thinking] .hv-status,.bba.bba[data-state=speaking] .hv-status{color:#ff5a1f}
-.bba.bba[data-state=listening] .hv-dot,.bba.bba[data-state=speaking] .hv-dot{background:#ff5a1f;animation:bbablink 1s ease-in-out infinite}
+.bba.bba[data-state=listening] .hv-status,.bba.bba[data-state=hearing] .hv-status,.bba.bba[data-state=thinking] .hv-status,.bba.bba[data-state=speaking] .hv-status{color:#FF6B1F}
+.bba.bba[data-state=listening] .hv-dot,.bba.bba[data-state=speaking] .hv-dot{background:#FF6B1F;animation:bbablink 1s ease-in-out infinite}
 @keyframes bbablink{50%{opacity:.35}}
-.bba.bba[data-state=thinking] .hv-dot,.bba.bba[data-state=hearing] .hv-dot{background:#ff5a1f}
-.hv-ic{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--mute);flex:none;transition:background .25s,color .25s}
+.bba.bba[data-state=thinking] .hv-dot,.bba.bba[data-state=hearing] .hv-dot{background:#FF6B1F}
+.hv-ic{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--mute);background:none;flex:none;transition:background .25s,color .25s}
 .hv-ic:hover,.hv-ic[aria-expanded="true"]{background:var(--bone-2);color:var(--ink)}
 .hv-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .bba-head.bba-head .hush.hv-ic[hidden]{display:none}
+/* .bba-x also carries the old full-screen panel's class name, whose still-bundled CSS doubles its own
+   selector too; this repeats it at matching specificity so the unboxed-at-rest look actually wins. */
+.bba-x.bba-x{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--mute);background:none}
+.bba-x.bba-x:hover{background:var(--bone-2);color:var(--ink)}
+.bba-x.bba-x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* The old bundle also carries its own dark-theme rule for .bba-x alone (a plain background fill); reasserted
+   here at a theme-scoped specificity it cannot beat. */
+html[data-theme="dark"] .bba-x.bba-x{background:none}
+html[data-theme="dark"] .bba-x.bba-x:hover{background:var(--bone-2)}
 .bba-head.bba-head .tr.hv-ic svg{transition:transform .3s}
 .bba.bba.open-log .bba-head.bba-head .tr.hv-ic svg{transform:rotate(90deg)}
 
-/* Decorative waveform: a header strip on desktop, a footer strip on mobile - CSS-only, keyed off data-state. */
+/* Decorative waveform: a header strip on desktop, a footer strip on mobile - CSS-only, keyed off data-state.
+   At rest the bars sit at their own varied heights (not flattened) so the row reads as a waveform, not a line. */
 .hv-wave{display:flex;align-items:center;justify-content:center;gap:3px;height:22px;flex:none;color:var(--mute)}
-.hv-wave i{width:3px;height:100%;border-radius:2px;background:currentColor;opacity:.4;transform:scaleY(.14);transition:transform .3s,opacity .3s}
-.bba.bba[data-state=listening] .hv-wave i,.bba.bba[data-state=speaking] .hv-wave i{opacity:1;color:#ff5a1f;animation:hvwave var(--d) ease-in-out infinite alternate}
+.hv-wave i{width:3px;height:100%;border-radius:2px;background:currentColor;opacity:.55;transform:scaleY(var(--h));transition:transform .3s,opacity .3s}
+.bba.bba[data-state=listening] .hv-wave i,.bba.bba[data-state=speaking] .hv-wave i{opacity:1;color:#FF6B1F;animation:hvwave var(--d) ease-in-out infinite alternate}
 .bba.bba[data-state=thinking] .hv-wave i,.bba.bba[data-state=hearing] .hv-wave i{animation:hvwavet 1.2s ease-in-out infinite;animation-delay:calc(var(--k)*50ms)}
-@keyframes hvwave{from{transform:scaleY(.14)}to{transform:scaleY(var(--h))}}
-@keyframes hvwavet{0%,100%{transform:scaleY(.14)}50%{transform:scaleY(.4)}}
+@keyframes hvwave{from{transform:scaleY(.18)}to{transform:scaleY(var(--h))}}
+@keyframes hvwavet{0%,100%{transform:scaleY(.18)}50%{transform:scaleY(.4)}}
 .bba-head.bba-head .hv-wave{display:none}
 
 .bba-log.bba-log{flex:1;min-height:0;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 18px);mask-image:linear-gradient(to bottom,transparent,#000 18px)}
+/* The conversation hugs the composer rather than floating under the header: a short exchange sits at the
+   bottom of the log, not the top, by letting the first message eat the leftover vertical space above it. */
+.bba-log.bba-log>:first-child{margin-top:auto}
 .bba-msg.bba-msg{max-width:88%;font-size:15px;line-height:1.55;animation:bbain .4s var(--ease,cubic-bezier(.32,.72,0,1)) both;white-space:pre-wrap;overflow-wrap:anywhere;align-self:flex-start;color:var(--ink)}
 .bba-msg.bba-msg.u{max-width:82%;align-self:flex-end;background:var(--bone-2);color:var(--ink);padding:10px 15px;border-radius:20px 20px 6px 20px}
 @keyframes bbain{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -83,7 +96,7 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
 
 /* A page move, kept in the transcript as its own small centred note. */
 .hv-ev{align-self:center;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--bone-2);color:var(--mute);font-size:12px;font-weight:500}
-.hv-ev-dot{width:6px;height:6px;border-radius:50%;background:#ff5a1f;flex:none}
+.hv-ev-dot{width:6px;height:6px;border-radius:50%;background:#FF6B1F;flex:none}
 
 /* Caption dock: the current and previous line, shown instead of the full log until Transcript is tapped. */
 .hv-cap{display:flex;flex-direction:column;gap:2px;padding:0 16px 10px}
@@ -97,6 +110,14 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
 .bba-starters.bba-starters{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px;flex:none}
 .bba-starters.bba-starters button{font-family:var(--sans);font-size:12.5px;font-weight:500;letter-spacing:-.005em;padding:7px 11px;border:1px solid var(--line);border-radius:999px;color:var(--ink);transition:background .25s,color .25s}
 .bba-starters.bba-starters button:hover{background:var(--ink);color:var(--bone)}
+.bba.bba.has-talked .bba-starters.bba-starters{display:none}
+/* At rest the mobile dock is just header + caption + bottom row: starters and the footer line only belong
+   inside the open transcript (desktop always has room for them, so it is unaffected by this). */
+@media(max-width:760px){
+  .bba-starters.bba-starters,.hv-fine{display:none}
+  .bba.bba.open-log:not(.has-talked) .bba-starters.bba-starters{display:flex}
+  .bba.bba.open-log .hv-fine{display:block}
+}
 
 /* ---------- composer: one soft pill on desktop; kb + waveform/field + mic on mobile ---------- */
 .bba-comp.bba-comp{display:flex;gap:6px;align-items:center;padding:10px 14px 14px;margin:0;flex:none}
@@ -104,11 +125,21 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
 .bba-comp.bba-comp textarea::placeholder{color:var(--mute)}
 .bba.bba.typing .bba-comp.bba-comp textarea{display:block}
 .bba.bba.typing .bba-comp.bba-comp .hv-wave{display:none}
-.bba-comp.bba-comp .kbt,.bba-comp.bba-comp .mic,.bba-comp.bba-comp .send{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;transition:background .25s,color .25s,transform .4s var(--ease,cubic-bezier(.32,.72,0,1))}
+.bba-comp.bba-comp .kbt,.bba-comp.bba-comp .mic,.bba-comp.bba-comp .send{border-radius:50%;display:grid;place-items:center;flex:none;transition:background .25s,color .25s,transform .4s var(--ease,cubic-bezier(.32,.72,0,1))}
+/* The keyboard toggle is a small, minimal control; the mic/Send slot is the row's one emphasised control. */
+.bba-comp.bba-comp .kbt{width:36px;height:36px}
+.bba-comp.bba-comp .mic,.bba-comp.bba-comp .send{width:50px;height:50px}
 .bba-comp.bba-comp .kbt{background:var(--bone-2);color:var(--ink)}
+.bba-comp.bba-comp .kbt svg{width:16px;height:16px}
 .bba.bba.typing .bba-comp.bba-comp .kbt{background:var(--ink);color:var(--bone)}
 .bba-comp.bba-comp .send{background:var(--ink);color:var(--bone)}
 .bba-comp.bba-comp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* The old bundle also colours every .bba-comp button black in dark theme (`:not(.bba-mic)`, a class this
+   restyle no longer uses, so the exclusion never fires); reasserted here at a theme-scoped specificity it
+   cannot beat, so the kb icon stays legible and the mic glyph stays white on orange. */
+html[data-theme="dark"] .bba-comp.bba-comp .kbt{color:var(--ink)}
+html[data-theme="dark"] .bba-comp.bba-comp .mic{color:#fff}
+html[data-theme="dark"] .bba-comp.bba-comp .send{color:var(--bone)}
 /* Mic / Send share one slot: the mic shows while the field is empty, Send once there is text in it. */
 .bba-comp.bba-comp .mic{display:grid}
 .bba-comp.bba-comp .send{display:none}
@@ -119,6 +150,7 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
   .bba-comp.bba-comp textarea{display:block;background:none;border-radius:0;padding:0;min-height:40px}
   .bba-comp.bba-comp .kbt,.bba-comp.bba-comp .hv-wave{display:none !important}
   .bba-comp.bba-comp .mic,.bba-comp.bba-comp .send{width:40px;height:40px}
+  .bba-comp.bba-comp textarea{line-height:40px}
 }
 
 .hv-fine{margin:0;padding:0 16px 14px;font-size:12px;line-height:1.4;color:var(--mute);text-align:center;flex:none}
@@ -127,7 +159,7 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
 @media(prefers-reduced-motion:reduce){.hv-launch.speaking,.hv-dot,.bba-think.bba-think i{animation:none}}
 
 /* Voice */
-.bba-comp.bba-comp .mic{background:#ff5a1f;color:#fff;position:relative}
+.bba-comp.bba-comp .mic{background:#FF6B1F;color:#fff;position:relative}
 .bba-comp.bba-comp .mic:hover{transform:scale(1.06)}
 .bba-comp.bba-comp .mic .i-send{display:none}
 .bba-comp.bba-comp .mic.rec{background:var(--ink);color:var(--bone);animation:bbarec 1.2s ease-in-out infinite}
@@ -135,17 +167,17 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
 .bba-comp.bba-comp[hidden]{display:none}
 @keyframes bbarec{50%{transform:scale(.92)}}
 
-/* The ask-once details step */
-.bba-gate.bba-gate{align-self:stretch;display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:12px;animation:bbain .4s var(--ease,cubic-bezier(.32,.72,0,1)) both}
-.bba-gate.bba-gate input{font:inherit;font-size:14.5px;color:var(--ink);background:var(--bone-2);border:1.5px solid transparent;border-radius:10px;padding:11px 14px;outline:0;min-width:0}
-.bba-gate.bba-gate input:focus{border-color:var(--ink)}
+/* The ask-once details step: no boxed border, just pill fields in the flow of the conversation, like the prototype. */
+.bba-gate.bba-gate{align-self:stretch;display:grid;gap:10px;padding:0;border:0;animation:bbain .4s var(--ease,cubic-bezier(.32,.72,0,1)) both}
+.bba-gate.bba-gate input{font:inherit;font-size:14.5px;color:var(--ink);background:var(--bone-2);border:1.5px solid transparent;border-radius:999px;padding:11px 16px;outline:0;min-width:0}
+.bba-gate.bba-gate input:focus{border-color:var(--line)}
 .bba-gate.bba-gate input::placeholder{color:var(--mute)}
-.bba-gate.bba-gate button{font:inherit;font-weight:600;font-size:14px;padding:11px 14px;border-radius:10px;background:var(--ink);color:var(--bone)}
-.bba-gate.bba-gate button:hover{background:#ff5a1f;color:#fff}
+.bba-gate.bba-gate button{font:inherit;font-weight:600;font-size:14px;padding:11px 14px;border-radius:999px;background:var(--ink);color:var(--bone)}
+.bba-gate.bba-gate button:hover{background:#FF6B1F;color:#fff}
 .bba-gate.bba-gate button:disabled{opacity:.6}
-.bba-gate.bba-gate small{font-size:12px;color:var(--mute);line-height:1.4}
+.bba-gate.bba-gate small{font-size:12px;color:var(--ink);opacity:.72;line-height:1.4}
 .bba-gate.bba-gate small a{color:inherit;text-decoration:underline;text-underline-offset:2px}
-.bba-gate-err.bba-gate-err{font-size:12.5px;color:#ff5a1f}
+.bba-gate-err.bba-gate-err{font-size:12.5px;color:#FF6B1F}
 .bba-gate-err.bba-gate-err:empty{display:none}
 @media(prefers-reduced-motion:reduce){.bba-comp.bba-comp .mic.rec{animation:none}}
 
@@ -160,19 +192,19 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
 .bba-report.bba-report .ar .h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
 .bba-report.bba-report .ar .n{font-weight:600;font-size:13.5px}
 .bba-report.bba-report .ar .g{flex:none;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:980px;background:var(--bone-2);color:var(--mute)}
-.bba-report.bba-report .ar li.open .g{background:#ff5a1f;color:#fff}
+.bba-report.bba-report .ar li.open .g{background:#FF6B1F;color:#fff}
 .bba-report.bba-report .ar li.solid .g{background:var(--ink);color:var(--bone)}
 .bba-report.bba-report .ar .d{font-size:13px;color:var(--mute)}
 .bba-report.bba-report .f{font-size:12px;color:var(--mute);line-height:1.4}
 .bba-report.bba-report .bt{display:flex;flex-wrap:wrap;gap:8px}
 .bba-report.bba-report .bt button{font:inherit;font-weight:600;font-size:13px;padding:10px 14px;border-radius:8px;background:var(--ink);color:var(--bone)}
 .bba-report.bba-report .bt button.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
-.bba-report.bba-report .bt button:hover{background:#ff5a1f;color:#fff;box-shadow:none}
+.bba-report.bba-report .bt button:hover{background:#FF6B1F;color:#fff;box-shadow:none}
 
 /* The visitor's words, as they are spoken */
 .bba-msg.bba-msg.u.live{background:transparent;color:var(--mute);box-shadow:inset 0 0 0 1.5px var(--bone-2);font-style:italic}
 .bba-msg.bba-msg.u.live.has{color:var(--ink);font-style:normal;box-shadow:inset 0 0 0 1.5px var(--ink)}
-.bba-msg.bba-msg.u.live.has::after{content:"";display:inline-block;width:6px;height:6px;margin-left:6px;border-radius:50%;background:#ff5a1f;animation:bbablink 1s ease-in-out infinite;vertical-align:middle}
+.bba-msg.bba-msg.u.live.has::after{content:"";display:inline-block;width:6px;height:6px;margin-left:6px;border-radius:50%;background:#FF6B1F;animation:bbablink 1s ease-in-out infinite;vertical-align:middle}
 
 /* Composer while listening: a level meter and Cancel take the place of the text box; the mic becomes send.
    The hidden attribute always wins here, so starting to listen hides the text field even mid-type. */
@@ -181,7 +213,7 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
 .bba-ear.bba-ear{flex:1;min-width:0;min-height:44px;display:flex;align-items:center;gap:12px;padding:0 6px 0 16px;border-radius:999px;background:var(--bone-2);font-size:13.5px;color:var(--ink)}
 .bba-ear.bba-ear .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bba-ear.bba-ear .lv{display:inline-flex;align-items:center;gap:3px;height:22px;flex:none}
-.bba-ear.bba-ear .lv i{width:3px;height:22px;border-radius:2px;background:#ff5a1f;transform:scaleY(.25);transition:transform .09s linear}
+.bba-ear.bba-ear .lv i{width:3px;height:22px;border-radius:2px;background:#FF6B1F;transform:scaleY(.25);transition:transform .09s linear}
 .bba-comp.bba-comp .bba-ear.bba-ear .cancel{width:auto;height:32px;padding:0 12px;border-radius:999px;background:transparent;color:var(--mute);font-size:12.5px;font-weight:500;flex:none}
 .bba-comp.bba-comp .bba-ear.bba-ear .cancel:hover{background:transparent;color:var(--ink)}
 .bba.bba[data-state=thinking] .bba-comp.bba-comp .mic,.bba.bba[data-state=hearing] .bba-comp.bba-comp .mic{opacity:.45;pointer-events:none}
@@ -195,7 +227,7 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
 .hv-end button{min-height:38px;padding:0 15px;border-radius:999px;background:var(--bone-2);color:var(--ink);font-size:13.5px;font-weight:500;transition:background .25s}
 .hv-end button:hover{background:var(--ink);color:var(--bone)}
 .hv-end .done{background:var(--ink);color:var(--bone)}
-.hv-end .done:hover{background:#ff5a1f}
+.hv-end .done:hover{background:#FF6B1F}
 .hv-root[data-phase="ended"] .bba-starters.bba-starters,.hv-root[data-phase="ended"] .bba-comp.bba-comp,.hv-root[data-phase="ended"] .hv-cap,.hv-root[data-phase="ended"] .bba-log.bba-log{display:none}
 .hv-root[data-phase="ended"] .hv-end{display:flex}
 
@@ -203,13 +235,17 @@ html[data-theme="dark"] .bba.bba{--ink:#F5F5F7;--bone:#1C1C1E;--bone-2:#2C2C2E;-
    top, width, height and z-index are restated explicitly (even though "auto" is the normal default) because
    the old full-screen panel's CSS sets all four at this width and must not win any of them. */
 .bba.bba{
-  --glass:rgba(255,255,255,.86);
+  --glass:rgba(255,255,255,.97);
   top:auto;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);width:auto;height:auto;z-index:80;max-width:none;border-radius:28px;
   max-height:min(420px,70vh);background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);
   box-shadow:0 20px 44px -14px rgba(0,0,0,.26),inset 0 0 0 1px var(--line);
   transform:translateY(16px) scale(.96);transition:transform .5s var(--ease,cubic-bezier(.32,.72,0,1)),opacity .35s;transform-origin:100% 100%
 }
-html[data-theme="dark"] .bba.bba{--glass:rgba(28,28,30,.86);box-shadow:0 20px 44px -14px rgba(0,0,0,.6),inset 0 0 0 1px var(--line)}
+/* The old full-screen panel's own dark-theme rule sets a flat background directly (not through a variable) at
+   a specificity CSS variables cannot out-rank from elsewhere, so it is re-asserted here as a real property. */
+html[data-theme="dark"] .bba.bba{--glass:rgba(22,22,24,.97);background:var(--glass);box-shadow:0 20px 44px -14px rgba(0,0,0,.6),inset 0 0 0 1px var(--line)}
+/* The chat dock sits over the cookie bar on phones; hide the bar while open, it returns once the chat closes. */
+@media(max-width:760px){html.bba-open .ck-bar{display:none}}
 .bba.bba.on{transform:none}
 .hv-root[data-phase="closed"] .bba.bba{transform:translateY(16px) scale(.96)}
 
@@ -218,7 +254,7 @@ html[data-theme="dark"] .bba.bba{--glass:rgba(28,28,30,.86);box-shadow:0 20px 44
   .bba.bba{left:auto;right:12px;top:12px;bottom:12px;width:392px;max-height:none;border-radius:24px;
     box-shadow:0 24px 60px -18px rgba(0,0,0,.28),0 0 0 1px var(--line);
     transform:translateX(calc(100% + 24px));transition:transform .55s var(--ease,cubic-bezier(.32,.72,0,1)),opacity .35s}
-  html[data-theme="dark"] .bba.bba{box-shadow:0 24px 60px -18px rgba(0,0,0,.75),0 0 0 1px var(--line)}
+  html[data-theme="dark"] .bba.bba{background:var(--bone);box-shadow:0 24px 60px -18px rgba(0,0,0,.75),0 0 0 1px var(--line)}
   .bba.bba.on{transform:none}
   .hv-root[data-phase="closed"] .bba.bba{transform:translateX(calc(100% + 24px))}
   .hv-launch{right:32px;bottom:32px;width:64px;height:64px}
@@ -232,4 +268,4 @@ html[data-theme="dark"] .bba.bba{--glass:rgba(28,28,30,.86);box-shadow:0 20px 44
   html{transition:padding-right .45s var(--ease,cubic-bezier(.32,.72,0,1))}
 }
 /* Gate intro line: the form always says why it is there. */
-.bba-gate.bba-gate .bba-gate-in{margin:0 0 2px;font-size:14px;line-height:1.45;color:var(--ink)}
+.bba-gate.bba-gate .bba-gate-in.bba-gate-in{margin:0 0 2px;font-size:14px;line-height:1.45;color:var(--ink)}
