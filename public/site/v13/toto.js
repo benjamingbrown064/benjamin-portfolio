@@ -559,7 +559,10 @@
     setTimeout(function () {
       if (!gate || !gate.parentNode) return;
       if (typeof openLog === 'function' && !isWide()) openLog(true);
-      var lg = gate.parentNode; lg.scrollTop = Math.max(0, gate.offsetTop - lg.offsetTop - 8);
+      panel.classList.add('gating');
+      // From its intro line if it all fits, otherwise far enough down that the button is never cut off.
+      var lg = gate.parentNode, top = gate.offsetTop - lg.offsetTop - 8, bottom = top + gate.offsetHeight + 16 - lg.clientHeight;
+      lg.scrollTop = Math.max(0, bottom > top ? bottom : top);
     }, 60);
   }
   function showGate() {
@@ -593,6 +596,7 @@
             codeIn.hidden = false; codeIn.required = true; codeIn.focus({ preventScroll: true });
             btn.textContent = 'Carry on';
             err.textContent = 'Code sent. Check your email (and spam).';
+            revealGate(); // the code field pushed the button down: keep it in view
           })
           .catch(function () { btn.disabled = false; err.textContent = 'The code did not send. Please try again.'; });
         return;
@@ -605,7 +609,7 @@
             return;
           }
           write(localStorage, KEYS.known, '1');
-          gate = null;
+          gate = null; panel.classList.remove('gating');
           // Pick the conversation up where it stopped: drop the notice and re-ask the question that met the gate.
           history = history.filter(function (m) { return !m.error && !m.local; });
           var last = history[history.length - 1], pending = last && last.role === 'user' && !last.call ? history.pop().text : '';
@@ -795,6 +799,8 @@
   }
   /* Tuck the panel away without ending the call. */
   function minimize() {
+    panel.classList.remove('on');
+    document.documentElement.classList.remove('bba-open');
     setPhase('closed', true);
     syncBar();
   }
@@ -847,7 +853,7 @@
   }
   /* A page action during a call waits until Harvey has finished his line: he must have been quiet for a moment, not just
      paused between sentences. Then the call ends and the action runs. A move to another page carries the call on there. */
-  var SETTLE_MS = 1200;
+  var SETTLE_MS = 1200, FIRST_WORDS_MS = 4000;
   function callAction(a) {
     if (!call || !a || a.type === 'report') return;
     var c = call;
@@ -860,9 +866,12 @@
       c.quiet = true;
       endCall(function () { run([a]); });
     };
-    c.settleNow = function () { clearTimeout(c.settle); c.settle = setTimeout(go, SETTLE_MS); };
-    c.settleNow(); // if he is already quiet, this fires; speaking again restarts it
-    c.hardStop = setTimeout(go, 12000);
+    // The action arrives once his reply is written, usually while he is still saying it. So: while he is speaking,
+    // wait for him to stop; if he has not started yet, give his voice time to begin before deciding he is quiet.
+    c.settleNow = function () { clearTimeout(c.settle); if (!c.speaking) c.settle = setTimeout(go, c.spokeSince ? SETTLE_MS : FIRST_WORDS_MS); };
+    c.spokeSince = !!c.speaking;
+    c.settleNow();
+    c.hardStop = setTimeout(go, 15000);
   }
   function startCall(resume) {
     if (call || busy) return;
@@ -916,7 +925,8 @@
               setState(speaking ? 'speaking' : 'listening'); hush.hidden = true;
               launch.classList.toggle('speaking', speaking);
               ear.querySelector('.t').textContent = speaking ? 'On a call · talk to cut in' : 'On a call · listening';
-              if (c.pending) { if (speaking) clearTimeout(c.settle); else c.settleNow(); }
+              c.speaking = speaking;
+              if (c.pending) { if (speaking) { c.spokeSince = true; clearTimeout(c.settle); } else c.settleNow(); }
               syncBar();
             },
             onMessage: function (m) {

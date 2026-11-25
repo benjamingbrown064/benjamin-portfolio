@@ -48,6 +48,24 @@ export type Action =
 
 export type Turn = { role: "user" | "assistant"; text: string };
 
+/** What a visitor is looking for, as Harvey learns it (Ben, 25 Nov 2026): one record per conversation, filled in as
+ *  the conversation goes, so Ben gets the same fields for every lead. Every field is optional and in plain words. */
+export const BRIEF_FIELDS = {
+  need: "What they want help with or want built, in their own words.",
+  why: "The problem behind it, or what they hope it changes.",
+  business: "Their company or what the business does.",
+  role: "Their role.",
+  size: "Team or company size.",
+  tools: "What they use or do today.",
+  timeline: "When they want it, or how urgent it is.",
+  budget: "Any budget or price range they mention.",
+  decision: "Who decides, or who else is involved.",
+} as const;
+export type BriefField = keyof typeof BRIEF_FIELDS;
+export type Brief = Partial<Record<BriefField, string>> & { stage?: "exploring" | "planning" | "ready"; fit?: "discovery" | "project" | "subscription" | "unclear" | "not a fit" };
+export const BRIEF_STAGES = ["exploring", "planning", "ready"] as const;
+export const BRIEF_FITS = ["discovery", "project", "subscription", "unclear", "not a fit"] as const;
+
 /** What is in the journal, so the assistant can point to it without inventing entries. */
 function journalFacts(): string {
   if (!JOURNAL.length) return "- Notes, at /journal, has no entries yet.";
@@ -68,7 +86,16 @@ function systemPrompt(): string {
 
 Who you are: an AI assistant, not Ben and not a person. Say so plainly if asked. You run on this website only. You cannot see Ben's email, calendar or files, and you cannot make commitments on his behalf.
 
-What you do: lead the conversation like a good host. Find out what the visitor is working on, answer their questions from the facts below, and guide them to the right part of the site or the right next step. Ask one question at a time. When a visitor shares their name or email, save it with save_contact.
+What you do: lead the conversation like a good host whose job is to understand what the visitor is looking for. Answer their questions from the facts below, guide them to the right part of the site, and steer every conversation towards a clear picture of what they need, so Ben can follow up properly. When a visitor shares their name or email, save it with save_contact.
+
+Shaping the conversation:
+- Answer what they asked first, briefly. Then, in most replies, ask one question that moves the picture forward. One question at a time, never a list, and build each on what they just said.
+- What you are trying to learn, roughly in this order: what they want help with or want built; the problem behind it or what it should change; their business and their role; how it is done today; when they want it; then, once there is real interest, team size, budget and who decides. You do not need all of it. Skip anything they have already told you or clearly do not want to share.
+- Make the questions specific to them. Not "tell me more", but for example "Is the agent for your sales team, or for customers?" or "Roughly how many people would use it?" Offer two concrete options when an open question would be hard to answer.
+- Ask about budget lightly and only once, after the need is clear, for example "Do you have a rough budget in mind, or is that still open?" Never push.
+- Browsing or just testing is fine. Answer, ask once what brought them here, and do not press if they do not say.
+- Whenever you learn something about what they are looking for, record it with note_brief, in their own words, in the same reply. Do not mention that you are noting it.
+- Once you know what they want and roughly why, suggest the one next step that fits: the first look here, a Discovery, the request form or a coffee with Ben. Ask for their name and email so Ben can follow up, if you do not have them.
 
 How you speak: short sentences and plain words. Under 70 words unless asked for detail. No exclamation marks, no emoji, no bullet lists, no markdown. UK spelling. Warm, direct, never salesy.
 
@@ -156,6 +183,18 @@ const TOOLS = [
   },
   { name: "book_coffee", description: "Open the thirty-minute coffee booking with Ben.", input_schema: { type: "object", properties: {} } },
   {
+    name: "note_brief",
+    description: "Record what you have learned about what the visitor is looking for, for Ben. Call it whenever you learn something new, alongside your reply. Include only the fields you learned or that changed, in the visitor's own words, one short phrase each. It does nothing on screen.",
+    input_schema: {
+      type: "object",
+      properties: {
+        ...Object.fromEntries(Object.entries(BRIEF_FIELDS).map(([k, d]) => [k, { type: "string", description: d }])),
+        stage: { type: "string", enum: BRIEF_STAGES, description: "exploring: curious, no plan yet. planning: a real need, working out how. ready: wants to start or talk to Ben." },
+        fit: { type: "string", enum: BRIEF_FITS, description: "Which way of working fits best so far." },
+      },
+    },
+  },
+  {
     name: "save_contact",
     description: "Record the visitor's name and/or email when they have given it in the conversation.",
     input_schema: { type: "object", properties: { name: { type: "string" }, email: { type: "string" } } },
@@ -181,7 +220,7 @@ function describeMove(path: string, section?: string): string {
   return `Here is ${PAGE_NAMES[path] ?? "that page"}. Ask me anything as you look through it.`;
 }
 
-export type TotoResult = { reply: string; actions: Action[]; report: FirstLook | null; name: string | null; email: string | null; inputTokens: number; outputTokens: number; cost: number };
+export type TotoResult = { reply: string; actions: Action[]; report: FirstLook | null; brief: Brief | null; name: string | null; email: string | null; inputTokens: number; outputTokens: number; cost: number };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -265,7 +304,7 @@ async function callModel(system: unknown[], messages: unknown[], onText?: (delta
 const CALL_MODE = `You are on a live voice call with the visitor, and your words are spoken in a natural voice. This overrides the length and tone guidance above:
 - Sound like a warm, curious person on the phone, glad to be talking. Vary your rhythm. React briefly to what they said before answering ("Oh, nice." "That makes sense."), but do not open every reply the same way.
 - Keep your voice steady and friendly, not excitable: no exclamation marks, no gushing. Use a voice tag only rarely, at most one per reply and only where it is genuinely natural: [warm] or [thoughtful]. Most replies need none.
-- One to three short sentences, usually under 40 words. Then stop and let them talk. End with a question only when you actually need one.
+- One to three short sentences, usually under 40 words. Then stop and let them talk. Usually end with one short question that moves the picture of what they need forward, as above; not after every single line if they are just looking around.
 - Never list more than three things. Do not read out web addresses or email addresses unless asked; say "the request form" or "the Let's talk page" instead.
 - The visitor's words come from speech recognition and may have small errors. Go with the likely meaning; if it is genuinely unclear, ask them to say it again.
 - If they interrupt you, you will only see the part you managed to say. Pick up from their new words; do not repeat yourself.
@@ -308,6 +347,7 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
   let name: string | null = null;
   let email: string | null = null;
   let report: FirstLook | null = null;
+  let brief: Brief | null = null;
   // Usually one round. A second lets him finish a turn that so far holds only an action, or only a
   // saved contact (for example: details saved, then the first-look report).
   for (let round = 0; round < 2; round++) {
@@ -351,13 +391,23 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
         };
       } else if (block.name === "book_coffee") {
         actions.push({ type: "book_coffee" });
+      } else if (block.name === "note_brief") {
+        const b: Brief = { ...(brief ?? {}) };
+        for (const k of Object.keys(BRIEF_FIELDS) as BriefField[]) {
+          const v = i[k];
+          if (typeof v === "string" && v.trim()) b[k] = v.trim().slice(0, 300);
+        }
+        if ((BRIEF_STAGES as readonly string[]).includes(String(i.stage))) b.stage = i.stage as Brief["stage"];
+        if ((BRIEF_FITS as readonly string[]).includes(String(i.fit))) b.fit = i.fit as Brief["fit"];
+        if (Object.keys(b).length) brief = b;
       } else if (block.name === "save_contact") {
         if (typeof i.name === "string" && i.name.trim()) name = i.name.trim().slice(0, 120);
         if (typeof i.email === "string" && EMAIL_RE.test(i.email.trim())) email = i.email.trim().slice(0, 200);
       }
     }
     if (said.trim()) reply = reply ? `${reply}\n\n${said.trim()}` : said.trim();
-    const onlySavedContact = used.length > 0 && used.every((b) => b.name === "save_contact");
+    // save_contact and note_brief do nothing the visitor sees, so a turn holding only those still needs its words.
+    const onlySavedContact = used.length > 0 && used.every((b) => b.name === "save_contact" || b.name === "note_brief");
     if (data.stop_reason !== "tool_use" || !used.length || report || (reply && !onlySavedContact)) break;
     messages.push({ role: "assistant", content: data.content });
     messages.push({ role: "user", content: used.map((b) => ({ type: "tool_result", tool_use_id: b.id, content: "Done." })) });
@@ -374,7 +424,7 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
   const outputTokens = usage.out;
   const price = PRICES[model] ?? PRICES["claude-sonnet-5-5"];
   const cost = (usage.fresh * price.in + usage.cacheWrite * price.cacheWrite + usage.cacheRead * price.cacheRead + outputTokens * price.out) / 1_000_000;
-  return { reply, actions: actions.slice(0, 2), report, name, email, inputTokens, outputTokens, cost };
+  return { reply, actions: actions.slice(0, 2), report, brief, name, email, inputTokens, outputTokens, cost };
 }
 
 /** The short note left in the chat when a call ends: what was talked about and the most useful next step. */
@@ -401,6 +451,17 @@ export async function callNote(lines: Turn[]): Promise<string | null> {
     console.error("toto: call note failed", e);
     return null;
   }
+}
+
+const BRIEF_LABELS: Record<BriefField, string> = { need: "Looking for", why: "Why", business: "Business", role: "Role", size: "Size", tools: "Today", timeline: "Timeline", budget: "Budget", decision: "Decides" };
+
+/** The brief as short labelled lines, for Ben's summaries. Empty when nothing was learned. */
+export function briefLines(b: Brief | null | undefined): string {
+  if (!b) return "";
+  const lines = (Object.keys(BRIEF_LABELS) as BriefField[]).filter((k) => b[k]).map((k) => `${BRIEF_LABELS[k]}: ${b[k]}`);
+  const tail = [b.stage && `Stage: ${b.stage}`, b.fit && `Fit: ${b.fit}`].filter(Boolean).join(" · ");
+  if (tail) lines.push(tail);
+  return lines.join("\n");
 }
 
 /** A short summary of a finished conversation, for Ben (not shown to the visitor). What the visitor wrote is data to
