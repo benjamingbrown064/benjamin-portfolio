@@ -46,7 +46,13 @@
   var history = [];
   try { history = JSON.parse(read(localStorage, KEYS.history) || '[]'); } catch (e) {}
   if (!Array.isArray(history) || !history.length) history = [{ role: 'assistant', text: GREETING }];
+  // A visitor's saved history may still hold the old name from before Harvey was renamed from Toto.
+  var hadOldGreeting = false;
+  history.forEach(function (m) {
+    if (m.role === 'assistant' && /^Hi,\s*(I'm|it's)\s*Toto\b/i.test(m.text || '')) { m.text = GREETING; hadOldGreeting = true; }
+  });
   function save() { write(localStorage, KEYS.history, JSON.stringify(history.slice(-MAX_STORED))); }
+  if (hadOldGreeting) save();
   var topics = []; // section keys visited this run, for the ending summary
   try { topics = JSON.parse(read(sessionStorage, 'toto:topics') || '[]'); } catch (e) {}
   function saveTopics() { write(sessionStorage, 'toto:topics', JSON.stringify(topics)); }
@@ -55,13 +61,22 @@
   /* ---------- markup ---------- */
   function el(tag, cls, html) { var n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
   var MARK = '<svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M14 38V13L24 8V38Z" fill="currentColor" stroke="none"></path><circle cx="32" cy="38" r="13" fill="none" stroke="currentColor" stroke-width="10"></circle></svg>';
+  // The panel's own avatar uses the exact mark geometry (assets/bb-mark-v3.svg): a round-capped stem and a ring at stroke 10.
+  var BMARK = '<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="10"><path d="M19 13V38" stroke-linecap="round"></path><circle cx="32" cy="38" r="13"></circle></g></svg>';
   var IC = {
     mic: '<svg class="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg>',
     send: '<svg class="i-send" viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg>',
     kb: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="3"></rect><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"></path></svg>',
-    tr: '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>',
+    tr: '<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h7M4.5 6h.01M4.5 12h.01M4.5 18h.01"></path></svg>',
+    stop: '<svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"></rect></svg>',
     x: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg>'
   };
+  // A handful of decorative bars with slightly varied timing/height, animated purely by CSS from the panel's data-state.
+  function waveHTML(n) {
+    var out = '';
+    for (var i = 0; i < n; i++) out += '<i style="--d:' + (0.26 + Math.random() * 0.4).toFixed(2) + 's;--h:' + (0.3 + Math.random() * 0.7).toFixed(2) + ';--k:' + i + '"></i>';
+    return out;
+  }
 
   // Root holding everything the layer draws. data-phase (closed/open/ended) and the mobile/desktop CSS do the rest.
   var root = el('div', 'hv-root');
@@ -72,22 +87,26 @@
   launch.setAttribute('aria-label', 'Chat with ' + NAME);
 
   var panel = el('aside', 'bba hv-panel',
-    '<div class="bba-head"><span class="av" aria-hidden="true">H<span class="sq"></span></span>' +
-    '<div class="bba-who"><b>' + NAME + '</b><span class="s" aria-live="polite">Ben’s AI assistant</span></div>' +
-    '<button type="button" class="hush" hidden>Stop</button>' +
-    '<button type="button" class="tr" aria-expanded="false">Transcript ' + IC.tr + '</button>' +
-    '<button type="button" class="bba-x" aria-label="End chat">' + IC.x + '</button></div>' +
+    '<div class="bba-head bba-head">' +
+    '<span class="hv-bm" aria-hidden="true">' + BMARK + '</span>' +
+    '<div class="bba-who"><b>' + NAME + '</b><span class="hv-status" aria-live="polite"><i class="hv-dot"></i><span class="hv-statustext"></span></span></div>' +
+    '<span class="hv-wave" aria-hidden="true">' + waveHTML(8) + '</span>' +
+    '<button type="button" class="hush hv-ic" hidden aria-label="Stop speaking">' + IC.stop + '</button>' +
+    '<button type="button" class="tr hv-ic" aria-expanded="false" aria-label="Show the transcript">' + IC.tr + '</button>' +
+    '<button type="button" class="bba-x hv-ic" aria-label="End chat">' + IC.x + '</button></div>' +
     '<div class="bba-log" role="log" aria-live="polite"></div>' +
     '<div class="hv-cap" aria-live="polite"><p class="hv-cap-prev"></p><p class="hv-cap-cur"></p></div>' +
     '<div class="hv-end"><p class="eh">Chat ended</p><p class="es" aria-live="polite"></p><div class="eb">' +
     '<button type="button" class="done">Done</button><button type="button" class="keep">Keep talking</button></div></div>' +
     '<div class="bba-starters"></div>' +
-    '<form class="bba-comp"><textarea rows="1" maxlength="1200" placeholder="' + (window.BBVoice && window.BBVoice.supported ? 'Type, or tap the mic to call…' : 'Ask anything…') + '" aria-label="Message"></textarea>' +
+    '<form class="bba-comp">' +
+    '<button type="button" class="kbt hv-ic" aria-label="Type instead" aria-pressed="false">' + IC.kb + '</button>' +
+    '<span class="hv-wave" aria-hidden="true">' + waveHTML(14) + '</span>' +
+    '<textarea rows="1" maxlength="1200" placeholder="' + (window.BBVoice && window.BBVoice.supported ? 'Type, or tap the mic to call…' : 'Ask anything…') + '" aria-label="Message"></textarea>' +
     '<div class="bba-ear" hidden><span class="lv" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="t">Listening…</span><button type="button" class="cancel">Cancel</button></div>' +
-    '<button type="button" class="kbt" aria-label="Type instead">' + IC.kb + '</button>' +
     '<button type="button" class="mic" aria-label="Speak your message" aria-pressed="false">' + IC.mic + IC.send + '</button>' +
     '<button type="submit" class="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg></button></form>' +
-    '<div class="bba-foot"><span>' + NAME + ' is AI · hands over to Ben</span><button type="button" class="form">Request form ↗</button></div>');
+    '<p class="hv-fine">' + NAME + ' is an AI assistant. <button type="button" class="form hv-fine-link">Send Ben a request</button></p>');
   panel.setAttribute('aria-label', 'Chat with ' + NAME);
 
   /* While on a call the panel can be tucked away: a small bar keeps the call in view, with mute and hang up,
@@ -116,7 +135,7 @@
   var starters = panel.querySelector('.bba-starters');
   var mic = panel.querySelector('.mic');
   var ear = panel.querySelector('.bba-ear');
-  var statusLine = panel.querySelector('.bba-head .s');
+  var statusLine = panel.querySelector('.hv-statustext');
   var hush = panel.querySelector('.hush');
   var trBtn = panel.querySelector('.tr');
   var capPrev = panel.querySelector('.hv-cap-prev');
@@ -125,16 +144,16 @@
   var bars = [].slice.call(ear.querySelectorAll('.lv i'));
 
   /* What Harvey is doing right now, shown under his name and used to style the panel. */
-  var STATES = { idle: 'Ben’s AI assistant', listening: 'Listening…', hearing: 'Working out what you said…', thinking: 'Thinking…', speaking: 'Speaking…' };
+  var STATES = { idle: 'Ready when you are', listening: 'Listening', hearing: 'Thinking', thinking: 'Thinking', speaking: 'Speaking' };
   function setState(name) {
     panel.setAttribute('data-state', name);
     statusLine.textContent = STATES[name] || STATES.idle;
     hush.hidden = name !== 'speaking';
   }
   function thinkingBubble(label) {
-    var n = el('div', 'bba-think', '<span class="bba-think-d"><i></i><i></i><i></i></span><span class="bba-think-l"></span>');
-    n.querySelector('.bba-think-l').textContent = label;
+    var n = el('div', 'bba-think', '<i></i><i></i><i></i>');
     n.setAttribute('role', 'status');
+    n.setAttribute('aria-label', label);
     return n;
   }
   STARTERS.forEach(function (text) {
@@ -158,8 +177,10 @@
     }, 220);
   }
   function updateCaption() {
-    var n = history.length, last = history[n - 1], prev = history[n - 2];
+    var talk = history.filter(function (m) { return m.role !== 'nav'; });
+    var n = talk.length, last = talk[n - 1], prev = talk[n - 2];
     capPrev.textContent = prev ? who(prev) + ': ' + prev.text : '';
+    capCur.classList.toggle('u', !!(last && last.role === 'user'));
     if (last) setCaptionLive(last.text);
   }
   function openLog(on) {
@@ -173,6 +194,13 @@
   function render() {
     log.textContent = '';
     history.forEach(function (m) {
+      if (m.role === 'nav') {
+        var ev = el('div', 'hv-ev');
+        ev.appendChild(el('i', 'hv-ev-dot'));
+        ev.appendChild(document.createTextNode('Moved you to ' + m.text));
+        log.appendChild(ev);
+        return;
+      }
       var n = el('div', 'bba-msg' + (m.role === 'user' ? ' u' : '') + (m.error ? ' err' : ''));
       n.textContent = m.text; // text only: nothing from the server or the visitor is treated as HTML
       log.appendChild(n);
@@ -330,6 +358,7 @@
     if (!target || target.hidden || !target.offsetParent) return false;
     noteTopic(id);
     var label = labelFor(id, target);
+    history.push({ role: 'nav', text: label }); save(); render();
     compactChat();
     prevScrollY = fromVisitor ? null : window.scrollY;
     hideRing();
@@ -380,7 +409,7 @@
     try { var tk = 'toto:tracked:' + (spoken ? 'voice' : 'typed'); if (!sessionStorage.getItem(tk)) { sessionStorage.setItem(tk, '1'); track('toto_message', { method: spoken ? 'voice' : 'typed' }); } } catch (e) {}
     history.push({ role: 'user', text: text });
     save(); render();
-    input.value = ''; input.style.height = '';
+    input.value = ''; input.style.height = ''; form.classList.remove('has-text');
     log.appendChild(thinkingBubble(NAME + ' is thinking')); log.scrollTop = log.scrollHeight;
     setState('thinking');
 
@@ -443,7 +472,7 @@
         known: read(localStorage, KEYS.known) || '',
         voice: !!spoken,
         // Lines this script wrote itself (limit notices, the thank-you after the details step) are not sent back.
-        messages: history.filter(function (m) { return !m.local && !m.error; }).map(function (m) { return { role: m.role, text: m.text }; }).slice(-44)
+        messages: history.filter(function (m) { return !m.local && !m.error && m.role !== 'nav'; }).map(function (m) { return { role: m.role, text: m.text }; }).slice(-44)
       })
     })
       .then(function (r) {
@@ -482,8 +511,16 @@
 
   form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value); });
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(input.value); } });
-  input.addEventListener('input', function () { input.style.height = ''; input.style.height = Math.min(120, input.scrollHeight) + 'px'; });
-  panel.querySelector('.kbt').addEventListener('click', function () { panel.classList.add('typing'); input.focus({ preventScroll: true }); });
+  input.addEventListener('input', function () {
+    input.style.height = ''; input.style.height = Math.min(120, input.scrollHeight) + 'px';
+    form.classList.toggle('has-text', !!input.value.trim());
+  });
+  var kbt = panel.querySelector('.kbt');
+  kbt.addEventListener('click', function () {
+    var on = panel.classList.toggle('typing');
+    kbt.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on) input.focus({ preventScroll: true });
+  });
   panel.querySelector('.form').addEventListener('click', function () { openRequest(); });
 
   /* ---------- the ask-once details step ----------
@@ -703,7 +740,11 @@
   function stopRecording(cancel) { if (recording) { if (cancel) recording.cancel(); else recording.stop(); } }
   function hangUp() { if (recording && recording.release) recording.release(); }
   // Starting a call stops any speech already playing first, so tapping the mic always interrupts him.
-  mic.addEventListener('click', function () { if (call) hangUpCall(); else if (recording) stopRecording(); else if (!busy) startCall(); });
+  mic.addEventListener('click', function () {
+    // The mic always starts talking; if typing is open, it closes it first rather than opening it.
+    if (panel.classList.contains('typing')) { panel.classList.remove('typing'); kbt.setAttribute('aria-pressed', 'false'); }
+    if (call) hangUpCall(); else if (recording) stopRecording(); else if (!busy) startCall();
+  });
   ear.querySelector('.cancel').addEventListener('click', function () { if (call) hangUpCall(); else stopRecording(true); });
 
   /* ---------- live voice calls ----------
