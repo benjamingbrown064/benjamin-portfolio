@@ -232,3 +232,6 @@ html[data-theme=dark] .foot .foot-grid .fs-a{color:#a1a1a6}
 a[data-agent-open]{display:inline-flex;align-items:center;min-height:24px}
 /* Home squares graphic: no hover effects while the page is scrolling (see site.js). */
 .h2-waffle.is-scrolling i{transform:none!important;opacity:1!important}
+/* Home banner, ben-study-chair (Ben, 25 Nov): Ben sits right of centre in the photo, so on phones (a narrow crop of a wide
+   photo) the crop follows him instead of the empty desk. */
+@media(max-width:760px){.hero-fig .frame img.h-flick{object-position:70% 40%}}
