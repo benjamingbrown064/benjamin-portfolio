@@ -300,7 +300,7 @@ export function renderJournalEntry(slug: string): string | null {
     headline: e.title,
     description: e.excerpt,
     datePublished: e.date,
-    image: SITE_URL + e.cover,
+    image: SITE_URL + (e.og ?? e.cover),
     author: { "@type": "Person", name: facts.name, url: SITE_URL },
     mainEntityOfPage: `${SITE_URL}/journal/${e.slug}`,
   };
@@ -312,7 +312,7 @@ export function renderJournalEntry(slug: string): string | null {
 <h1 class="ax-t rv">${esc(e.title)}</h1>
 <p class="lede rv">${esc(e.excerpt)}</p>
 </div></header>
-<div class="w"><figure class="ax-cover art${e.grey ? " grey" : ""} rv"><img src="${e.hero ?? e.cover}" alt="${esc(e.hero ? e.heroAlt ?? e.coverAlt : e.coverAlt)}" decoding="async" fetchpriority="high"></figure></div>
+<div class="w"><figure class="ax-cover art${e.grey ? " grey" : ""} rv">${e.heroSmall ? `<picture><source media="(max-width:700px)" srcset="${e.heroSmall}">` : ""}<img src="${e.hero ?? e.cover}" alt="${esc(e.hero ? e.heroAlt ?? e.coverAlt : e.coverAlt)}" decoding="async" fetchpriority="high">${e.heroSmall ? "</picture>" : ""}</figure>${e.credit ? `<p class="ax-credit">${esc(e.credit)}</p>` : ""}</div>
 <div class="w ax-w ax-body rv">
 ${body}
 </div>
@@ -335,7 +335,7 @@ ${next ? `<a class="lnk" href="/journal">All entries</a>` : ""}
     title: `${e.title} · Benjamin Brown®`,
     description: e.excerpt,
     main,
-    image: e.cover,
+    image: e.og ?? e.cover,
     ogType: "article",
   });
 }
