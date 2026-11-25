@@ -1,0 +1,31 @@
+# Ready to enable: copy to .github/workflows/test.yml (needs a GitHub token with the "workflow" scope to push).
+name: Site checks
+
+# Builds the site and runs the read-only checks in tests/ against it: every page renders, forms refuse bad input,
+# films are not fetched up front. No secrets: the copy built here has no database, so nothing is written or sent.
+# The checks that send real submissions need the preview database and are run by hand (see tests/site.test.mjs).
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Start the site
+        run: |
+          npx next start -p 3000 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://localhost:3000/ && exit 0; sleep 1; done
+          exit 1
+      - run: npm test
+        env:
+          BASE_URL: http://localhost:3000

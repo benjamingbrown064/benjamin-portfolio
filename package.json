@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "import-design": "python3 scripts/import-design.py"
+    "import-design": "python3 scripts/import-design.py",
+    "test": "node --test tests/"
   },
   "dependencies": {
     "@elevenlabs/client": "^1.36.1",

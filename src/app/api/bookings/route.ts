@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
-import { insert } from "@/lib/db";
+import { insert, update } from "@/lib/db";
 import { EMAIL_RE, fail, guard, str } from "@/lib/guard";
 import { sendNotice, sendReceipt } from "@/lib/mail";
 import { addToCalendarLink, forBen, forgetSlots, freeSlots, instant, validZone } from "@/lib/calendar";
+import { addCoffee } from "@/lib/gcal";
 
-// Records a coffee request. The times offered come from Ben's calendar (see /api/availability), but nothing is
-// written to it: the time is held on the site at once, and Ben's notice carries a link that adds it to his calendar
-// and sends the visitor the invite.
+// Records a coffee request. The times offered come from Ben's calendar (see /api/availability). The time is held on
+// the site at once. When the calendar is connected (src/lib/gcal.ts) the coffee is also added to Ben's calendar;
+// otherwise, or if that fails, Ben's notice carries a link that adds it and sends the visitor the invite.
 export async function POST(request: Request) {
   const g = await guard(request, { table: "booking_requests", perHour: 3, perDay: 60, maxBytes: 8000, bot: true });
   if (!g.ok) return g.response;
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
     // The time must still be free at the moment of booking: someone else may have taken it, or Ben's calendar changed.
     const free = await freeSlots(date, b.timeZone as string, true);
     if (!free.some((s) => Date.parse(s.at) === at)) return fail(409, "That time has just been taken. Please pick another.");
-    await insert("booking_requests", {
+    const [row] = await insert<{ id: string }>("booking_requests", {
       name: str(b.name, 120),
       email,
       format: str(b.format, 20),
@@ -33,7 +34,10 @@ export async function POST(request: Request) {
       ip_hash: g.ip,
     });
     forgetSlots();
-    await sendNotice(`Coffee booked: ${str(b.name, 120) ?? email}`, [["Name", str(b.name, 120)], ["Email", email], ["When for you", at ? forBen(at) : null], ["When for them", [str(b.date, 20), str(b.time, 10), str(b.timeZone, 60)].filter(Boolean).join(" ")], ["Format", str(b.format, 20)], ["Note", str(b.note, 2000)], ["Add to your calendar", at ? addToCalendarLink({ at, name: str(b.name, 120), email, format: str(b.format, 20) }) : null]]);
+    const theirTime = [str(b.date, 20), str(b.time, 10), str(b.timeZone, 60)].filter(Boolean).join(" ");
+    const eventId = await addCoffee({ at, name: str(b.name, 120), email, format: str(b.format, 20), note: str(b.note, 2000), theirTime });
+    if (eventId && row?.id) await update("booking_requests", `id=eq.${row.id}`, { calendar_event_id: eventId }).catch((e) => console.error("bookings: event id not saved", e));
+    await sendNotice(`Coffee booked: ${str(b.name, 120) ?? email}`, [["Name", str(b.name, 120)], ["Email", email], ["When for you", forBen(at)], ["When for them", theirTime], ["Format", str(b.format, 20)], ["Note", str(b.note, 2000)], eventId ? ["Calendar", "Added to your calendar. Send the visitor an invite from the event if you want one."] : ["Add to your calendar", addToCalendarLink({ at, name: str(b.name, 120), email, format: str(b.format, 20) })]]);
     await sendReceipt({ kind: "booking", to: email, name: str(b.name, 120), date: str(b.date, 20), time: str(b.time, 10), timeZone: str(b.timeZone, 60), format: str(b.format, 20) });
     return NextResponse.json({ ok: true });
   } catch (e) {

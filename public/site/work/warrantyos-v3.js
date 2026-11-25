@@ -98,9 +98,34 @@ function wxFitAll() {
     el.style.zoom = Math.min(1, aw / el.offsetWidth, (ah > 40 ? ah : 1e4) / el.offsetHeight);
   });
 }
+function useBbNear(ref) {
+  const [near, setNear] = React.useState(false);
+  React.useEffect(() => {
+    if (near) return;
+    let o;
+    const go = () => {
+      if (!ref.current) return;
+      o = new IntersectionObserver((es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          o.disconnect();
+          setNear(true);
+        }
+      }, { rootMargin: "300px 0px" });
+      o.observe(ref.current);
+    };
+    if (document.readyState === "complete") go();
+    else addEventListener("load", go, { once: true });
+    return () => {
+      o && o.disconnect();
+      removeEventListener("load", go);
+    };
+  }, []);
+  return near;
+}
 function WxFilm({ src, title, style }) {
   const box = React.useRef(null), fr = React.useRef(null);
   const [s, setS] = React.useState(0), [on, setOn] = React.useState(false);
+  const near = useBbNear(box);
   React.useEffect(() => {
     const fit = () => setS(box.current.clientWidth / 1920);
     const ro = new ResizeObserver(fit);
@@ -125,7 +150,7 @@ function WxFilm({ src, title, style }) {
     };
     w();
   };
-  return /* @__PURE__ */ React.createElement("div", { className: "wx-film wx-rv", ref: box, style }, /* @__PURE__ */ React.createElement("iframe", { ref: fr, src, title, loading: "eager", scrolling: "no", tabIndex: -1, onLoad: load, style: { position: "absolute", left: 0, top: 0, width: 1920, height: 1080, border: 0, pointerEvents: "none", transformOrigin: "0 0", transform: `scale(${s})`, opacity: on ? 1 : 0, transition: "opacity 320ms var(--ease)" } }));
+  return /* @__PURE__ */ React.createElement("div", { className: "wx-film wx-rv", ref: box, style }, /* @__PURE__ */ React.createElement("iframe", { ref: fr, src: near ? src : void 0, title, loading: "eager", scrolling: "no", tabIndex: -1, onLoad: near ? load : void 0, style: { position: "absolute", left: 0, top: 0, width: 1920, height: 1080, border: 0, pointerEvents: "none", transformOrigin: "0 0", transform: `scale(${s})`, opacity: on ? 1 : 0, transition: "opacity 320ms var(--ease)" } }));
 }
 function WxScrollText({ text }) {
   const ref = React.useRef(null);
