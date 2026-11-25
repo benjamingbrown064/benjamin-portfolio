@@ -1,4 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
+import { saveBrief } from "@/lib/brief";
 import { rpc } from "@/lib/db";
 import { CALL, readTicket } from "@/lib/call";
 import { askToto, type Turn } from "@/lib/toto";
@@ -140,6 +141,7 @@ export async function POST(request: Request) {
             p_actions: out.actions.length ? out.actions : null,
             p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
           });
+          await saveBrief(t.s, out.brief);
         }
         send(chunk({}, tool ? "tool_calls" : "stop"));
         send(encoder.encode("data: [DONE]\n\n"));
