@@ -279,8 +279,8 @@ document.addEventListener('click',function(e){
   function show(){
     if(bar)return;
     // On phones the banner is a slim bar, so it does not cover the page (the main stylesheet is bundled from the design).
-    if(!document.getElementById('ck-slim')){var st=document.createElement('style');st.id='ck-slim';st.textContent='@media(max-width:600px){.ck[role=dialog]{left:8px;right:8px;bottom:86px;width:auto;padding:8px 8px 8px 12px;display:flex;align-items:center;gap:8px;border-radius:12px}.ck[role=dialog] p{font-size:12px;line-height:1.3}.ck[role=dialog] .ck-b{margin-top:0;flex-shrink:0;gap:6px}.ck[role=dialog] .ck-b button{flex:none;min-height:32px;padding:0 10px;font-size:12.5px}}';document.head.appendChild(st)}
-    bar=document.createElement('div');bar.className='ck';bar.setAttribute('role','dialog');bar.setAttribute('aria-label','Analytics cookies');
+    if(!document.getElementById('ck-slim')){var st=document.createElement('style');st.id='ck-slim';st.textContent='@media(max-width:600px){.ck-bar[role=dialog]{left:8px;right:8px;bottom:86px;width:auto;padding:8px 8px 8px 12px;display:flex;align-items:center;gap:8px;border-radius:12px}.ck-bar[role=dialog] p{font-size:12px;line-height:1.3}.ck-bar[role=dialog] .ck-b{margin-top:0;flex-shrink:0;gap:6px}.ck-bar[role=dialog] .ck-b button{flex:none;min-height:32px;padding:0 10px;font-size:12.5px}}';document.head.appendChild(st)}
+    bar=document.createElement('div');bar.className='ck-bar'; /* not 'ck': the coffee booking uses .ck for its tick marks */bar.setAttribute('role','dialog');bar.setAttribute('aria-label','Analytics cookies');
     bar.innerHTML='<p>'+(window.innerWidth<=600?'Analytics cookies OK? No advertising. <a href="/privacy">Privacy</a>':'OK to use analytics cookies? They show which pages are useful. Nothing is used for advertising. <a href="/privacy">Privacy</a>')+'</p><div class="ck-b"><button type="button" class="no">No thanks</button><button type="button" class="yes">Accept</button></div>';
     bar.querySelector('.yes').addEventListener('click',function(){set('granted')});
     bar.querySelector('.no').addEventListener('click',function(){set('denied')});
