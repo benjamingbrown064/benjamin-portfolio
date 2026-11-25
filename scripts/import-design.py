@@ -330,8 +330,8 @@ def home_hide_sections(html):
 # Home banner (Ben, 19 Nov 2026): a single still photo replaced the flick slideshow. The slideshow (frames in
 # public/site/v13/hero-flick/, script hero-flick.js) is kept: set HERO_FLICK = True to bring it back.
 HERO_FLICK = False
-HERO_STILL = "/site/v13/hero/ben-study-desk.webp"  # earlier on 19 Nov: ben-loft-sofa, then ben-room-sofa
-HERO_ALT = "Benjamin Brown writing in a notebook at a dark wooden desk under a pendant lamp, laptop open beside him, bookshelves and a window behind"
+HERO_STILL = "/site/v13/hero/ben-study-chair.webp"  # 25 Nov (Ben). Earlier: ben-loft-sofa, ben-room-sofa, ben-study-desk (19 Nov)
+HERO_ALT = "Benjamin Brown sitting cross-legged in a white swivel chair with an iPad, in a study with dark wooden bookshelves, a desk and a tall window"
 
 
 def home_hero_flick(html):
