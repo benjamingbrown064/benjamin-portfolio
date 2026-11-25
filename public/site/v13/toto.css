@@ -230,6 +230,8 @@ html[data-theme="dark"] .bba-comp.bba-comp .send{color:var(--bone)}
 .hv-end .done:hover{background:#FF6B1F}
 .hv-root[data-phase="ended"] .bba-starters.bba-starters,.hv-root[data-phase="ended"] .bba-comp.bba-comp,.hv-root[data-phase="ended"] .hv-cap,.hv-root[data-phase="ended"] .bba-log.bba-log{display:none}
 .hv-root[data-phase="ended"] .hv-end{display:flex}
+/* Phones: an open transcript (or the gate inside it) closes when the chat ends, so the summary is all that shows. */
+@media(max-width:760px){.hv-root[data-phase="ended"] .bba.bba.open-log .bba-log.bba-log{display:none}}
 
 /* ---------- mobile: a frosted caption dock, 10px from the edges, about 180px tall at rest ----------
    top, width, height and z-index are restated explicitly (even though "auto" is the normal default) because
@@ -260,7 +262,7 @@ html[data-theme="dark"] .bba.bba{--glass:rgba(22,22,24,.97);background:var(--gla
   .hv-launch{right:32px;bottom:32px;width:64px;height:64px}
   .hv-launch .mark{width:30px;height:30px}
   .hv-cap{display:none}
-  .bba-log.bba-log{display:flex !important;max-height:none}
+  .bba-log.bba-log,.bba.bba.open-log .bba-log.bba-log{display:flex !important;max-height:none} /* the phones' transcript cap (44vh) must not reach the desktop card */
   .bba-head.bba-head .tr{display:none}
   .bba-head.bba-head .hv-wave{display:flex}
   /* 392 (card) + 12 (right inset) + 12 (gap between the card and the page) = the padding that keeps the page clear. */
