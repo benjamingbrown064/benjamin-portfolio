@@ -19,10 +19,12 @@
   var GREETING = "Hi, I'm Harvey, Ben's AI assistant. I can answer questions about the work, the method and pricing, show you around, or open a request for Ben. What are you working on?";
   var GREETING_SPOKEN = "Hi, it's Harvey. How can I help?";
   var STARTERS = ['What does Ben do?', 'Run a quick discovery', 'Show me the work', 'I would like to talk to Ben'];
-  var HOME_SECTIONS = { work: 'work', method: 'services', pricing: 'pricing', testimonials: 'testimonials' };
+  // #services (the old methods list) is hidden on the home page in favour of #method-stack; see
+  // HIDDEN_HOME_SECTIONS in scripts/import-design.py.
+  var HOME_SECTIONS = { work: 'work', method: 'method-stack', pricing: 'pricing', testimonials: 'testimonials' };
   // Human labels for the ring + "Moved to" note. Anything not listed falls back to a heading inside the target.
-  var SECTION_LABELS = { work: 'Work', services: 'The method', 'method-stack': 'The method', pricing: 'Pricing', testimonials: 'Testimonials', contact: 'Start here' };
-  var TOPIC_LABELS = { work: 'the work', services: 'the method', 'method-stack': 'the method', pricing: 'pricing', testimonials: 'testimonials', contact: 'getting started' };
+  var SECTION_LABELS = { work: 'Work', 'method-stack': 'The method', pricing: 'Pricing', testimonials: 'Testimonials', contact: 'Start here' };
+  var TOPIC_LABELS = { work: 'the work', 'method-stack': 'the method', pricing: 'pricing', testimonials: 'testimonials', contact: 'getting started' };
   var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen', resume: 'toto:resume', ended: 'toto:ended' };
   var MAX_STORED = 60;
 
@@ -241,19 +243,23 @@
     var inset = dockInset(), y = target.getBoundingClientRect().top + window.scrollY - inset;
     return Math.max(0, Math.min(y, document.scrollingElement.scrollHeight - window.innerHeight));
   }
+  // Jumps, not native smooth scrolling: the page sets html{scroll-behavior:smooth}, and 'auto' defers to
+  // that CSS rather than overriding it, which would otherwise restart the browser's own animation toward a
+  // new target on every frame here and never settle on the right spot. Only 'instant' truly forces a jump.
+  function jumpTo(y) { window.scrollTo({ top: y, left: 0, behavior: 'instant' }); }
   function tween(getY, done) {
     var tok = ++moveTok, y0 = window.scrollY, t0 = performance.now(), dur = Math.min(1100, Math.max(500, Math.abs(getY() - y0) * .12));
     function ease(x) { return 1 - Math.pow(1 - x, 4); }
     function step(now) {
       if (tok !== moveTok) return;
       var k = Math.min(1, (now - t0) / dur), y = getY();
-      window.scrollTo(0, y0 + (y - y0) * ease(k));
+      jumpTo(y0 + (y - y0) * ease(k));
       if (k < 1) return requestAnimationFrame(step);
       var n = 0;
       (function hold() {
         if (tok !== moveTok) return;
         var y2 = getY();
-        if (Math.abs(window.scrollY - y2) > 1) window.scrollTo(0, y2);
+        if (Math.abs(window.scrollY - y2) > 1) jumpTo(y2);
         if (++n < 12) return requestAnimationFrame(hold);
         if (done) done();
       })();
@@ -264,16 +270,34 @@
   function showRing(target, label) {
     var r = target.getBoundingClientRect(), p = 10;
     if (r.bottom < 0 || r.top > innerHeight) return;
-    Object.assign(ring.style, { left: r.left - p + 'px', top: r.top - p + window.scrollY + 'px', width: r.width + p * 2 + 'px', height: r.height + p * 2 + 'px' });
+    // Clamped to the viewport's width, not just padded outward: a full-bleed section's ring would
+    // otherwise sit a few px past each edge and force a horizontal scrollbar.
+    var left = Math.max(0, r.left - p), right = Math.min(innerWidth, r.right + p);
+    Object.assign(ring.style, { left: left + 'px', top: r.top - p + window.scrollY + 'px', width: Math.max(0, right - left) + 'px', height: r.height + p * 2 + 'px' });
     ring.style.position = 'absolute';
     ring.querySelector('b').textContent = label;
     ring.classList.add('on');
     clearTimeout(ringTimer); ringTimer = setTimeout(hideRing, 4200);
   }
   function hideMoveToast() { toast.classList.remove('on'); clearTimeout(toastTimer); }
+  // On the mobile dock the note sits just above it, never over its header. On the desktop panel it sits
+  // beside the panel's top, never over the page's own heading.
+  function positionToast() {
+    if (isWide()) {
+      toast.style.left = ''; toast.style.right = (panel.classList.contains('on') ? panel.offsetWidth : 0) + 16 + 'px';
+      toast.style.bottom = ''; toast.style.top = '84px'; toast.style.setProperty('--tx', '0');
+      toast.classList.add('wide');
+    } else {
+      var above = panel.classList.contains('on') ? innerHeight - panel.getBoundingClientRect().top + 12 : 24;
+      toast.style.right = ''; toast.style.left = '50%';
+      toast.style.top = ''; toast.style.bottom = above + 'px'; toast.style.setProperty('--tx', '-50%');
+      toast.classList.remove('wide');
+    }
+  }
   function showMoveToast(label, canBack) {
     toast.querySelector('.tt').innerHTML = 'Moved to <b>' + label.replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }) + '</b>';
     toast.querySelector('.back').hidden = !canBack;
+    positionToast();
     toast.classList.add('on');
     clearTimeout(toastTimer); toastTimer = setTimeout(hideMoveToast, 5200);
   }
@@ -291,8 +315,9 @@
   /* Scrolls a section into view and marks it with the ring. Same contract as before: true if a target was found. */
   function moveToSection(id, fromVisitor) {
     var target = id && document.getElementById(id);
-    if (!target) return false;
-    noteTopic(id === HOME_SECTIONS.method ? 'method' : (Object.keys(HOME_SECTIONS).filter(function (k) { return HOME_SECTIONS[k] === id; })[0] || id));
+    // A hidden section (or one with no layout box) is not a visible target to scroll to or ring.
+    if (!target || target.hidden || !target.offsetParent) return false;
+    noteTopic(id);
     var label = labelFor(id, target);
     compactChat();
     prevScrollY = fromVisitor ? null : window.scrollY;
@@ -875,13 +900,60 @@
     if (a) { e.preventDefault(); open(); }
   });
 
+  /* The side panel narrows the page with padding, not a scaled-down viewport: anything the design sizes in
+     vw (headings in particular) is still a fraction of the *true*, unnarrowed window width, and overflows
+     the narrower column. This copies every rule that uses vw into one scoped to html.bba-open, with each
+     "Nvw" swapped for "the same fraction of the width actually left for the page" - exact for any property,
+     not just font-size, and needs no knowledge of which classes the design happens to use. */
+  function narrowVwRules() {
+    var style = el('style'); document.head.appendChild(style);
+    var sheet = style.sheet, out = [];
+    [].slice.call(document.styleSheets).forEach(function (s) {
+      if (s === sheet) return;
+      var rules; try { rules = s.cssRules; } catch (e) { return; }
+      if (!rules) return;
+      (function walk(list, media) {
+        [].slice.call(list).forEach(function (r) {
+          // A plain style rule has a selector and a declaration block; grouping rules (@media, @supports) do
+          // not, and r.cssRules on a style rule is a truthy-but-empty stand-in, not a sign it has children.
+          if (r.selectorText && r.style) {
+            // This layer's own elements (hv-*, bba*) are already sized for the real viewport on purpose;
+            // only the page underneath needs the narrowed-width treatment.
+            if (/\.(hv-|bba)/.test(r.selectorText)) return;
+            // Only the vw-bearing declarations are copied: carrying the whole rule over would also replay
+            // its other properties (a toggled .on state's opacity or pointer-events, say) after they have
+            // already been set by a class change, silently undoing it.
+            var decls = [];
+            for (var i = 0; i < r.style.length; i++) {
+              var prop = r.style[i], val = r.style.getPropertyValue(prop);
+              if (/\d(\.\d+)?vw\b/.test(val)) decls.push(prop + ':' + val.replace(/(-?\d+(?:\.\d+)?)vw\b/g, function (m, n) { return 'calc((100vw - var(--hv-narrow,0px)) * ' + n + ' / 100)'; }));
+            }
+            if (!decls.length) return;
+            var text = decls.join(';');
+            var sel = r.selectorText.split(',').map(function (p) { return 'html.bba-open ' + p.trim(); }).join(',');
+            out.push((media ? '@media ' + media + '{' : '') + sel + '{' + text + '}' + (media ? '}' : ''));
+          } else if (r.cssRules && r.cssRules.length) {
+            walk(r.cssRules, (media ? media + ' and ' : '') + (r.conditionText || ''));
+          }
+        });
+      })(rules, '');
+    });
+    out.forEach(function (css) { try { sheet.insertRule(css, sheet.cssRules.length); } catch (e) {} });
+  }
+
   function mount() {
     root.appendChild(launch);
     root.appendChild(panel);
-    root.appendChild(ring);
     root.appendChild(toast);
     document.body.appendChild(root);
+    // The ring is position:absolute against the page itself (so it can land exactly on a scrolled-to
+    // heading); a position:fixed ancestor would make it the ring's containing block instead of the
+    // document, so it has to live outside .hv-root, directly on the body.
+    document.body.appendChild(ring);
     document.head.appendChild(barStyle);
+    // Stylesheets may still be loading at defer-script time, when cssRules is unreadable; the load event
+    // guarantees every <link rel=stylesheet> has finished.
+    if (document.readyState === 'complete') narrowVwRules(); else addEventListener('load', narrowVwRules, { once: true });
     document.body.appendChild(bar);
     bar.querySelector('.cb-open').addEventListener('click', function () { open(); });
     bar.querySelector('.cb-end').addEventListener('click', function () { hangUpCall(); });
