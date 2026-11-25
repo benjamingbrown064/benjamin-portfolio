@@ -40,12 +40,12 @@ const MUSE = "/media/journal/meta-muse-uk";
 export const JOURNAL: JournalEntry[] = [
   {
     slug: "meta-muse-uk",
-    title: "Meta’s Muse is in the UK. Give it a job.",
+    title: "The AI agent for everyone else",
     date: "2026-11-24",
     category: "Journal",
     level: "Beginner · No experience needed",
-    excerpt: "Meta’s AI agent has landed in the UK. Five jobs to give it this week, each with a prompt you can copy.",
-    minutes: 4,
+    excerpt: "Meta’s Muse landed in the UK this week. I’ve been using it in the US since September. Here’s why it’s different, and five jobs to give it.",
+    minutes: 5,
     cover: `${MUSE}/hero-2x1.jpg`,
     coverAlt: "Jolly the Muse mascot holding an umbrella",
     heroSmall: `${MUSE}/hero-4x3.jpg`,
