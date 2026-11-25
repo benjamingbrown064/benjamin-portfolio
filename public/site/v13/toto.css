@@ -275,3 +275,14 @@ html[data-theme="dark"] .bba.bba{--glass:rgba(22,22,24,.97);background:var(--gla
    the keyboard button and the mic, so the mic is always right-aligned (the text field does the same when typing). */
 .bba-comp.bba-comp .hv-wave{flex:1;min-width:0;justify-content:center}
 .bba-comp.bba-comp .mic,.bba-comp.bba-comp .send{margin-left:auto}
+/* Phones (Ben, 25 Nov): while the details form is up the dock grows, so the form and its button fit without the
+   button being cut off under the composer. */
+@media(max-width:760px){
+  .bba.bba.gating{max-height:min(640px,86vh)}
+  .bba.bba.open-log.gating .bba-log.bba-log{max-height:min(470px,62vh)}
+}
+/* iPhone Safari zooms the whole page into any field with text under 16px when it is tapped, which pushed the dock
+   edge to edge and cut off the form's button (Ben's screenshot, 25 Nov). 16px on phones stops the zoom. */
+@media(max-width:760px){
+  .bba-gate.bba-gate input,.bba-comp.bba-comp textarea{font-size:16px}
+}

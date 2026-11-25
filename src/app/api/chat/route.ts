@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { insert, rpc } from "@/lib/db";
 import { fail, guard, str } from "@/lib/guard";
+import { saveBrief } from "@/lib/brief";
 import { askToto, type Action, type TotoResult, type Turn } from "@/lib/toto";
 import { VOICE, sayChunker, signSay, type Sayable } from "@/lib/voice";
 
@@ -102,7 +103,7 @@ export async function POST(request: Request) {
           p_session: session, p_ip: g.ip, p_page: page, p_user: question, p_reply: reply,
           p_actions: actions.length ? actions : null,
           p_in: out.inputTokens, p_out: out.outputTokens, p_cost: out.cost, p_name: out.name, p_email: out.email,
-        });
+        }).then(() => saveBrief(session, out.brief));
       return { reply, actions, known: pre.known || Boolean(out.email), log };
     };
 
