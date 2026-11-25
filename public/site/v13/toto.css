@@ -194,3 +194,13 @@
   html.bba-open.bba-open{padding-right:400px;--hv-narrow:400px;transition:padding-right .45s var(--ease,cubic-bezier(.32,.72,0,1))}
   html{transition:padding-right .45s var(--ease,cubic-bezier(.32,.72,0,1))}
 }
+/* Gate intro line (25 Nov review): the form always says why it is there. */
+.bba-gate.bba-gate .bba-gate-in{margin:0 0 2px;font-size:14px;line-height:1.45;color:var(--ink,#1d1d1f)}
+html[data-theme=dark] .bba-gate.bba-gate .bba-gate-in{color:#f5f5f7}
+/* Phones (25 Nov review): the caption dock is the dark strip from Ben's design (layout A), in light and dark theme.
+   The panel's colours all come from the site's theme variables, so the dock simply takes the dark-theme values. */
+@media(max-width:760px){
+  .bba.bba{--ink:#F5F5F7;--bone:#161618;--bone-2:#2C2C2E;--bone-3:#3A3A3C;--line:rgba(255,255,255,.16);--mute:#A1A1A6;--fg:#F5F5F7;color-scheme:dark;background:rgba(22,22,24,.98);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);color:#F5F5F7;border-color:transparent;box-shadow:0 20px 44px -14px rgba(0,0,0,.5)}
+  .bba.bba .bba-head.bba-head{border-bottom-color:rgba(255,255,255,.12)}
+  .bba.bba .hv-end{border-top-color:rgba(255,255,255,.12)}
+}

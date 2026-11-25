@@ -239,8 +239,15 @@
   var wideMQ = window.matchMedia ? matchMedia('(min-width:761px)') : null;
   function isWide() { return wideMQ ? wideMQ.matches : innerWidth >= 761; }
   function dockInset() { return panel.classList.contains('on') && !isWide() ? panel.offsetHeight + 16 : 16; }
+  // The heading Harvey is talking about: the section's own h1/h2 (else the section). The ring marks it.
+  function headingOf(target) { return (target.querySelector && target.querySelector('h1,h2,h3')) || target; }
+  // Space taken at the top of the window by the sticky nav, so the heading lands just below it.
+  function topInset() {
+    var nav = document.getElementById('nav'), r = nav && nav.getBoundingClientRect();
+    return (r && r.bottom > 0 && r.bottom < 200 ? r.bottom : 52) + 56;
+  }
   function targetY(target) {
-    var inset = dockInset(), y = target.getBoundingClientRect().top + window.scrollY - inset;
+    var h = headingOf(target), y = h.getBoundingClientRect().top + window.scrollY - topInset();
     return Math.max(0, Math.min(y, document.scrollingElement.scrollHeight - window.innerHeight));
   }
   // Jumps, not native smooth scrolling: the page sets html{scroll-behavior:smooth}, and 'auto' defers to
@@ -268,7 +275,7 @@
   }
   function hideRing() { ring.classList.remove('on'); clearTimeout(ringTimer); }
   function showRing(target, label) {
-    var r = target.getBoundingClientRect(), p = 10;
+    var r = headingOf(target).getBoundingClientRect(), p = 12;
     if (r.bottom < 0 || r.top > innerHeight) return;
     // Clamped to the viewport's width, not just padded outward: a full-bleed section's ring would
     // otherwise sit a few px past each edge and force a horizontal scrollbar.
@@ -277,7 +284,7 @@
     ring.style.position = 'absolute';
     ring.querySelector('b').textContent = label;
     ring.classList.add('on');
-    clearTimeout(ringTimer); ringTimer = setTimeout(hideRing, 4200);
+    clearTimeout(ringTimer); ringTimer = setTimeout(hideRing, 5000);
   }
   function hideMoveToast() { toast.classList.remove('on'); clearTimeout(toastTimer); }
   // On the mobile dock the note sits just above it, never over its header. On the desktop panel it sits
@@ -285,7 +292,7 @@
   function positionToast() {
     if (isWide()) {
       toast.style.left = ''; toast.style.right = (panel.classList.contains('on') ? panel.offsetWidth : 0) + 16 + 'px';
-      toast.style.bottom = ''; toast.style.top = '84px'; toast.style.setProperty('--tx', '0');
+      toast.style.top = ''; toast.style.bottom = '28px'; toast.style.setProperty('--tx', '0'); // bottom corner of the page, clear of the heading Harvey rings
       toast.classList.add('wide');
     } else {
       var above = panel.classList.contains('on') ? innerHeight - panel.getBoundingClientRect().top + 12 : 24;
@@ -299,7 +306,7 @@
     toast.querySelector('.back').hidden = !canBack;
     positionToast();
     toast.classList.add('on');
-    clearTimeout(toastTimer); toastTimer = setTimeout(hideMoveToast, 5200);
+    clearTimeout(toastTimer); toastTimer = setTimeout(hideMoveToast, 8000);
   }
   toast.querySelector('.back').addEventListener('click', function () {
     hideMoveToast(); hideRing();
@@ -307,7 +314,11 @@
   });
   // A scroll the visitor starts themselves cancels Harvey's move and hides the ring.
   ['wheel', 'touchstart'].forEach(function (ev) { addEventListener(ev, function () { moveTok++; }, { passive: true }); });
-  addEventListener('scroll', function () { if (ring.classList.contains('on')) hideRing(); }, { passive: true });
+  // Only the visitor's own scrolling hides the ring: the page can also scroll by itself (images loading, the
+  // pinned method section settling), which must not wipe the mark Harvey has just made.
+  function visitorScrolled() { if (ring.classList.contains('on')) hideRing(); }
+  ['wheel', 'touchmove'].forEach(function (ev) { addEventListener(ev, visitorScrolled, { passive: true }); });
+  addEventListener('keydown', function (e) { if (/^(Arrow(Up|Down)|Page(Up|Down)|Home|End| )$/.test(e.key) && !/INPUT|TEXTAREA/.test((e.target || {}).tagName || '')) visitorScrolled(); });
 
   /* Collapses any expanded transcript so the page is visible again - the "chat shrinks to compact" moment. */
   function compactChat() { openLog(false); }
@@ -478,9 +489,18 @@
   /* ---------- the ask-once details step ----------
      Two steps: name and email, then the six-digit code sent to that email. The code proves the address is theirs. */
   var gate = null;
+  // The form scrolls into view in the panel, from its intro line, so it never starts cut off under the header.
+  function revealGate() {
+    setTimeout(function () {
+      if (!gate || !gate.parentNode) return;
+      if (typeof openLog === 'function' && !isWide()) openLog(true);
+      var lg = gate.parentNode; lg.scrollTop = Math.max(0, gate.offsetTop - lg.offsetTop - 8);
+    }, 60);
+  }
   function showGate() {
-    if (gate) { render(); return; }
+    if (gate) { render(); revealGate(); return; }
     gate = el('form', 'bba-gate',
+      '<p class="bba-gate-in">To keep talking, leave your name and email. I’ll send a six-digit code to check it’s you.</p>' +
       '<input type="text" name="name" placeholder="Your name" autocomplete="name" aria-label="Your name" required maxlength="120">' +
       '<input type="email" name="email" placeholder="you@company.com" autocomplete="email" aria-label="Your email" required maxlength="200">' +
       '<input type="text" name="code" placeholder="6-digit code from the email" inputmode="numeric" autocomplete="one-time-code" aria-label="Code from the email" maxlength="7" hidden>' +
@@ -529,7 +549,7 @@
         })
         .catch(function () { btn.disabled = false; err.textContent = 'That did not save. Please try again.'; });
     });
-    render();
+    render(); revealGate();
   }
 
   /* ---------- voice ---------- */
