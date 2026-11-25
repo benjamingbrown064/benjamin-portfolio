@@ -1,0 +1,43 @@
+/* Notes page: Ben's Journal Index design (25 Nov 2026), v12/journal-index.css verbatim. Kept by hand here (it arrived as a page
+   export, not with the design import). Linked from the journal page by scripts/import-design.py. */
+/* v12 journal index: large two-up thumbnails, filters with counts, 20 per page with numbered pages */
+.jg-sec{padding:0 0 clamp(88px,11vw,152px)}
+.jg-bar{position:sticky;top:var(--nav-h,64px);z-index:5;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px 32px;margin:0 calc(-1*var(--gut));padding:14px var(--gut);background:color-mix(in srgb,var(--bone) 92%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+.jg-bar h2{margin:0}
+.jg-filters{display:flex;flex-wrap:wrap;gap:8px}
+.jg-filters button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border-radius:var(--pill);background:var(--bone-2);font-size:14px;font-weight:500;color:var(--mute);transition:background .3s,color .3s}
+.jg-filters button:hover{background:var(--bone-3);color:var(--ink)}
+.jg-filters button i{font-style:normal;font-variant-numeric:tabular-nums;opacity:.6}
+.jg-filters button[aria-pressed="true"]{background:var(--ink);color:var(--bone)}
+.jg-count{margin:28px 0 0;font-size:14px;color:var(--mute);font-variant-numeric:tabular-nums}
+.jg-grid{list-style:none;margin:24px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(48px,6vw,80px) clamp(20px,3vw,40px)}
+.jg-grid>li{opacity:0;transform:translateY(12px);animation:jgIn .6s var(--ease,cubic-bezier(.2,0,0,1)) forwards;animation-delay:calc(var(--i,0)*45ms)}
+@keyframes jgIn{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.jg-grid>li{animation:none;opacity:1;transform:none}}
+.jg-card{display:grid;gap:16px;align-content:start;color:inherit;text-decoration:none}
+.jg-cover{position:relative;aspect-ratio:16/10;border-radius:var(--r-lg);overflow:hidden;background:var(--bone-2)}
+.jg-cover img{width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:transform 1.4s var(--ease,cubic-bezier(.2,0,0,1))}
+.jg-cover.c img{filter:none}
+.jg-card:hover .jg-cover img{transform:scale(1.03)}
+.jg-none{display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,2.4vw,32px)}
+.jg-none .k{font:400 12px/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.jg-none .q{font-size:clamp(24px,2.8vw,40px);font-weight:600;letter-spacing:-.045em;line-height:1.02;color:var(--ink);max-width:16ch;text-wrap:balance;transition:transform 1.4s var(--ease,cubic-bezier(.2,0,0,1))}
+.jg-card:hover .jg-none .q{transform:translateY(-4px)}
+.jg-none .mk{position:absolute;right:clamp(20px,2.4vw,32px);top:clamp(20px,2.4vw,32px);width:28px;height:28px;color:var(--ink);opacity:.18}
+.jg-card h3{margin:0;font-size:clamp(22px,2.2vw,30px);font-weight:600;letter-spacing:-.035em;line-height:1.12;text-wrap:pretty;transition:opacity .25s}
+.jg-card:hover h3{opacity:.7}
+.jg-card p{margin:-4px 0 0;max-width:52ch;font-size:16px;line-height:1.5;color:var(--mute);text-wrap:pretty}
+.jg-card .lnk{justify-self:start}
+.jg-empty{padding:56px 0;color:var(--mute)}
+.jg-pages{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;margin-top:clamp(56px,7vw,96px)}
+.jg-pages a,.jg-pages span{display:inline-grid;place-items:center;min-width:44px;height:44px;padding:0 14px;border-radius:var(--pill);font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink);text-decoration:none;transition:background .3s,color .3s}
+.jg-pages a{background:var(--bone-2)}
+.jg-pages a:hover{background:var(--bone-3)}
+.jg-pages a[aria-current="page"]{background:var(--ink);color:var(--bone)}
+.jg-pages .gap{min-width:24px;padding:0;color:var(--mute)}
+.jg-pages a[aria-disabled="true"]{pointer-events:none;opacity:.35}
+.jx-feat[hidden]{display:none}
+@media(max-width:760px){.jg-grid{grid-template-columns:minmax(0,1fr)}.jg-bar{position:static;margin:0;padding:0 0 16px;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}.jg-filters{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1*var(--gut));padding:0 var(--gut);scrollbar-width:none}.jg-filters::-webkit-scrollbar{display:none}.jg-filters button{flex:none}}
+/* site (25 Nov): series artwork (The Handover, The 1%) is 4:3 with its lettering near the bottom. In the 16:10 frame,
+   crop mostly from the top so the lettering and issue number stay whole. */
+.jg-cover.l img{object-position:50% 74%}
