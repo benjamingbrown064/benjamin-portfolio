@@ -1,11 +1,16 @@
-/* Toto, the site assistant.
-   A chat panel that talks to /api/chat. The server holds the model, the facts and the limits; this
+/* Harvey, the site assistant.
+   A chat layer that talks to /api/chat. The server holds the model, the facts and the limits; this
    script shows the conversation and carries out the actions the server returns (move to a page,
    open the request form, open the coffee booking). Voice: the visitor's words appear in the conversation as they
    speak (BBVoice in site.js), and the reply to a spoken message is read aloud piece by piece as it is written (/api/voice/speak).
-   The line under Toto's name always says what is happening: listening, thinking or speaking.
+   The line under Harvey's name always says what is happening: listening, thinking or speaking.
+
+   Layout: before a chat there is only the launcher. Once open, phones get a caption dock pinned to the
+   bottom (current line, previous line, controls, with the full transcript a tap away); anything wider gets
+   a 400px panel docked to the right, with the page itself narrowed so the panel never covers it. Both share
+   the same conversation engine below - only the markup and CSS differ by width.
    API kept from the design: window.BBAgentDesk.open() / close() / ask(text), and any element with
-   [data-agent-open] opens the panel. */
+   [data-agent-open] opens it. */
 (function () {
   'use strict';
   if (window.BBAgentDesk) return;
@@ -15,7 +20,10 @@
   var GREETING_SPOKEN = "Hi, it's Harvey. How can I help?";
   var STARTERS = ['What does Ben do?', 'Run a quick discovery', 'Show me the work', 'I would like to talk to Ben'];
   var HOME_SECTIONS = { work: 'work', method: 'services', pricing: 'pricing', testimonials: 'testimonials' };
-  var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen', resume: 'toto:resume' };
+  // Human labels for the ring + "Moved to" note. Anything not listed falls back to a heading inside the target.
+  var SECTION_LABELS = { work: 'Work', services: 'The method', 'method-stack': 'The method', pricing: 'Pricing', testimonials: 'Testimonials', contact: 'Start here' };
+  var TOPIC_LABELS = { work: 'the work', services: 'the method', 'method-stack': 'the method', pricing: 'pricing', testimonials: 'testimonials', contact: 'getting started' };
+  var KEYS = { history: 'toto:chat', session: 'toto:sid', seen: 'toto:seen', known: 'toto:known', reopen: 'toto:reopen', resume: 'toto:resume', ended: 'toto:ended' };
   var MAX_STORED = 60;
 
   /* ---------- storage ---------- */
@@ -37,27 +45,45 @@
   try { history = JSON.parse(read(localStorage, KEYS.history) || '[]'); } catch (e) {}
   if (!Array.isArray(history) || !history.length) history = [{ role: 'assistant', text: GREETING }];
   function save() { write(localStorage, KEYS.history, JSON.stringify(history.slice(-MAX_STORED))); }
+  var topics = []; // section keys visited this run, for the ending summary
+  try { topics = JSON.parse(read(sessionStorage, 'toto:topics') || '[]'); } catch (e) {}
+  function saveTopics() { write(sessionStorage, 'toto:topics', JSON.stringify(topics)); }
+  function noteTopic(key) { if (key && TOPIC_LABELS[key] && topics.indexOf(key) < 0) { topics.push(key); saveTopics(); } }
 
   /* ---------- markup ---------- */
   function el(tag, cls, html) { var n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
   var MARK = '<svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M14 38V13L24 8V38Z" fill="currentColor" stroke="none"></path><circle cx="32" cy="38" r="13" fill="none" stroke="currentColor" stroke-width="10"></circle></svg>';
+  var IC = {
+    mic: '<svg class="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg>',
+    send: '<svg class="i-send" viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg>',
+    kb: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="3"></rect><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"></path></svg>',
+    tr: '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>',
+    x: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg>'
+  };
 
-  var launch = el('button', 'bba-launch', MARK + '<span class="x" aria-hidden="true">×</span><span class="ping"></span>');
+  // Root holding everything the layer draws. data-phase (closed/open/ended) and the mobile/desktop CSS do the rest.
+  var root = el('div', 'hv-root');
+  root.setAttribute('data-phase', 'closed');
+
+  var launch = el('button', 'hv-launch', MARK + '<i class="hv-bd"></i>');
   launch.type = 'button';
   launch.setAttribute('aria-label', 'Chat with ' + NAME);
-  launch.setAttribute('aria-expanded', 'false');
 
-  var panel = el('aside', 'bba',
-    '<div class="bba-head"><span class="av" aria-hidden="true">T<span class="sq"></span></span>' +
+  var panel = el('aside', 'bba hv-panel',
+    '<div class="bba-head"><span class="av" aria-hidden="true">H<span class="sq"></span></span>' +
     '<div class="bba-who"><b>' + NAME + '</b><span class="s" aria-live="polite">Ben’s AI assistant</span></div>' +
     '<button type="button" class="hush" hidden>Stop</button>' +
-    '<button type="button" class="clr">Clear</button>' +
-    '<button type="button" class="bba-x" aria-label="Close chat"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>' +
+    '<button type="button" class="tr" aria-expanded="false">Transcript ' + IC.tr + '</button>' +
+    '<button type="button" class="bba-x" aria-label="End chat">' + IC.x + '</button></div>' +
     '<div class="bba-log" role="log" aria-live="polite"></div>' +
+    '<div class="hv-cap" aria-live="polite"><p class="hv-cap-prev"></p><p class="hv-cap-cur"></p></div>' +
+    '<div class="hv-end"><p class="eh">Chat ended</p><p class="es" aria-live="polite"></p><div class="eb">' +
+    '<button type="button" class="done">Done</button><button type="button" class="keep">Keep talking</button></div></div>' +
     '<div class="bba-starters"></div>' +
     '<form class="bba-comp"><textarea rows="1" maxlength="1200" placeholder="' + (window.BBVoice && window.BBVoice.supported ? 'Type, or tap the mic to call…' : 'Ask anything…') + '" aria-label="Message"></textarea>' +
     '<div class="bba-ear" hidden><span class="lv" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="t">Listening…</span><button type="button" class="cancel">Cancel</button></div>' +
-    '<button type="button" class="mic" aria-label="Speak your message" aria-pressed="false"><svg class="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg><svg class="i-send" viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg></button>' +
+    '<button type="button" class="kbt" aria-label="Type instead">' + IC.kb + '</button>' +
+    '<button type="button" class="mic" aria-label="Speak your message" aria-pressed="false">' + IC.mic + IC.send + '</button>' +
     '<button type="submit" class="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"></path></svg></button></form>' +
     '<div class="bba-foot"><span>' + NAME + ' is AI · hands over to Ben</span><button type="button" class="form">Request form ↗</button></div>');
   panel.setAttribute('aria-label', 'Chat with ' + NAME);
@@ -75,7 +101,12 @@
     '.bba-callbar .cb-end{background:#ff5a1f;color:#fff}.bba-callbar .cb-mute[aria-pressed=true]{background:#f4f1ea;color:#0a0a0a}' +
     '.bba-callbar .cb-dot{width:10px;height:10px;border-radius:50%;background:#3ad07a;transition:transform .08s linear}' +
     '.bba-callbar[data-mode=speaking] .cb-dot{background:#ff5a1f}' +
-    '@media (max-width:560px){.bba-callbar{right:86px;left:12px;bottom:26px;justify-content:space-between}.bba-callbar .cb-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}}');
+    '@media (max-width:560px){.bba-callbar{right:86px;left:12px;bottom:118px;justify-content:space-between}.bba-callbar .cb-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}}');
+
+  // Ring + "Moved to" note live on the page itself, over whatever Harvey just scrolled to - not inside the panel.
+  var ring = el('div', 'hv-ring', '<b></b>');
+  var toast = el('div', 'hv-toast', '<span class="tt"></span><button type="button" class="back">Back</button>');
+  toast.setAttribute('role', 'status');
 
   var log = panel.querySelector('.bba-log');
   var input = panel.querySelector('textarea');
@@ -85,9 +116,13 @@
   var ear = panel.querySelector('.bba-ear');
   var statusLine = panel.querySelector('.bba-head .s');
   var hush = panel.querySelector('.hush');
+  var trBtn = panel.querySelector('.tr');
+  var capPrev = panel.querySelector('.hv-cap-prev');
+  var capCur = panel.querySelector('.hv-cap-cur');
+  var endSummary = panel.querySelector('.hv-end .es');
   var bars = [].slice.call(ear.querySelectorAll('.lv i'));
 
-  /* What Toto is doing right now, shown under his name and used to style the panel. */
+  /* What Harvey is doing right now, shown under his name and used to style the panel. */
   var STATES = { idle: 'Ben’s AI assistant', listening: 'Listening…', hearing: 'Working out what you said…', thinking: 'Thinking…', speaking: 'Speaking…' };
   function setState(name) {
     panel.setAttribute('data-state', name);
@@ -95,7 +130,6 @@
     hush.hidden = name !== 'speaking';
   }
   function thinkingBubble(label) {
-    // Its own class names: the design's stylesheet and scripts already use "bba-typing", "dots" and "who" for other things.
     var n = el('div', 'bba-think', '<span class="bba-think-d"><i></i><i></i><i></i></span><span class="bba-think-l"></span>');
     n.querySelector('.bba-think-l').textContent = label;
     n.setAttribute('role', 'status');
@@ -107,6 +141,33 @@
     starters.appendChild(b);
   });
 
+  /* The caption dock shows the live and previous line; the full transcript opens above it. On a call the
+     spoken-to text is revealed word by word on a timer, since the call library only hands over full lines. */
+  var capTimer = null;
+  function who(m) { return m.role === 'user' ? 'You' : NAME; }
+  function setCaptionLive(text) { clearInterval(capTimer); capCur.textContent = text; }
+  function revealCaption(text) {
+    clearInterval(capTimer);
+    var words = text.split(/\s+/), i = 0;
+    capCur.textContent = '';
+    capTimer = setInterval(function () {
+      i++; capCur.textContent = words.slice(0, i).join(' ');
+      if (i >= words.length) clearInterval(capTimer);
+    }, 220);
+  }
+  function updateCaption() {
+    var n = history.length, last = history[n - 1], prev = history[n - 2];
+    capPrev.textContent = prev ? who(prev) + ': ' + prev.text : '';
+    if (last) setCaptionLive(last.text);
+  }
+  function openLog(on) {
+    if (on == null) on = !panel.classList.contains('open-log');
+    panel.classList.toggle('open-log', on);
+    trBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    if (on) log.scrollTop = log.scrollHeight;
+  }
+  trBtn.addEventListener('click', function () { openLog(); });
+
   function render() {
     log.textContent = '';
     history.forEach(function (m) {
@@ -116,8 +177,9 @@
       if (m.report) log.appendChild(reportCard(m.report));
     });
     starters.style.display = history.some(function (m) { return m.role === 'user'; }) ? 'none' : '';
-    if (gate) log.appendChild(gate);
+    if (gate) { log.appendChild(gate); openLog(true); } // the gate is a form: it must not be hidden in the caption dock
     log.scrollTop = log.scrollHeight;
+    updateCaption();
   }
 
   /* The first-look report at the end of a discovery by conversation. Built from text nodes only. */
@@ -159,23 +221,94 @@
     if (window.BBCoffee) window.BBCoffee.open();
     else location.href = '/contact#coffee';
   }
-  /* Scrolls a section into view and outlines it for a moment, so the visitor sees what Toto is talking about. */
-  function showSection(id) {
+
+  /* ---------- moving the page: ring, "Moved to" note, Back ----------
+     Scrolling runs its own tween rather than the browser's smooth scroll, and re-reads the target's position
+     every frame, because images loading in above it shift the page while it moves. */
+  var moveTok = 0, prevScrollY = null, ringTimer = null, toastTimer = null;
+  function labelFor(id, target) {
+    if (SECTION_LABELS[id]) return SECTION_LABELS[id];
+    var h = target && target.querySelector && target.querySelector('h1,h2');
+    if (h && h.textContent.trim()) return h.textContent.trim().split(/\s+/).slice(0, 4).join(' ');
+    return (id || '').replace(/-/g, ' ').replace(/^\w/, function (c) { return c.toUpperCase(); });
+  }
+  // On the mobile dock the panel sits over the bottom of the page; the side panel on wider screens never
+  // overlaps the page at all, since the page itself is narrowed instead.
+  var wideMQ = window.matchMedia ? matchMedia('(min-width:761px)') : null;
+  function isWide() { return wideMQ ? wideMQ.matches : innerWidth >= 761; }
+  function dockInset() { return panel.classList.contains('on') && !isWide() ? panel.offsetHeight + 16 : 16; }
+  function targetY(target) {
+    var inset = dockInset(), y = target.getBoundingClientRect().top + window.scrollY - inset;
+    return Math.max(0, Math.min(y, document.scrollingElement.scrollHeight - window.innerHeight));
+  }
+  function tween(getY, done) {
+    var tok = ++moveTok, y0 = window.scrollY, t0 = performance.now(), dur = Math.min(1100, Math.max(500, Math.abs(getY() - y0) * .12));
+    function ease(x) { return 1 - Math.pow(1 - x, 4); }
+    function step(now) {
+      if (tok !== moveTok) return;
+      var k = Math.min(1, (now - t0) / dur), y = getY();
+      window.scrollTo(0, y0 + (y - y0) * ease(k));
+      if (k < 1) return requestAnimationFrame(step);
+      var n = 0;
+      (function hold() {
+        if (tok !== moveTok) return;
+        var y2 = getY();
+        if (Math.abs(window.scrollY - y2) > 1) window.scrollTo(0, y2);
+        if (++n < 12) return requestAnimationFrame(hold);
+        if (done) done();
+      })();
+    }
+    requestAnimationFrame(step);
+  }
+  function hideRing() { ring.classList.remove('on'); clearTimeout(ringTimer); }
+  function showRing(target, label) {
+    var r = target.getBoundingClientRect(), p = 10;
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    Object.assign(ring.style, { left: r.left - p + 'px', top: r.top - p + window.scrollY + 'px', width: r.width + p * 2 + 'px', height: r.height + p * 2 + 'px' });
+    ring.style.position = 'absolute';
+    ring.querySelector('b').textContent = label;
+    ring.classList.add('on');
+    clearTimeout(ringTimer); ringTimer = setTimeout(hideRing, 4200);
+  }
+  function hideMoveToast() { toast.classList.remove('on'); clearTimeout(toastTimer); }
+  function showMoveToast(label, canBack) {
+    toast.querySelector('.tt').innerHTML = 'Moved to <b>' + label.replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }) + '</b>';
+    toast.querySelector('.back').hidden = !canBack;
+    toast.classList.add('on');
+    clearTimeout(toastTimer); toastTimer = setTimeout(hideMoveToast, 5200);
+  }
+  toast.querySelector('.back').addEventListener('click', function () {
+    hideMoveToast(); hideRing();
+    if (prevScrollY != null) tween(function () { return prevScrollY; });
+  });
+  // A scroll the visitor starts themselves cancels Harvey's move and hides the ring.
+  ['wheel', 'touchstart'].forEach(function (ev) { addEventListener(ev, function () { moveTok++; }, { passive: true }); });
+  addEventListener('scroll', function () { if (ring.classList.contains('on')) hideRing(); }, { passive: true });
+
+  /* Collapses any expanded transcript so the page is visible again - the "chat shrinks to compact" moment. */
+  function compactChat() { openLog(false); }
+
+  /* Scrolls a section into view and marks it with the ring. Same contract as before: true if a target was found. */
+  function moveToSection(id, fromVisitor) {
     var target = id && document.getElementById(id);
     if (!target) return false;
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Styled here rather than in the stylesheet, which is bundled from the design files.
-    var was = target.style.outline, wasOff = target.style.outlineOffset;
-    target.style.outline = '3px solid #ff5a1f'; target.style.outlineOffset = '-3px';
-    setTimeout(function () { target.style.outline = was; target.style.outlineOffset = wasOff; }, 2600);
+    noteTopic(id === HOME_SECTIONS.method ? 'method' : (Object.keys(HOME_SECTIONS).filter(function (k) { return HOME_SECTIONS[k] === id; })[0] || id));
+    var label = labelFor(id, target);
+    compactChat();
+    prevScrollY = fromVisitor ? null : window.scrollY;
+    hideRing();
+    tween(function () { return targetY(target); }, function () { showRing(target, label); });
+    showMoveToast(label, !fromVisitor);
     return true;
   }
   function goTo(path, section) {
     var id = section && (HOME_SECTIONS[section] || section);
     if (path === location.pathname) {
-      if (!showSection(id)) window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (!moveToSection(id)) window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    compactChat();
+    if (id) write(sessionStorage, 'toto:section', id);
     write(sessionStorage, KEYS.reopen, '1'); // keep the conversation open on the next page
     location.href = path + (id ? '#' + id : '');
   }
@@ -216,7 +349,8 @@
     setState('thinking');
 
     // The reply arrives as a stream: the words are shown as they are written, and for a spoken question each
-    // piece is spoken as soon as it is ready, so the voice starts on the first sentence.
+    // piece is spoken as soon as it is ready, so the voice starts on the first sentence. The caption dock's
+    // current line mirrors the same bubble as it grows.
     var bubble = null, shown = '', talk = spoken ? startTalk() : null, finished = false;
     var me = asking = {
       /* The visitor carried on talking before he began to answer: take the question and any reply back out. */
@@ -256,7 +390,8 @@
           bubble = el('div', 'bba-msg'); log.appendChild(bubble);
           if (!talk) setState('idle');
         }
-        shown += ev.v; bubble.textContent = shown.replace(/^\s+/, ''); log.scrollTop = log.scrollHeight;
+        shown += ev.v; var text = shown.replace(/^\s+/, ''); bubble.textContent = text; log.scrollTop = log.scrollHeight;
+        setCaptionLive(text);
       } else if (ev.t === 's') { if (talk) talkAdd(talk, ev.say); }
       else if (ev.t === 'done') finishTurn(ev);
       else if (ev.t === 'error') throw new Error(ev.error || 'no reply');
@@ -312,14 +447,8 @@
   form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value); });
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(input.value); } });
   input.addEventListener('input', function () { input.style.height = ''; input.style.height = Math.min(120, input.scrollHeight) + 'px'; });
-  panel.querySelector('.clr').addEventListener('click', function () {
-    history = [{ role: 'assistant', text: GREETING }];
-    session = uuid(); write(localStorage, KEYS.session, session);
-    remove(localStorage, KEYS.known); gate = null; if (call) endCall(); stopRecording(true); stopSpeaking();
-    save(); render();
-  });
+  panel.querySelector('.kbt').addEventListener('click', function () { panel.classList.add('typing'); input.focus({ preventScroll: true }); });
   panel.querySelector('.form').addEventListener('click', function () { openRequest(); });
-  panel.querySelector('.bba-x').addEventListener('click', function () { close(); });
 
   /* ---------- the ask-once details step ----------
      Two steps: name and email, then the six-digit code sent to that email. The code proves the address is theirs. */
@@ -528,12 +657,13 @@
   }
   function stopRecording(cancel) { if (recording) { if (cancel) recording.cancel(); else recording.stop(); } }
   function hangUp() { if (recording && recording.release) recording.release(); }
+  // Starting a call stops any speech already playing first, so tapping the mic always interrupts him.
   mic.addEventListener('click', function () { if (call) hangUpCall(); else if (recording) stopRecording(); else if (!busy) startCall(); });
   ear.querySelector('.cancel').addEventListener('click', function () { if (call) hangUpCall(); else stopRecording(true); });
 
   /* ---------- live voice calls ----------
      The microphone starts a call: ElevenLabs runs it (listening, turn-taking, cutting in, Rory's voice) and asks this
-     site's server for every reply, so Toto's facts and rules are the same as in the chat. Both sides appear in the
+     site's server for every reply, so Harvey's facts and rules are the same as in the chat. Both sides appear in the
      chat as text. If calls are switched off, the microphone falls back to the older record-and-reply voice. */
   var CALL_SRC = (document.currentScript && document.currentScript.getAttribute('data-call')) || '/site/v13/vendor/call.mjs';
   var call = null; // { conv, ticket, known, deadline, timer, pending, ended }
@@ -550,11 +680,7 @@
   }
   /* Tuck the panel away without ending the call. */
   function minimize() {
-    panel.classList.remove('on');
-    document.documentElement.classList.remove('bba-open');
-    launch.classList.remove('on');
-    launch.setAttribute('aria-label', 'Chat with ' + NAME);
-    launch.setAttribute('aria-expanded', 'false');
+    setPhase('closed', true);
     syncBar();
   }
   function callUI(on) {
@@ -579,6 +705,8 @@
     history.push({ role: role, text: text, call: true });
     if (call) { call.lines = (call.lines || []).concat([{ role: role, text: text }]).slice(-24); }
     save(); render();
+    // The call library hands over the whole line at once; the caption reveals it word by word to stand in for timing.
+    if (role !== 'user') revealCaption(text);
   }
   function endCall(after) {
     var c = call; if (!c) { if (after) after(); return; }
@@ -602,7 +730,7 @@
     if (!c.known && !c.byVisitor && !c.quiet && Date.now() > c.deadline - 15000 && !gate) showGate();
     if (after) setTimeout(after, 150);
   }
-  /* A page action during a call waits until Toto has finished his line: he must have been quiet for a moment, not just
+  /* A page action during a call waits until Harvey has finished his line: he must have been quiet for a moment, not just
      paused between sentences. Then the call ends and the action runs. A move to another page carries the call on there. */
   var SETTLE_MS = 1200;
   function callAction(a) {
@@ -654,13 +782,13 @@
             clientTools: { site_action: function (p) { var a = null; try { a = JSON.parse(p.action); } catch (e) {} callAction(a); } },
             onConnect: function () {
               if (call !== c) return;
-              // Arriving on a new page mid-call: Toto opens by saying where they are, then carries on.
+              // Arriving on a new page mid-call: Harvey opens by saying where they are, then carries on.
               if (c.resume) setTimeout(function () { if (call === c && c.conv) try { c.conv.sendUserMessage('[arrived]'); } catch (e) {} }, 250);
               setState('listening'); ear.querySelector('.t').textContent = 'On a call · listening';
               bar.querySelector('.cb-t').textContent = 'On a call with ' + NAME; syncBar();
               c.timer = setInterval(function () {
                 if (call !== c || !c.conv) return;
-                // Backstop: Toto ends the call himself when its time is up, at the next turn; this ends it if nobody speaks.
+                // Backstop: Harvey ends the call himself when its time is up, at the next turn; this ends it if nobody speaks.
                 if (Date.now() > c.deadline + 8000) return endCall();
                 var v = c.conv.getInputVolume ? c.conv.getInputVolume() : 0;
                 bar.querySelector('.cb-dot').style.transform = 'scale(' + (1 + Math.min(1, (c.muted ? 0 : v) * 4) * .7).toFixed(2) + ')';
@@ -698,17 +826,29 @@
   document.addEventListener('visibilitychange', function () { if (document.hidden && call) endCall(); });
   window.addEventListener('pagehide', function () { if (call) endCall(); });
 
-  /* ---------- open / close ---------- */
-  function isOpen() { return panel.classList.contains('on'); }
+  /* ---------- phases: closed (launcher only) · open · ended (summary in place) ---------- */
+  function isOpen() { return root.getAttribute('data-phase') === 'open'; }
   function track(name, params) { if (window.BBTrack) window.BBTrack(name, params); }
+  function summaryText() {
+    var q = history.filter(function (m) { return m.role === 'user'; }).length;
+    if (!q) return 'You did not ask anything this time. ' + NAME + ' is here whenever you need him.';
+    var t = topics.map(function (k) { return TOPIC_LABELS[k]; }), list = t.length > 1 ? t.slice(0, -1).join(', ') + ' and ' + t[t.length - 1] : t[0];
+    return 'You asked ' + q + (q === 1 ? ' question' : ' questions') + (t.length ? ', about ' + list : '') + '. Ben gets a short summary, so you won’t need to repeat yourself.';
+  }
+  function setPhase(p, skipTrack) {
+    root.setAttribute('data-phase', p);
+    var h = history.length > 1;
+    launch.querySelector('.hv-bd').textContent = h ? String(history.length - 1) : '';
+    launch.setAttribute('aria-label', p === 'closed' && h ? 'Resume the conversation with ' + NAME : 'Chat with ' + NAME);
+    if (p === 'ended') { endSummary.textContent = summaryText(); write(sessionStorage, KEYS.ended, '1'); }
+    if (p !== 'open') { hideRing(); hideMoveToast(); }
+    if (!skipTrack && p === 'open') track('toto_open');
+  }
   function open() {
-    if (!isOpen()) track('toto_open');
     bar.hidden = true;
-    panel.classList.add('on');
     document.documentElement.classList.add('bba-open');
-    launch.classList.add('on', 'seen');
-    launch.setAttribute('aria-label', 'Close chat');
-    launch.setAttribute('aria-expanded', 'true');
+    panel.classList.add('on');
+    setPhase('open');
     write(localStorage, KEYS.seen, '1');
     render();
     setTimeout(function () { input.focus({ preventScroll: true }); }, 400);
@@ -719,10 +859,15 @@
     stopSpeaking();
     panel.classList.remove('on');
     document.documentElement.classList.remove('bba-open');
-    launch.classList.remove('on');
-    launch.setAttribute('aria-label', 'Chat with ' + NAME);
-    launch.setAttribute('aria-expanded', 'false');
+    setPhase('closed');
   }
+  panel.querySelector('.bba-x').addEventListener('click', function () {
+    // The × no longer wipes the conversation: it shows a short summary in place, with a way back in.
+    stopRecording(true); stopSpeaking();
+    setPhase('ended');
+  });
+  panel.querySelector('.hv-end .done').addEventListener('click', function () { close(); });
+  panel.querySelector('.hv-end .keep').addEventListener('click', function () { setPhase('open'); });
   launch.addEventListener('click', function () { if (isOpen()) close(); else open(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isOpen()) close(); });
   document.addEventListener('click', function (e) {
@@ -731,16 +876,20 @@
   });
 
   function mount() {
-    document.body.appendChild(launch);
-    document.body.appendChild(panel);
+    root.appendChild(launch);
+    root.appendChild(panel);
+    root.appendChild(ring);
+    root.appendChild(toast);
+    document.body.appendChild(root);
     document.head.appendChild(barStyle);
     document.body.appendChild(bar);
     bar.querySelector('.cb-open').addEventListener('click', function () { open(); });
     bar.querySelector('.cb-end').addEventListener('click', function () { hangUpCall(); });
     bar.querySelector('.cb-mute').addEventListener('click', function () { setMuted(!(call && call.muted)); });
     if (read(localStorage, KEYS.seen)) launch.classList.add('seen');
-    if (location.hash && read(sessionStorage, KEYS.reopen)) setTimeout(function () { showSection(location.hash.slice(1)); }, 600);
-    render();
+    setPhase('closed', true);
+    var section = read(sessionStorage, 'toto:section'); remove(sessionStorage, 'toto:section');
+    if (location.hash && read(sessionStorage, KEYS.reopen)) setTimeout(function () { moveToSection(section || location.hash.slice(1), true); }, 600);
     if (read(sessionStorage, KEYS.reopen)) { remove(sessionStorage, KEYS.reopen); open(); }
     // A call that moved the visitor here picks up again by itself, if it moved them within the last half minute.
     var resumeAt = Number(read(sessionStorage, KEYS.resume) || 0);
