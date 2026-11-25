@@ -92,7 +92,7 @@ Shaping the conversation:
 - Answer what they asked first, briefly. Then, in most replies, ask one question that moves the picture forward. One question at a time, never a list, and build each on what they just said.
 - What you are trying to learn, roughly in this order: what they want help with or want built; the problem behind it or what it should change; their business and their role; how it is done today; when they want it; then, once there is real interest, team size, budget and who decides. You do not need all of it. Skip anything they have already told you or clearly do not want to share.
 - Make the questions specific to them. Not "tell me more", but for example "Is the agent for your sales team, or for customers?" or "Roughly how many people would use it?" Offer two concrete options when an open question would be hard to answer.
-- Ask about budget lightly and only once, after the need is clear, for example "Do you have a rough budget in mind, or is that still open?" Never push.
+- Ask about budget lightly and only once, after the need is clear, for example "Do you have a rough budget in mind, or is that still open?" Never push. If they give one, note it and thank them; never say whether it is enough or how it compares with the prices, because only Ben can judge that.
 - Browsing or just testing is fine. Answer, ask once what brought them here, and do not press if they do not say.
 - Whenever you learn something about what they are looking for, record it with note_brief, in their own words, in the same reply. Do not mention that you are noting it.
 - Once you know what they want and roughly why, suggest the one next step that fits: the first look here, a Discovery, the request form or a coffee with Ben. Ask for their name and email so Ben can follow up, if you do not have them.
@@ -224,7 +224,7 @@ export type TotoResult = { reply: string; actions: Action[]; report: FirstLook |
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-type Block = { type: string; id?: string; text?: string; name?: string; input?: Record<string, unknown> };
+type Block = { type: string; id?: string; text?: string; name?: string; input?: Record<string, unknown>; thinking?: string; signature?: string; data?: string };
 type ModelReply = {
   content: Block[];
   stop_reason?: string;
@@ -251,13 +251,22 @@ async function callModel(system: unknown[], messages: unknown[], onText?: (delta
       out.usage = { ...((ev.message as { usage?: ModelReply["usage"] })?.usage ?? {}) };
     } else if (ev.type === "content_block_start") {
       const b = ev.content_block as Block;
-      out.content[index] = b.type === "tool_use" ? { type: "tool_use", id: b.id, name: b.name, input: {} } : { type: b.type, text: b.text ?? "" };
+      // Thinking blocks are kept whole (with their signature): a second round sends them back to the model as they were.
+      out.content[index] =
+        b.type === "tool_use" ? { type: "tool_use", id: b.id, name: b.name, input: {} }
+        : b.type === "thinking" ? { type: "thinking", thinking: b.thinking ?? "", signature: b.signature ?? "" }
+        : b.type === "redacted_thinking" ? { type: "redacted_thinking", data: b.data ?? "" }
+        : { type: b.type, text: b.text ?? "" };
     } else if (ev.type === "content_block_delta") {
-      const d = ev.delta as { type?: string; text?: string; partial_json?: string };
+      const d = ev.delta as { type?: string; text?: string; partial_json?: string; thinking?: string; signature?: string };
       const block = out.content[index];
       if (d.type === "text_delta" && d.text && block) {
         block.text = (block.text ?? "") + d.text;
         onText?.(d.text);
+      } else if (d.type === "thinking_delta" && block) {
+        block.thinking = (block.thinking ?? "") + (d.thinking ?? "");
+      } else if (d.type === "signature_delta" && block) {
+        block.signature = (block.signature ?? "") + (d.signature ?? "");
       } else if (d.type === "input_json_delta") {
         partialJson[index] = (partialJson[index] ?? "") + (d.partial_json ?? "");
       }
@@ -406,9 +415,11 @@ export async function askToto(history: Turn[], page: string, known = false, onTe
       }
     }
     if (said.trim()) reply = reply ? `${reply}\n\n${said.trim()}` : said.trim();
-    // save_contact and note_brief do nothing the visitor sees, so a turn holding only those still needs its words.
-    const onlySavedContact = used.length > 0 && used.every((b) => b.name === "save_contact" || b.name === "note_brief");
-    if (data.stop_reason !== "tool_use" || !used.length || report || (reply && !onlySavedContact)) break;
+    // Another round only when this one has no words yet, or when it only saved their details (the first-look report
+    // can follow that). note_brief is silent bookkeeping: a reply that also noted the brief is finished.
+    const silentOnly = used.length > 0 && used.every((b) => b.name === "save_contact" || b.name === "note_brief");
+    const needsMore = !reply || (silentOnly && used.some((b) => b.name === "save_contact"));
+    if (data.stop_reason !== "tool_use" || !used.length || report || !needsMore) break;
     messages.push({ role: "assistant", content: data.content });
     messages.push({ role: "user", content: used.map((b) => ({ type: "tool_result", tool_use_id: b.id, content: "Done." })) });
   }
