@@ -7,7 +7,7 @@ export const maxDuration = 30;
 const VOICE_NAME = process.env.TOTO_VOICE || "ash";
 const STYLE = "Calm, warm and unhurried. British English. Conversational, like a thoughtful colleague, never a salesperson.";
 // The ElevenLabs voice is used when its key is set; the OpenAI voice above is the fallback.
-const ELEVEN_VOICE = process.env.TOTO_ELEVEN_VOICE || "DPSolStDPHwmw34akfe3";
+const ELEVEN_VOICE = process.env.TOTO_ELEVEN_VOICE || "xOhPCYf8IMkmLNflL6Pd"; // Drago (Ben, 25 Nov 2026); was Rory DPSolStDPHwmw34akfe3
 // Turbo starts speaking in about 0.2s; the more expressive "eleven_v3_conversational" takes about 0.7s.
 const ELEVEN_MODEL = process.env.TOTO_ELEVEN_MODEL || "eleven_turbo_v2_5";
 // A touch slower than the voice's natural pace (1 = natural; ElevenLabs accepts 0.7 to 1.2).
@@ -20,7 +20,7 @@ async function elevenSpeech(text: string): Promise<ArrayBuffer | null> {
     const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}?output_format=mp3_44100_128`, {
       method: "POST",
       headers: { "xi-api-key": key, "Content-Type": "application/json" },
-      body: JSON.stringify({ text, model_id: ELEVEN_MODEL, voice_settings: { speed: ELEVEN_SPEED } }),
+      body: JSON.stringify({ text, model_id: ELEVEN_MODEL, voice_settings: { speed: ELEVEN_SPEED, stability: 0.55, similarity_boost: 0.75, style: 0 } }),
       signal: AbortSignal.timeout(15_000),
     });
     if (!res.ok) throw new Error(`${res.status}: ${(await res.text().catch(() => "")).slice(0, 200)}`);
