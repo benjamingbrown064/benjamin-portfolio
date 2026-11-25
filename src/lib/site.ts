@@ -88,31 +88,77 @@ function meta(e: JournalEntry, withTime: boolean): string {
   return `<span class="jx-meta"><span>${esc(kind(e))}</span><span>${journalDate(e.date)}</span>${withTime ? `<span>${e.minutes} min read</span>` : ""}</span>`;
 }
 
-/** The journal index: the newest entry large, the next four as cards, anything older as a list. */
+/** Notes page filter for an entry (Ben's Journal Index design, 25 Nov 2026). Must be one of the keys in
+ * public/site/v13/journal-index.js CATS. How-to series (The 1%) and plain "Journal" how-tos are Guides. */
+function indexCat(e: JournalEntry): string {
+  switch (e.category) {
+    case "The 1%":
+    case "Journal":
+      return "guide";
+    case "The Handover":
+      return "handover";
+    case "Essay":
+      return "essay";
+    case "Field notes":
+      return "field";
+    case "Build log":
+      return "build";
+    default:
+      return "notes";
+  }
+}
+
+/** Series artwork with lettering at the bottom of the picture (The Handover, The 1%). */
+function lettered(e: JournalEntry): boolean {
+  return e.category === "The Handover" || e.category === "The 1%";
+}
+
+const INDEX_CATS: [string, string][] = [["all", "All"], ["guide", "Guides"], ["handover", "The Handover"], ["essay", "Essays"], ["notes", "Notes"], ["field", "Field notes"], ["build", "Build logs"]];
+const INDEX_PER = 20;
+
+/** One card in the Notes grid. Same markup as card() in journal-index.js, which re-renders the grid in the browser. */
+function indexCard(e: JournalEntry, i: number): string {
+  const label = kind(e);
+  return `<li style="--i:${Math.min(i, 10)}"><a class="jg-card" href="/journal/${e.slug}"><div class="jg-cover${e.grey ? "" : " c"}${lettered(e) ? " l" : ""}"><img src="${e.thumb}" alt="" loading="${i < 4 ? "eager" : "lazy"}" decoding="async"></div><span class="jx-meta"><span>${esc(label)}</span><span>${journalDate(e.date)}</span><span>${e.minutes} min read</span></span><h3>${esc(e.title)}</h3><p>${esc(e.excerpt)}</p></a></li>`;
+}
+
+/** The journal index (Ben's Journal Index design, 25 Nov 2026): the newest entry large, then every other entry as
+ * a two-up card grid with category filters and counts, 20 per page. The first page is rendered here so the page
+ * reads without JavaScript; v13/journal-index.js takes over for filtering and paging, fed by the #jg-data list. */
 function journalIndex(): string {
   const [first, ...rest] = JOURNAL;
-  const cards = rest.slice(0, 4);
-  const older = rest.slice(4);
-  const cats = Array.from(new Set(older.map((e) => e.category)));
-  let html = `<section class="jx-sec" data-screen-label="02 Latest entry"><div class="w">
-<a class="jx-feat rv" href="/journal/${first.slug}"><div class="jx-cover art${first.grey ? " grey" : ""}"><img src="${first.cover}" alt="${esc(first.coverAlt)}" decoding="async"></div>
-<div class="jx-ft">${meta(first, true)}<h2 class="h-m">${esc(first.title)}</h2><p>${esc(first.excerpt)}</p><span class="lnk">Read the entry</span></div></a>`;
-  if (cards.length) {
-    html += `<div class="jx-thumbs rv-g">${cards
-      .map((e) => `<a class="jx-th" href="/journal/${e.slug}"><div class="jx-cover art${e.grey ? " grey" : ""}"><img src="${e.thumb}" alt="" loading="lazy" decoding="async"></div>${meta(e, false)}<h3>${esc(e.title)}</h3></a>`)
-      .join("")}</div>`;
-  }
-  html += `</div></section>`;
-  if (older.length) {
-    html += `<section class="jx-sec" id="entries" data-screen-label="03 Earlier entries"><div class="w"><div class="jx-bar rv"><h2 class="h-s">Earlier entries</h2>
-<div class="jx-filters" role="group" aria-label="Filter entries by category"><button type="button" data-cat="all" aria-pressed="true">All</button>${cats
-      .map((c) => `<button type="button" data-cat="${esc(c)}" aria-pressed="false">${esc(c)}</button>`)
-      .join("")}</div></div>
-<ul class="jx-list rv-g">${older
-      .map((e) => `<li data-cat="${esc(e.category)}"><a class="jx-row" href="/journal/${e.slug}"><span class="d">${journalDate(e.date)}</span><span class="t">${esc(e.title)}</span><span class="c">${esc(kind(e))}</span><span class="ar" aria-hidden="true">→</span></a></li>`)
-      .join("")}</ul><p class="jx-empty" hidden>Nothing filed under that yet.</p></div></section>`;
-  }
-  return html;
+  const counts = new Map<string, number>();
+  for (const e of JOURNAL) counts.set(indexCat(e), (counts.get(indexCat(e)) ?? 0) + 1);
+  const filters = INDEX_CATS.filter(([k]) => k === "all" || counts.get(k))
+    .map(([k, l]) => `<button type="button" data-cat="${k}" aria-pressed="${k === "all"}">${esc(l)} <i>${k === "all" ? JOURNAL.length : counts.get(k)}</i></button>`)
+    .join("");
+  const data = JOURNAL.map((e, i) => ({
+    title: e.title,
+    href: `/journal/${e.slug}`,
+    cat: indexCat(e),
+    series: kind(e),
+    date: journalDate(e.date),
+    read: `${e.minutes} min read`,
+    dek: e.excerpt,
+    img: e.thumb,
+    colour: !e.grey,
+    lettered: lettered(e),
+    ...(i === 0 ? { featured: true } : {}),
+  }));
+  const page = rest.slice(0, INDEX_PER);
+  return `<section class="jx-sec" data-screen-label="02 Latest entry"><div class="w">
+<a class="jx-feat rv" id="jg-feat" href="/journal/${first.slug}"><div class="jx-cover art${first.grey ? " grey" : ""}"><img src="${first.cover}" alt="${esc(first.coverAlt)}" decoding="async"></div>
+<div class="jx-ft">${meta(first, true)}<h2 class="h-m">${esc(first.title)}</h2><p>${esc(first.excerpt)}</p><span class="lnk">Read the entry</span></div></a>
+</div></section>${rest.length ? `
+<section class="jg-sec" id="entries" data-screen-label="03 All entries"><div class="w">
+<div class="jg-bar"><h2 class="h-s">All entries</h2><div class="jg-filters" id="jg-filters" role="group" aria-label="Filter entries by category">${filters}</div></div>
+<p class="jg-count" id="jg-count" aria-live="polite">${JOURNAL.length} entries</p>
+<ul class="jg-grid" id="jg-grid" data-per="${INDEX_PER}">${page.map(indexCard).join("")}</ul>
+<p class="jg-empty" id="jg-empty" hidden>Nothing filed under that yet.</p>
+<nav class="jg-pages" id="jg-pages" aria-label="Pages" hidden></nav>
+</div></section>
+<script type="application/json" id="jg-data">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>
+<script src="${versioned("/site/v13/journal-index.js")}" defer></script>` : ""}`;
 }
 
 /** Home page: the journal tile. It always shows the newest weekly roundup (The Handover), whose artwork carries

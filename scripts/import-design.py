@@ -401,6 +401,8 @@ def structural_edits(src_rel, html):
         # kept by hand in public/site/v13/article.css because it arrived with an article, not with a design export.
         html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/article.css">\n</head>', 1)
     if src_rel == "journal.html":
+        # The Notes page grid (Ben's Journal Index design, 25 Nov 2026), kept by hand in public/site/v13/journal-index.css.
+        html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/journal-index.css">\n</head>', 1)
         html = must_sub(r'<section class="jx-sec" data-screen-label="02 Latest entry">.*?</section>\s*<section class="jx-sec" id="entries".*?</section>',
                         wrap("journal_entries"), html, "journal entries")
     return html
