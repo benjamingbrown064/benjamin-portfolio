@@ -271,3 +271,7 @@ html[data-theme="dark"] .bba.bba{--glass:rgba(22,22,24,.97);background:var(--gla
 }
 /* Gate intro line: the form always says why it is there. */
 .bba-gate.bba-gate .bba-gate-in.bba-gate-in{margin:0 0 2px;font-size:14px;line-height:1.45;color:var(--ink)}
+/* Phones (Ben, 25 Nov): the talk button sits at the right edge of the dock. The waveform takes the space between
+   the keyboard button and the mic, so the mic is always right-aligned (the text field does the same when typing). */
+.bba-comp.bba-comp .hv-wave{flex:1;min-width:0;justify-content:center}
+.bba-comp.bba-comp .mic,.bba-comp.bba-comp .send{margin-left:auto}
