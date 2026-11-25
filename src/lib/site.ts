@@ -108,18 +108,13 @@ function indexCat(e: JournalEntry): string {
   }
 }
 
-/** Series artwork with lettering at the bottom of the picture (The Handover, The 1%). */
-function lettered(e: JournalEntry): boolean {
-  return e.category === "The Handover" || e.category === "The 1%";
-}
-
 const INDEX_CATS: [string, string][] = [["all", "All"], ["guide", "Guides"], ["handover", "The Handover"], ["essay", "Essays"], ["notes", "Notes"], ["field", "Field notes"], ["build", "Build logs"]];
 const INDEX_PER = 20;
 
 /** One card in the Notes grid. Same markup as card() in journal-index.js, which re-renders the grid in the browser. */
 function indexCard(e: JournalEntry, i: number): string {
   const label = kind(e);
-  return `<li style="--i:${Math.min(i, 10)}"><a class="jg-card" href="/journal/${e.slug}"><div class="jg-cover${e.grey ? "" : " c"}${lettered(e) ? " l" : ""}"><img src="${e.thumb}" alt="" loading="${i < 4 ? "eager" : "lazy"}" decoding="async"></div><span class="jx-meta"><span>${esc(label)}</span><span>${journalDate(e.date)}</span><span>${e.minutes} min read</span></span><h3>${esc(e.title)}</h3><p>${esc(e.excerpt)}</p></a></li>`;
+  return `<li style="--i:${Math.min(i, 10)}"><a class="jg-card" href="/journal/${e.slug}"><div class="jg-cover${e.grey ? "" : " c"}"><picture><source media="(max-width:760px)" srcset="${e.thumb}"><img src="${e.cover}" alt="" loading="${i < 4 ? "eager" : "lazy"}" decoding="async"></picture></div><span class="jx-meta"><span>${esc(label)}</span><span>${journalDate(e.date)}</span><span>${e.minutes} min read</span></span><h3>${esc(e.title)}</h3><p>${esc(e.excerpt)}</p></a></li>`;
 }
 
 /** The journal index (Ben's Journal Index design, 25 Nov 2026): the newest entry large, then every other entry as
@@ -140,9 +135,9 @@ function journalIndex(): string {
     date: journalDate(e.date),
     read: `${e.minutes} min read`,
     dek: e.excerpt,
-    img: e.thumb,
+    img: e.cover,
+    thumb: e.thumb,
     colour: !e.grey,
-    lettered: lettered(e),
     ...(i === 0 ? { featured: true } : {}),
   }));
   const page = rest.slice(0, INDEX_PER);

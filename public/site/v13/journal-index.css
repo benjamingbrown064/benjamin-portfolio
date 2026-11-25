@@ -38,6 +38,8 @@
 .jg-pages a[aria-disabled="true"]{pointer-events:none;opacity:.35}
 .jx-feat[hidden]{display:none}
 @media(max-width:760px){.jg-grid{grid-template-columns:minmax(0,1fr)}.jg-bar{position:static;margin:0;padding:0 0 16px;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}.jg-filters{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1*var(--gut));padding:0 var(--gut);scrollbar-width:none}.jg-filters::-webkit-scrollbar{display:none}.jg-filters button{flex:none}}
-/* site (25 Nov): series artwork (The Handover, The 1%) is 4:3 with its lettering near the bottom. In the 16:10 frame,
-   crop mostly from the top so the lettering and issue number stay whole. */
-.jg-cover.l img{object-position:50% 74%}
+/* site (25 Nov, Ben): shorter cards that show each picture whole. Desktop uses the 2:1 cover (the series artwork is
+   laid out for 2:1); phones, one card per row, use the 4:3 thumbnail at 4:3. Nothing is cropped. */
+.jg-cover{aspect-ratio:2/1}
+.jg-cover picture{display:contents}
+@media(max-width:760px){.jg-cover{aspect-ratio:4/3}}

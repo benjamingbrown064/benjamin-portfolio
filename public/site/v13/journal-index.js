@@ -11,7 +11,7 @@ function state(){var h=new URLSearchParams(location.hash.slice(1));var c=h.get('
 function go(cat,p,scroll){var h=[];if(cat!=='all')h.push('cat='+cat);if(p>1)h.push('p='+p);var nh=h.length?'#'+h.join('&'):'';if(nh!==location.hash)history.pushState(null,'',location.pathname+location.search+(nh||'#entries'));render(scroll)}
 function catLabel(c){for(var i=0;i<CATS.length;i++)if(CATS[i][0]===c)return CATS[i][1].replace(/s$/,'');return c}
 function card(e,i){
-  var cover=e.img?'<div class="jg-cover'+(e.colour?' c':'')+(e.lettered?' l':'')+'"><img src="'+esc(e.img)+'" alt="" loading="'+(i<4?'eager':'lazy')+'" decoding="async"></div>'
+  var cover=e.img?'<div class="jg-cover'+(e.colour?' c':'')+'"><picture>'+(e.thumb?'<source media="(max-width:760px)" srcset="'+esc(e.thumb)+'">':'')+'<img src="'+esc(e.img)+'" alt="" loading="'+(i<4?'eager':'lazy')+'" decoding="async"></picture></div>'
     :'<div class="jg-cover jg-none">'+MK+'<span class="k">'+esc(e.series||catLabel(e.cat))+'</span><span class="q">'+esc(e.title)+'</span></div>';
   var meta='<span class="jx-meta"><span>'+esc(e.series||catLabel(e.cat))+'</span><span>'+esc(e.date)+'</span>'+(e.read?'<span>'+esc(e.read)+'</span>':'')+'</span>';
   return '<li style="--i:'+Math.min(i,10)+'"><a class="jg-card" href="'+esc(e.href)+'">'+cover+meta+'<h3>'+esc(e.title)+'</h3>'+(e.dek?'<p>'+esc(e.dek)+'</p>':'')+'</a></li>';
