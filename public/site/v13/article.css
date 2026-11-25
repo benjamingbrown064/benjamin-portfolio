@@ -302,3 +302,6 @@ html[data-theme="dark"] .dg-card.ink ul li,html[data-theme="dark"] .dg-card.ink 
 /* site (25 Nov, Muse update): prompt variables, the bits the reader swaps for their own (Ben's export, verbatim) */
 .dg-var{font-weight:inherit;color:#FF9A4D}
 .dg-varnote{justify-self:end;margin:-8px 0 0;font-size:13px;color:var(--mute)}
+/* site (25 Nov, Ben): tall phone screenshots (.ax-shot) were stretched sideways. ".ax-body figure img" (width:100%) outranks
+   ".ax-shot img" (width:auto), so the picture filled the panel width while max-height held its height. Keep its own shape. */
+.ax-body .ax-shot img{width:auto;max-width:100%}
