@@ -270,3 +270,32 @@ html[data-theme="dark"] .dg-card,html[data-theme="dark"] .dg-stat,html[data-them
 html[data-theme="dark"] .dg-card.ink{background:#2C2C2E;color:#F5F5F7}
 html[data-theme="dark"] .ax-shot img{box-shadow:0 0 0 1px var(--bone-3)}
 html[data-theme="dark"] .dg-tl li::before{background:#1D1D1F}
+
+/* site (25 Nov): Meta’s Muse article. Ben’s two new blocks, verbatim: prompt cards, step cards, .ax-credit, dark-theme fix for every .dg-card. */
+/* prompt cards: you ask, the agent works, you approve */
+.dg-ey{display:block;margin-bottom:14px;font:400 12px/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.dg-ask{display:grid;gap:clamp(16px,2vw,24px)}
+.dg-to{justify-self:end;font:400 12px/1.3 "Geist Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.dg-bub{position:relative;justify-self:end;width:min(100%,820px);margin:-6px 0 0;padding:clamp(20px,2.4vw,28px) 104px clamp(20px,2.4vw,28px) clamp(20px,2.4vw,30px);border-radius:24px 24px 6px 24px;background:var(--ink);color:#F5F5F7;font-size:clamp(17px,1.6vw,20px);line-height:1.5;letter-spacing:-.012em;text-wrap:pretty}
+.dg-flow{display:flex!important;flex-wrap:wrap;gap:10px}
+.dg-flow li{display:inline-flex;align-items:baseline;gap:10px;padding:11px 20px;border-radius:var(--pill);box-shadow:inset 0 0 0 1px var(--line);font-size:clamp(15px,1.4vw,17px);line-height:1.3}
+.dg-flow li span{font:400 11px/1 "Geist Mono",ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.dg-flow li.you{background:var(--signal);color:#fff;box-shadow:none}
+.dg-flow li.you span{color:rgba(255,255,255,.78)}
+/* step cards: label top, title sinks to the bottom */
+.dg-steps{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.dg-steps>li{display:flex!important;flex-direction:column;min-height:clamp(200px,22vw,290px)}
+.dg-steps h5{margin:auto 0 0;font-size:clamp(24px,2.4vw,30px);font-weight:600;letter-spacing:-.04em;line-height:1.05}
+.dg-steps p{margin:10px 0 0;font-size:15px;line-height:1.45;color:var(--mute);text-wrap:pretty}
+.dg-card.ink p{color:#A1A1A6}
+.ax-credit{margin:10px 0 0;font-size:13px;color:var(--mute)}
+@media(max-width:600px){.dg-bub{padding:56px 20px 20px;border-radius:20px 20px 6px 20px}.dg-flow li{padding:10px 16px}.dg-steps>li{min-height:0}.dg-steps h5{margin-top:28px}}
+/* dark theme: --ink flips to light, so fixed-dark surfaces need their own values */
+html[data-theme="dark"] .dg-card:not(.ink){background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.12);color:#F5F5F7}
+html[data-theme="dark"] .dg-card.ink{background:#2C2C2E;color:#F5F5F7}
+html[data-theme="dark"] .dg-bub{background:#2C2C2E;color:#F5F5F7}
+html[data-theme="dark"] .dg-flow li:not(.you){box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+html[data-theme="dark"] .dg-card.ink ul li,html[data-theme="dark"] .dg-card.ink .dg-big li{border-top-color:rgba(255,255,255,.14)}
+/* site (25 Nov): a cover with its own 4:3 phone crop (JournalEntry.heroSmall) shows at 4:3 under 700px, as in Ben's export */
+.ax-cover picture{display:contents}
+@media(max-width:700px){.ax-cover.art:has(picture){aspect-ratio:4/3}}

@@ -320,10 +320,10 @@ document.addEventListener('click',function(e){
   });
 })();
 
-/* Journal: a Copy button on every prompt block (.ax-prompt), so readers can paste it straight into Claude. */
+/* Journal: a Copy button on every prompt block (.ax-prompt) and prompt bubble ([data-copy], copied without its quote marks), so readers can paste it straight in. */
 (function(){
   [].forEach.call(document.querySelectorAll('.ax-copy'),function(b){
-    b.addEventListener('click',function(){var t=b.parentNode.querySelector('code').textContent,done=function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1800)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,done);else done()});
+    b.addEventListener('click',function(){var t=b.parentNode.querySelector('code,[data-copy]').textContent.trim().replace(/^[\u201C"]|[\u201D"]$/g,''),done=function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1800)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,done);else done()});
   });
   var blocks=document.querySelectorAll('.ax-prompt');
   if(!blocks.length)return;

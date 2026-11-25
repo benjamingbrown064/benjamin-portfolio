@@ -5,7 +5,7 @@ export type JournalEntry = {
   slug: string;
   title: string;
   date: string; // ISO date, e.g. 2026-11-30
-  category: "Essay" | "Notes" | "Field notes" | "Build log" | "The Handover" | "The 1%";
+  category: "Essay" | "Notes" | "Field notes" | "Build log" | "The Handover" | "The 1%" | "Journal";
   /** Show the cover and thumbnail in greyscale, like the journal photos (default: in colour, as artwork). */
   grey?: boolean;
   /** Difficulty tag under the meta line, e.g. "Beginner · No experience needed" (how-to articles). */
@@ -20,6 +20,12 @@ export type JournalEntry = {
   /** Optional picture for the top of the article page only (no title lettering, since the page has its own title). Falls back to cover. */
   hero?: string;
   heroAlt?: string;
+  /** Optional 4:3 version of the article-top picture for screens under 700px wide. */
+  heroSmall?: string;
+  /** Optional credit line under the article-top picture, e.g. "Image: Meta". */
+  credit?: string;
+  /** Optional picture for link previews (Open Graph). Falls back to cover. */
+  og?: string;
   /** 4:3 picture for the smaller cards. */
   thumb: string;
   /** A picture with no lettering in it. Only used on the home page tile when there is no weekly roundup to show there. */
@@ -29,7 +35,24 @@ export type JournalEntry = {
 const HANDOVER_1 = "/media/journal/the-handover-1";
 const HANDOVER_2 = "/media/journal/the-handover-2";
 
+const MUSE = "/media/journal/meta-muse-uk";
+
 export const JOURNAL: JournalEntry[] = [
+  {
+    slug: "meta-muse-uk",
+    title: "Meta’s Muse is in the UK. Give it a job.",
+    date: "2026-11-24",
+    category: "Journal",
+    level: "Beginner · No experience needed",
+    excerpt: "Meta’s AI agent has landed in the UK. Five jobs to give it this week, each with a prompt you can copy.",
+    minutes: 4,
+    cover: `${MUSE}/hero-2x1.jpg`,
+    coverAlt: "Jolly the Muse mascot holding an umbrella",
+    heroSmall: `${MUSE}/hero-4x3.jpg`,
+    credit: "Image: Meta",
+    og: `${MUSE}/hero-16x9.jpg`,
+    thumb: `${MUSE}/hero-4x3.jpg`,
+  },
   {
     slug: "the-handover-2",
     title: "This week, AI was given some jobs",
