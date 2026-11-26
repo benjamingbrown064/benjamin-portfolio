@@ -257,3 +257,5 @@ a[data-agent-open]{display:inline-flex;align-items:center;min-height:24px}
 .oc.ink .oc-ask:hover{background:#fff;color:#1d1d1f}
 #build .bx-data{margin-top:64px;max-width:720px}
 #portfolio .lede+.lede{margin-top:14px}
+/* Ben, 26 Nov 2026: on phones the header shows just the "b" mark, a touch larger (was name hidden only under 420px). */
+@media (max-width:760px){.nav .brand .bn{display:none}.nav .brand .mk{width:30px;height:30px}}
