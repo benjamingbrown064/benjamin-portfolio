@@ -33,6 +33,8 @@ export type JournalEntry = {
   /** Home "Latest journal entry" panel image (tall crop); falls back to cover. panelPos is its object-position. */
   panel?: string;
   panelPos?: string;
+  /** Never shown as the home page "Latest journal entry" panel (Ben's call per article). */
+  noFeature?: boolean;
   /** Extra class on the article element, e.g. "sc" for Ben's showcase layout (The 1% No. 2). */
   articleClass?: string;
   /** Extra stylesheets and scripts for this article only, under /site/v13/. */
@@ -58,6 +60,7 @@ export const JOURNAL: JournalEntry[] = [
     cover: "/media/journal/the-1-percent-training-videos/hero.jpg",
     coverAlt: "A claims handler on a leather sofa in a sunlit office, watching a WarrantyOS training video, Deciding a claim, on her tablet.",
     thumb: "/media/journal/the-1-percent-training-videos/thumb.jpg",
+    noFeature: true, // Ben, 26 Nov: not the home page feature
     articleClass: "sc",
     css: ["/site/v13/showcase.css"],
     js: ["/site/v13/gallery.js", "/site/v13/showcase.js"],

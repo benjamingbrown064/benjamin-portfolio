@@ -159,7 +159,7 @@ function journalIndex(): string {
 /** Home page: the "Latest journal entry" panel (Ben's Latest panels design, Benjamin (30).zip, 26 Nov 2026): the newest
  *  entry, full-bleed image, date and reading time, title and excerpt. */
 function homeLatestJournal(): string {
-  const e = JOURNAL[0];
+  const e = JOURNAL.find((x) => !x.noFeature) ?? JOURNAL[0];
   const img = e.panel ?? e.cover;
   return `<a class="lx" href="/journal/${e.slug}"><span class="lx-m"><img src="${img}" alt="${esc(e.coverAlt)}" loading="lazy" decoding="async" style="object-position:${e.panelPos ?? "50% 40%"}"></span><span class="lx-tag"><i></i>Latest journal entry</span><span class="lx-b"><span class="lx-x"><span class="lx-k">${journalDate(e.date)} · ${e.minutes} min read</span><span class="lx-t">${esc(e.title)}</span><span class="lx-s">${esc(e.excerpt)}</span></span><span class="lx-go" aria-hidden="true">${ARROW}</span></span></a>`;
 }
