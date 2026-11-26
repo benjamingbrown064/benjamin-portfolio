@@ -57,8 +57,10 @@ export const JOURNAL: JournalEntry[] = [
     level: "Advanced · One agent, start to finish",
     excerpt: "164 narrated training videos for WarrantyOS, written, voiced, filmed and checked by one agent in 24 hours. Here’s how it works, step by step.",
     minutes: 8,
-    cover: "/media/journal/the-1-percent-training-videos/hero.jpg",
-    coverAlt: "A claims handler on a leather sofa in a sunlit office, watching a WarrantyOS training video, Deciding a claim, on her tablet.",
+    cover: "/media/journal/the-1-percent-training-videos/cover.jpg", // Ben's Notes preview images, Benjamin (32).zip
+    coverAlt: "Cover for The 1%, No. 2: the training videos nobody films.",
+    hero: "/media/journal/the-1-percent-training-videos/hero.jpg",
+    heroAlt: "A claims handler on a leather sofa in a sunlit office, watching a WarrantyOS training video, Deciding a claim, on her tablet.",
     thumb: "/media/journal/the-1-percent-training-videos/thumb.jpg",
     noFeature: true, // Ben, 26 Nov: not the home page feature
     articleClass: "sc",
