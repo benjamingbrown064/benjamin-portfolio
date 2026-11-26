@@ -414,6 +414,11 @@ def structural_edits(src_rel, html):
                         html, "latest project tile")
         html = must_sub(r'<section class="sec" id="journal".*?</section>', wrap("home_journal"), html, "home journal")
         html = must_sub(r'<a class="lt-c bw" href="journal-article\.html">.*?</a>', wrap("home_latest_journal"), html, "home latest journal tile")
+        # Ben's Latest panels design (Benjamin (30).zip, 26 Nov 2026) replaces the whole "Latest" section; the journal
+        # panel is filled in by src/lib/site.ts (homeLatestJournal). Styles: public/site/v13/latest.css.
+        latest = open(os.path.join(BLOCKS, "latest.html"), encoding="utf-8").read().strip()
+        html = must_sub(r'<section class="lt".*?</section>', lambda m: latest, html, "home latest panels")
+        html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/latest.css">\n</head>', 1)
     if src_rel == "journal-article.html":
         # Long-form how-to articles (steps, tables, prompt blocks, diagrams): Ben's v12/article.css, 18 Nov 2026,
         # kept by hand in public/site/v13/article.css because it arrived with an article, not with a design export.
