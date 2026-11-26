@@ -769,8 +769,12 @@ def main():
             css = CSSURL_RE.sub(cssurl, css)
             open(dst, "w", encoding="utf-8").write(css)
         elif low.endswith(".html"):
-            # embedded films and sub-pages loaded in iframes: self-contained, copied as they are
-            shutil.copyfile(src, dst)
+            # embedded films and sub-pages loaded in iframes: self-contained, copied as they are (text fixes
+            # from design-patches.json still apply, e.g. a frame's background)
+            if any(p["file"] == r for p in PATCHES):
+                open(dst, "w", encoding="utf-8").write(apply_patches(r, open(src, encoding="utf-8").read()))
+            else:
+                shutil.copyfile(src, dst)
         else:
             shutil.copyfile(src, dst)
 
