@@ -33,6 +33,13 @@ export type JournalEntry = {
   /** Home "Latest journal entry" panel image (tall crop); falls back to cover. panelPos is its object-position. */
   panel?: string;
   panelPos?: string;
+  /** Never shown as the home page "Latest journal entry" panel (Ben's call per article). */
+  noFeature?: boolean;
+  /** Extra class on the article element, e.g. "sc" for Ben's showcase layout (The 1% No. 2). */
+  articleClass?: string;
+  /** Extra stylesheets and scripts for this article only, under /site/v13/. */
+  css?: string[];
+  js?: string[];
 };
 
 const HANDOVER_1 = "/media/journal/the-handover-1";
@@ -41,6 +48,25 @@ const HANDOVER_2 = "/media/journal/the-handover-2";
 const MUSE = "/media/journal/meta-muse-uk";
 
 export const JOURNAL: JournalEntry[] = [
+  {
+    slug: "the-1-percent-training-videos",
+    title: "The 1%: the training videos nobody films",
+    date: "2026-11-25",
+    category: "The 1%",
+    issue: "No. 2",
+    level: "Advanced · One agent, start to finish",
+    excerpt: "164 narrated training videos for WarrantyOS, written, voiced, filmed and checked by one agent in 24 hours. Here’s how it works, step by step.",
+    minutes: 8,
+    cover: "/media/journal/the-1-percent-training-videos/cover.jpg", // Ben's Notes preview images, Benjamin (32).zip
+    coverAlt: "Cover for The 1%, No. 2: the training videos nobody films.",
+    hero: "/media/journal/the-1-percent-training-videos/hero.jpg",
+    heroAlt: "A claims handler on a leather sofa in a sunlit office, watching a WarrantyOS training video, Deciding a claim, on her tablet.",
+    thumb: "/media/journal/the-1-percent-training-videos/thumb.jpg",
+    noFeature: true, // Ben, 26 Nov: not the home page feature
+    articleClass: "sc",
+    css: ["/site/v13/showcase.css"],
+    js: ["/site/v13/gallery.js", "/site/v13/showcase.js"],
+  },
   {
     slug: "meta-muse-uk",
     title: "The AI agent for everyone else",
