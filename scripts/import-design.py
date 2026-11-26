@@ -306,6 +306,39 @@ def home_what_changes(html):
     return html.replace("</body>", '<script src="/site/v13/what-changes.js" defer></script>\n</body>', 1)
 
 
+def home_what_i_build(html):
+    """Home page: "What I build" (Ben's training document, 26 Nov 2026), in Ben's own design (Benjamin (29).zip):
+    seven builds, one on stage at a time, then "Your data". Markup in design-blocks/what-i-build.html (his
+    section.html); his build.css and build.js are kept by hand in public/site/v13/."""
+    block = open(os.path.join(BLOCKS, "what-i-build.html"), encoding="utf-8").read().strip()
+    html = must_sub(r'(?=<section class="cx-sec cx-work" id="work")', lambda m: block + "\n", html, "home what I build")
+    # Ben's design for it (Benjamin (29).zip, 26 Nov 2026): index + stage on desktop, accordion on phones.
+    html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/build.css">\n</head>', 1)
+    return html.replace("</body>", '<script src="/site/v13/build.js" defer></script>\n</body>', 1)
+
+
+def method_portfolio(html):
+    """Method page: "Low risk first. Then the big bets." (Ben's training document, 26 Nov 2026), after "Where to start"."""
+    block = open(os.path.join(BLOCKS, "method-portfolio.html"), encoding="utf-8").read().strip()
+    return must_sub(r'(?=</main>)', lambda m: block + "\n", html, "method plan section", flags=0)
+
+
+# "The record" (Ben's visual, 26 Nov 2026): photo on the left, a dark panel on the right, three rows.
+RECORD = [("5", "in market", "Live", "on"), ("1", "in beta", "Testing", "on"), ("20", "handed over", "Run without me", "hot")]
+
+
+def home_record(html):
+    """Home page: "The record" rows rebuilt from RECORD (26 dots each, the count lit). Layout in public/site/v13/site.css."""
+    rows = []
+    for n, label, tag, kind in RECORD:
+        dots = "".join('<i%s style="--k:%d"></i>' % (' class="%s"' % kind if k < int(n) else "", k) for k in range(26))
+        rows.append('<div class="led-row lr%s"><span class="n">%s</span><span class="lr-b"><span class="lr-t"><span class="t">%s</span>'
+                    '<span class="lr-tag"><i></i>%s</span></span><span class="lr-tally" aria-hidden="true">%s</span></span></div>'
+                    % (" hot" if kind == "hot" else "", n, label, tag, dots))
+    return must_sub(r'(<section class="band ledger-band lr-band".*?<div class="led">).*?(</div>\s*<span class="small">)',
+                    lambda m: m.group(1) + "".join(rows) + m.group(2), html, "home record rows")
+
+
 def home_method_stack(html):
     """Home page: "The method, assembled" (Ben, 18 Nov 2026). A scroll section above the Methods list: a 3D device
     (Blender renders) gains one layer per stage of the method. Markup in design-blocks/method-stack.html; its
@@ -385,6 +418,8 @@ def structural_edits(src_rel, html):
         html = home_what_changes(html)
         html = home_side_project(html)
         html = home_method_stack(html)
+        html = home_what_i_build(html)
+        html = home_record(html)
         html = home_hide_sections(html)
         html = home_hero_flick(html)
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
@@ -396,6 +431,11 @@ def structural_edits(src_rel, html):
                         html, "latest project tile")
         html = must_sub(r'<section class="sec" id="journal".*?</section>', wrap("home_journal"), html, "home journal")
         html = must_sub(r'<a class="lt-c bw" href="journal-article\.html">.*?</a>', wrap("home_latest_journal"), html, "home latest journal tile")
+        # Ben's Latest panels design (Benjamin (30).zip, 26 Nov 2026) replaces the whole "Latest" section; the journal
+        # panel is filled in by src/lib/site.ts (homeLatestJournal). Styles: public/site/v13/latest.css.
+        latest = open(os.path.join(BLOCKS, "latest.html"), encoding="utf-8").read().strip()
+        html = must_sub(r'<section class="lt".*?</section>', lambda m: latest, html, "home latest panels")
+        html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/latest.css">\n</head>', 1)
     if src_rel == "journal-article.html":
         # Long-form how-to articles (steps, tables, prompt blocks, diagrams): Ben's v12/article.css, 18 Nov 2026,
         # kept by hand in public/site/v13/article.css because it arrived with an article, not with a design export.
@@ -405,6 +445,10 @@ def structural_edits(src_rel, html):
         html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/journal-index.css">\n</head>', 1)
         html = must_sub(r'<section class="jx-sec" data-screen-label="02 Latest entry">.*?</section>\s*<section class="jx-sec" id="entries".*?</section>',
                         wrap("journal_entries"), html, "journal entries")
+    if src_rel == "services.html":
+        html = method_portfolio(html)
+    # Ben, 26 Nov 2026: 17 years of building, so the footer counts from 2009.
+    html = html.replace("Benjamin Brown · Since 2010", "Benjamin Brown · Since 2009")
     return html
 
 
@@ -747,8 +791,12 @@ def main():
             css = CSSURL_RE.sub(cssurl, css)
             open(dst, "w", encoding="utf-8").write(css)
         elif low.endswith(".html"):
-            # embedded films and sub-pages loaded in iframes: self-contained, copied as they are
-            shutil.copyfile(src, dst)
+            # embedded films and sub-pages loaded in iframes: self-contained, copied as they are (text fixes
+            # from design-patches.json still apply, e.g. a frame's background)
+            if any(p["file"] == r for p in PATCHES):
+                open(dst, "w", encoding="utf-8").write(apply_patches(r, open(src, encoding="utf-8").read()))
+            else:
+                shutil.copyfile(src, dst)
         else:
             shutil.copyfile(src, dst)
 
