@@ -329,8 +329,16 @@ export function renderJournalEntry(slug: string): string | null {
   const i = JOURNAL.findIndex((e) => e.slug === slug);
   if (i < 0) return null;
   const e = JOURNAL[i];
-  const next = JOURNAL[i + 1]; // the entry before this one in time
-  const body = readContent(`journal/${e.slug}`);
+  // In a numbered series the link goes to the previous issue of that series; otherwise to the entry before this one in time.
+  const prevInSeries = e.issue ? JOURNAL.slice(i + 1).find((x) => x.category === e.category) : undefined;
+  const next = prevInSeries ?? JOURNAL[i + 1];
+  const nextLabel = prevInSeries ? `Previous in ${e.category}` : "Next entry";
+  // An article may carry a lead block (between the cover and the body), marked <!--lead-->…<!--/lead--> in its file.
+  let body = readContent(`journal/${e.slug}`);
+  let lead = "";
+  body = body.replace(/<!--lead-->([\s\S]*?)<!--\/lead-->/, (_m, inner: string) => { lead = inner.trim(); return ""; }).trim();
+  const css = (e.css ?? []).map((h) => `<link rel="stylesheet" href="${versioned(h)}">`).join("");
+  const js = (e.js ?? []).map((h) => `<script src="${versioned(h)}" defer></script>`).join("");
   const ld = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -342,14 +350,14 @@ export function renderJournalEntry(slug: string): string | null {
     mainEntityOfPage: `${SITE_URL}/journal/${e.slug}`,
   };
   const main = `
-<article class="ax" data-screen-label="01 Article">
+${css}<article class="ax${e.articleClass ? ` ${e.articleClass}` : ""}" data-screen-label="01 Article">
 <header class="ax-head"><div class="w ax-w">
 <a class="ax-back rv" href="/journal"><span aria-hidden="true">←</span> Notes</a>
 <span class="jx-meta rv"><span>${esc(kind(e))}</span><span>${journalDate(e.date)}</span><span>${e.minutes} min read</span></span>${e.level ? `\n<span class="tag line rv" title="Difficulty"><span class="sq"></span>${esc(e.level)}</span>` : ""}
 <h1 class="ax-t rv">${esc(e.title)}</h1>
 <p class="lede rv">${esc(e.excerpt)}</p>
 </div></header>
-<div class="w"><figure class="ax-cover art${e.grey ? " grey" : ""} rv">${e.heroSmall ? `<picture><source media="(max-width:700px)" srcset="${e.heroSmall}">` : ""}<img src="${e.hero ?? e.cover}" alt="${esc(e.hero ? e.heroAlt ?? e.coverAlt : e.coverAlt)}" decoding="async" fetchpriority="high">${e.heroSmall ? "</picture>" : ""}</figure>${e.credit ? `<p class="ax-credit">${esc(e.credit)}</p>` : ""}</div>
+<div class="w"><figure class="ax-cover art${e.grey ? " grey" : ""} rv">${e.heroSmall ? `<picture><source media="(max-width:700px)" srcset="${e.heroSmall}">` : ""}<img src="${e.hero ?? e.cover}" alt="${esc(e.hero ? e.heroAlt ?? e.coverAlt : e.coverAlt)}" decoding="async" fetchpriority="high">${e.heroSmall ? "</picture>" : ""}</figure>${e.credit ? `<p class="ax-credit">${esc(e.credit)}</p>` : ""}</div>${lead ? `\n${lead}` : ""}
 <div class="w ax-w ax-body rv">
 ${body}
 </div>
@@ -362,10 +370,10 @@ ${body}
 <form class="jx-form" data-sub><input type="email" placeholder="you@company.com" aria-label="Email address" required><button class="btn" type="submit">Subscribe</button></form>
 </div></section>
 <section class="ax-next" data-screen-label="03 ${next ? "Next entry" : "Notes"}"><div class="w ax-w rv">
-${next ? `<span class="eyebrow">Next entry</span><a class="ax-nx" href="/journal/${next.slug}"><span>${esc(next.title)}</span><span class="ar" aria-hidden="true">→</span></a>` : `<span class="eyebrow">Notes</span><a class="ax-nx" href="/journal"><span>All entries</span><span class="ar" aria-hidden="true">→</span></a>`}
+${next ? `<span class="eyebrow">${nextLabel}</span><a class="ax-nx" href="/journal/${next.slug}"><span>${esc(next.title)}</span><span class="ar" aria-hidden="true">→</span></a>` : `<span class="eyebrow">Notes</span><a class="ax-nx" href="/journal"><span>All entries</span><span class="ar" aria-hidden="true">→</span></a>`}
 ${next ? `<a class="lnk" href="/journal">All entries</a>` : ""}
 </div></section>
-<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>
+<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>${js}
 `;
   return renderPage("journal-article", {
     url: `/journal/${e.slug}`,
