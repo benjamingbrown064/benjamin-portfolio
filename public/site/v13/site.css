@@ -252,3 +252,30 @@ a[data-agent-open]{display:inline-flex;align-items:center;min-height:24px}
 #portfolio .lede+.lede{margin-top:14px}
 /* Ben, 26 Nov 2026: on phones the header shows just the "b" mark, a touch larger (was name hidden only under 420px). */
 @media (max-width:760px){.nav .brand .bn{display:none}.nav .brand .mk{width:30px;height:30px}}
+/* "The record" (Ben's visual, 26 Nov 2026): the photo fills the left half, a solid dark panel holds the rows on the
+   right, in both themes. Phones: photo on top, panel below. Doubled classes beat the design's own rules. */
+.ledger-band.lr-band{display:grid;grid-template-columns:1fr 1fr;min-height:clamp(620px,58vw,880px);background:#0b0b0c;color:#fff}
+.ledger-band.lr-band .bg{position:relative;inset:auto;grid-column:1;grid-row:1;align-self:stretch;height:100%;min-height:100%}
+.ledger-band.lr-band .bg::after{display:none}
+.ledger-band.lr-band .bg img{left:0;width:100%;-webkit-mask-image:none;mask-image:none;object-position:38% 40%;filter:grayscale(1);scale:1.02}
+.ledger-band.lr-band .w{grid-column:2;grid-row:1;display:flex;align-items:center;width:auto;max-width:none;margin:0;padding:0 clamp(32px,6vw,96px)}
+.ledger-band.lr-band .ledger{grid-column:auto;width:100%;max-width:470px;padding:80px 0;gap:24px}
+.ledger-band.lr-band .ledger .h-m{color:#fff;max-width:11em}
+.ledger-band.lr-band .ledger .eyebrow,.ledger-band.lr-band .ledger .small{color:rgba(255,255,255,.62)}
+.ledger-band.lr-band .led-row{border-top-color:rgba(255,255,255,.14);color:#f5f5f7}
+.ledger-band.lr-band .led:last-child,.ledger-band.lr-band .led{border-bottom:1px solid rgba(255,255,255,.14)}
+.ledger-band.lr-band .led-row .n{min-width:1.6em}
+.ledger-band.lr-band .led-row.hot .n{color:#ff6b1f}
+.ledger-band.lr-band .lr-tag{border-color:rgba(255,255,255,.28);color:#d1d1d6}
+.ledger-band.lr-band .lr-tag i{background:#d1d1d6}
+.ledger-band.lr-band .hot .lr-tag{border-color:#ff6b1f;color:#f5f5f7}
+.ledger-band.lr-band .hot .lr-tag i{background:#ff6b1f}
+.ledger-band.lr-band .lr-tally i{background:rgba(255,255,255,.12)}
+.ledger-band.lr-band .lr-tally i.on{background:#f5f5f7}
+.ledger-band.lr-band .lr-tally i.hot{background:#ff6b1f}
+@media (max-width:900px){
+  .ledger-band.lr-band{grid-template-columns:1fr;min-height:0}
+  .ledger-band.lr-band .bg{aspect-ratio:4/5;height:auto;min-height:0;max-height:80vh;width:100%;align-self:start}
+  .ledger-band.lr-band .w{grid-column:1;grid-row:2;padding:0 var(--gut,20px)}
+  .ledger-band.lr-band .ledger{max-width:none;padding:48px 0 64px}
+}
