@@ -193,3 +193,11 @@ html[data-theme="dark"] .sc-ui{background:#1C1D21}
 .sc-pb-cta{margin-top:8px}
 .ax-body .sc-pb .btn{gap:9px;text-decoration:none}
 @media(max-width:640px){.ax-body .sc-pb{grid-template-columns:minmax(0,1fr)}.sc-pb-doc{width:110px}}
+/* site (Ben, 26 Nov 2026): fixes after launch.
+   1. The playbook button: the article's link colour (.ax-body a) beat .btn, so its text was the same colour as the
+      button. Text is white on the dark button (light theme) and black on the light one (dark theme), as in the export.
+   2. Browser frames with a Before/After chip: on phones the address pill slid left over the chip. It now sits after
+      the chip and shortens with an ellipsis instead. */
+.ax-body .sc-pb .btn,.ax-body .sc-pb .btn:hover{color:#fff}
+html[data-theme="dark"] .ax-body .sc-pb .btn,html[data-theme="dark"] .ax-body .sc-pb .btn:hover{color:#000}
+@media(max-width:760px){.sc-chr .sc-chip+span{flex:1 1 auto;min-width:0;translate:none;margin:0 0 0 8px;text-align:center}}
