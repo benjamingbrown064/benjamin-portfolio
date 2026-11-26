@@ -306,6 +306,20 @@ def home_what_changes(html):
     return html.replace("</body>", '<script src="/site/v13/what-changes.js" defer></script>\n</body>', 1)
 
 
+def home_what_i_build(html):
+    """Home page: "What I build" (Ben's training document, 26 Nov 2026). The offers as a card rail, each with an
+    "Ask Harvey about this" button (data-ask, handled in toto.js), then a short "Your data" note. Markup in
+    design-blocks/what-i-build.html; button styles at the end of public/site/v13/site.css."""
+    block = open(os.path.join(BLOCKS, "what-i-build.html"), encoding="utf-8").read().strip()
+    return must_sub(r'(?=<section class="cx-sec cx-work" id="work")', lambda m: block + "\n", html, "home what I build")
+
+
+def method_portfolio(html):
+    """Method page: "Low risk first. Then the big bets." (Ben's training document, 26 Nov 2026), after "Where to start"."""
+    block = open(os.path.join(BLOCKS, "method-portfolio.html"), encoding="utf-8").read().strip()
+    return must_sub(r'(?=</main>)', lambda m: block + "\n", html, "method plan section", flags=0)
+
+
 def home_method_stack(html):
     """Home page: "The method, assembled" (Ben, 18 Nov 2026). A scroll section above the Methods list: a 3D device
     (Blender renders) gains one layer per stage of the method. Markup in design-blocks/method-stack.html; its
@@ -385,6 +399,7 @@ def structural_edits(src_rel, html):
         html = home_what_changes(html)
         html = home_side_project(html)
         html = home_method_stack(html)
+        html = home_what_i_build(html)
         html = home_hide_sections(html)
         html = home_hero_flick(html)
         pricing = open(os.path.join(BLOCKS, "pricing.html"), encoding="utf-8").read().strip()
@@ -405,6 +420,10 @@ def structural_edits(src_rel, html):
         html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/journal-index.css">\n</head>', 1)
         html = must_sub(r'<section class="jx-sec" data-screen-label="02 Latest entry">.*?</section>\s*<section class="jx-sec" id="entries".*?</section>',
                         wrap("journal_entries"), html, "journal entries")
+    if src_rel == "services.html":
+        html = method_portfolio(html)
+    # Ben, 26 Nov 2026: 17 years of building, so the footer counts from 2009.
+    html = html.replace("Benjamin Brown · Since 2010", "Benjamin Brown · Since 2009")
     return html
 
 

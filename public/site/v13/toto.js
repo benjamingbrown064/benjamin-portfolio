@@ -998,6 +998,9 @@
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('[data-agent-open]');
     if (a) { e.preventDefault(); open(); }
+    // "Ask Harvey about this" on the What I build cards: opens the chat and asks on the visitor's behalf.
+    var q = e.target.closest && e.target.closest('[data-ask]');
+    if (q && !inCall()) { e.preventDefault(); open(); ask(q.getAttribute('data-ask')); }
   });
 
   /* The side panel narrows the page with padding, not a scaled-down viewport: anything the design sizes in

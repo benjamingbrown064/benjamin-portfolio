@@ -249,3 +249,11 @@ a[data-agent-open]{display:inline-flex;align-items:center;min-height:24px}
 /* Picture cards (Ben, 25 Nov): Safari can drop the rounded clip while a card's photo is scaling on hover (the Taskbox
    card on /work showed square corners). Clip with a rounded clip-path as well, which Safari keeps during the animation. */
 .media{isolation:isolate;clip-path:inset(0 round var(--r-lg))}
+/* "What I build" (26 Nov 2026): each card's "Ask Harvey about this" opens the chat on that topic (data-ask, toto.js). */
+#build .oc{display:flex;flex-direction:column}
+#build .oc>p:not(.oc-t){flex:1}
+.oc-ask{align-self:flex-start;margin-top:18px;min-height:38px;padding:0 15px;border-radius:999px;background:#FF6B1F;color:#fff;font:600 13px/1 var(--sans,inherit);cursor:pointer;transition:background .25s,color .25s}
+.oc-ask:hover{background:var(--ink,#1d1d1f);color:var(--bone,#fff)}
+.oc.ink .oc-ask:hover{background:#fff;color:#1d1d1f}
+#build .bx-data{margin-top:64px;max-width:720px}
+#portfolio .lede+.lede{margin-top:14px}
