@@ -307,11 +307,14 @@ def home_what_changes(html):
 
 
 def home_what_i_build(html):
-    """Home page: "What I build" (Ben's training document, 26 Nov 2026). The offers as a card rail, each with an
-    "Ask Harvey about this" button (data-ask, handled in toto.js), then a short "Your data" note. Markup in
-    design-blocks/what-i-build.html; button styles at the end of public/site/v13/site.css."""
+    """Home page: "What I build" (Ben's training document, 26 Nov 2026), in Ben's own design (Benjamin (29).zip):
+    seven builds, one on stage at a time, then "Your data". Markup in design-blocks/what-i-build.html (his
+    section.html); his build.css and build.js are kept by hand in public/site/v13/."""
     block = open(os.path.join(BLOCKS, "what-i-build.html"), encoding="utf-8").read().strip()
-    return must_sub(r'(?=<section class="cx-sec cx-work" id="work")', lambda m: block + "\n", html, "home what I build")
+    html = must_sub(r'(?=<section class="cx-sec cx-work" id="work")', lambda m: block + "\n", html, "home what I build")
+    # Ben's design for it (Benjamin (29).zip, 26 Nov 2026): index + stage on desktop, accordion on phones.
+    html = html.replace("</head>", '<link rel="stylesheet" href="/site/v13/build.css">\n</head>', 1)
+    return html.replace("</body>", '<script src="/site/v13/build.js" defer></script>\n</body>', 1)
 
 
 def method_portfolio(html):
