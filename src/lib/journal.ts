@@ -30,6 +30,9 @@ export type JournalEntry = {
   thumb: string;
   /** A picture with no lettering in it. Only used on the home page tile when there is no weekly roundup to show there. */
   tile?: string;
+  /** Home "Latest journal entry" panel image (tall crop); falls back to cover. panelPos is its object-position. */
+  panel?: string;
+  panelPos?: string;
 };
 
 const HANDOVER_1 = "/media/journal/the-handover-1";
@@ -52,6 +55,8 @@ export const JOURNAL: JournalEntry[] = [
     credit: "Image: Meta",
     og: `${MUSE}/hero-16x9.jpg`,
     thumb: `${MUSE}/hero-4x3.jpg`,
+    panel: `${MUSE}/panel.webp`, // Ben's crop, Benjamin (30).zip, 26 Nov 2026
+    panelPos: "50% 30%",
   },
   {
     slug: "the-handover-2",

@@ -156,16 +156,12 @@ function journalIndex(): string {
 <script src="${versioned("/site/v13/journal-index.js")}" defer></script>` : ""}`;
 }
 
-/** Home page: the journal tile. It always shows the newest weekly roundup (The Handover), whose artwork carries
- *  its own lettering, so nothing is laid over it. With no roundup yet, the newest entry is shown with its title over a plain picture. */
+/** Home page: the "Latest journal entry" panel (Ben's Latest panels design, Benjamin (30).zip, 26 Nov 2026): the newest
+ *  entry, full-bleed image, date and reading time, title and excerpt. */
 function homeLatestJournal(): string {
-  const roundup = JOURNAL.find((e) => e.category === "The Handover");
-  if (roundup) {
-    const label = `Latest in Notes: ${kind(roundup)}, ${roundup.title}, ${journalDate(roundup.date)}`;
-    return `<a class="lt-c art" href="/journal/${roundup.slug}" aria-label="${esc(label)}" style="--art:url('${roundup.cover}')"><picture><source media="(max-width:760px)" srcset="${roundup.thumb}"><img src="${roundup.cover}" alt="" loading="lazy" decoding="async"></picture></a>`;
-  }
   const e = JOURNAL[0];
-  return `<a class="lt-c bw" href="/journal/${e.slug}"><img src="${e.tile ?? e.thumb}" alt="" loading="lazy" decoding="async"><span class="lt-k">Latest in Notes</span><span class="lt-b"><span class="lt-x"><span class="lt-t">${esc(e.title)}</span><span class="lt-s">${esc(kind(e))} · ${journalDate(e.date)}</span></span><span class="go" aria-hidden="true">${ARROW}</span></span></a>`;
+  const img = e.panel ?? e.cover;
+  return `<a class="lx" href="/journal/${e.slug}"><span class="lx-m"><img src="${img}" alt="${esc(e.coverAlt)}" loading="lazy" decoding="async" style="object-position:${e.panelPos ?? "50% 40%"}"></span><span class="lx-tag"><i></i>Latest journal entry</span><span class="lx-b"><span class="lx-x"><span class="lx-k">${journalDate(e.date)} · ${e.minutes} min read</span><span class="lx-t">${esc(e.title)}</span><span class="lx-s">${esc(e.excerpt)}</span></span><span class="lx-go" aria-hidden="true">${ARROW}</span></span></a>`;
 }
 
 /** Home page: the three-card journal section. Shown once there are three entries to fill it. */

@@ -23,6 +23,8 @@ function clean(s: string): string {
 
 function pageText(html: string): string {
   let s = html.replace(/[\s\S]*?<body[^>]*>/i, "");
+  // The design's sample Notes cards are replaced by real entries when the page is served; Harvey gets those from the journal list instead.
+  s = s.replace(/<!--block:(home_journal|home_latest_journal|journal_entries)-->[\s\S]*?<!--\/block:\1-->/g, " ");
   s = s.replace(/<(script|style|svg|nav|footer|dialog|template|noscript)\b[\s\S]*?<\/\1>/gi, " ").replace(/<!--[\s\S]*?-->/g, " ");
   s = s.replace(/<header class="nav[\s\S]*?<\/header>/i, " ");
   // Mark sections that can be shown, then turn structure into plain lines.
